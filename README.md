@@ -49,7 +49,7 @@ hometax/
 | [`docs/persona-tax-saving.md`](docs/persona-tax-saving.md) | 타깃 페르소나 |
 | [`docs/design/`](docs/design/) | 토스 디자인 시스템 참고 문서 |
 | [`docs/domestic-business-plan/`](docs/domestic-business-plan/) | 국내 사업계획 |
-| [`promo/`](promo/) · [`promo-chic/`](promo-chic/) | 15초 홍보 영상 초안 (영상 초안 1) |
+| [`promo/`](promo/) | 15초 홍보 영상 초안 — 기본·시크 두 버전 |
 
 ## 시연 방법
 
