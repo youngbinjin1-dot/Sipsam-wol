@@ -345,7 +345,7 @@ V.s02=function(){ var d=S.d;
   '<button class="btn" data-act="foundOk">맞아요</button>'; };
 
 function qlist(){ var q=[]; if(!S.manual) q.push('rent'); if(S.ans.rent==='yes'&&!S.manual) q.push('house'); if(S.manual&&S.ans.rent==='yes') q.push('house'); q.push('dep','med','ins','pen'); return q; }
-V.s03=function(){ var L=qlist(), k=L[S.qi], n=L.length, h=top('질문 카드',(S.qi+1)+'/'+n)+'<div class="bar"><i style="width:'+((S.qi)/n*100)+'%"></i></div>';
+V.s03q=function(){ var L=qlist(), k=L[S.qi], n=L.length, h=top('질문 카드',(S.qi+1)+'/'+n)+'<div class="bar"><i style="width:'+((S.qi)/n*100)+'%"></i></div>';
   function opts(arr){ return arr.map(function(o){ return '<button class="opt" data-act="ans" data-v="'+k+':'+o[1]+'" aria-pressed="false">'+o[0]+'</button>'; }).join(''); }
   var YN=[['네','yes'],['아니요','no'],['모르겠어요','unknown']];
   if(S.pend==='depN') return h+'<div class="center">'+art('👨‍👩‍👧')+'<h2>몇 명인가요?</h2></div><div class="chips" style="justify-content:center">'+[1,2,3].map(function(i){return '<button class="chip" data-act="depN" data-v="'+i+'">'+i+'명</button>';}).join('')+'</div>';
@@ -363,6 +363,7 @@ V.s03=function(){ var L=qlist(), k=L[S.qi], n=L.length, h=top('질문 카드',(S
   if(k==='pen') return h+'<div class="center">'+art('🐷')+'<h2>연금저축·IRP를<br>넣고 있나요?</h2></div>'+opts(YN);
   return h+'<div class="center">'+art('🏥')+'<h2>올해 병원비가<br>많이 나왔나요?</h2>'+(S.sens?'':'<span class="pill">🔒 민감정보 미동의 · 계산에서 제외</span>')+'</div>'+opts(YN); };
 
+V.s03=function(){ return V.s03q()+'<p style="text-align:center;margin:18px 0 0"><button data-act="prevQ" style="border:0;background:none;color:var(--t3);font-size:13px;text-decoration:underline;min-height:36px">← '+((S.qi===0&&!S.pend)?'이전 화면으로':'이전 질문으로')+'</button></p>'; };
 function resBox(diff,label){ var t=resultText(diff), owe=diff>0; return '<div class="res '+(owe?'owe':'')+'"><small>'+label+'</small><span class="hero-num">'+(diff>0?'추가 납부 ':(diff<0?'환급 ':''))+kor(diff)+'</span></div>'; }
 V.s04=function(){ var e=S.nov, L=actions().filter(function(a){return a.cat==='now';}), pot=potential();
   var h=top('올해 예상 결과')+resBox(e.diff,'2026년 귀속 · 11월 8일 기준 · 지금처럼 신용카드만 쓸 때')+
@@ -394,7 +395,7 @@ V.s05=function(){ var p=S.plan, s=split(p), th=thr(), rem=Math.max(0,th-counted(
   '<button class="btn sm sec" data-act="bigAsk">+ 큰 지출 추가</button>'+more('원래 쓸 돈만 넣으세요. 더 쓰면 쓴 돈보다 아끼는 세금이 훨씬 적어요. 카드 혜택(포인트·할인)은 계산에 넣지 않았어요.')+'</div>'+
   '<div class="card"><b>어디로 결제할까요?</b><input type="range" min="0" max="100" step="5" value="'+p.checkPct+'" data-sl="checkPct" aria-label="체크카드 비율">'+
   '<div class="tiles" style="margin:4px 0 0"><div class="tile"><small>💳 신용카드</small><b id="crVal">'+man(s.cr)+'</b></div><div class="tile"><small>🧾 체크·현금영수증</small><b id="chkVal">'+man(s.chk)+'</b></div></div></div>'+
-  '<div id="cmp">'+cmpHtml()+'</div><div id="tbl">'+tableHtml()+'</div>'+
+  '<div id="cmp">'+cmpHtml()+'</div><div id="tbl">'+tableHtml()+'</div><p class="fine" style="text-align:center;margin:4px 0 0">카드에 따라 적용 혜택이 다를 수 있어요</p>'+
   '<button class="btn sec" data-act="recommend">✨ 추천 비율로 맞추기</button>'+
   '<button class="btn" data-act="savePlan">이 계획으로 저장</button>'+disc(); };
 
@@ -539,6 +540,7 @@ document.addEventListener('click',function(ev){
   switch(a){
     case 'to': go(v); break;
     case 'back': back(); break;
+    case 'prevQ': if(S.pend){ S.pend=null; render(); } else if(S.qi>0){ S.qi--; render(); } else back(); break;
     case 'tab': S.history=[]; go(v,{noPush:true}); break;
     case 'tabTo': S.history=[]; go(v,{noPush:true}); break;
     case 'consentOk': if(S.link) track('link'); S.history=[]; go('link',{noPush:true}); break;
