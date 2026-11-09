@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>덜내요 프로토타입</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --primary:#3182f6; --blue-50:#e8f3ff;
+  --grey-900:#191f28; --grey-700:#4e5968; --grey-600:#6b7684; --grey-500:#8b95a1; --grey-300:#d1d6db; --grey-200:#e5e8eb; --grey-100:#f2f4f6; --grey-50:#f9fafb;
+  --red-bg:#ffeeee; --red:#c9222f; --green-bg:#e6f6ee; --green:#0f7b4a; --white:#fff;
+  --r-m:12px; --r-l:14px; --r-xl:16px; --r-2xl:20px; --r-3xl:24px;
+  --tile-blue:linear-gradient(145deg,#e8f3ff 6%,#cfe3ff 94%);
+  --tile-green:linear-gradient(145deg,#e6f6ee 6%,#c9ecd9 94%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#e9edf2;font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--grey-900);-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input{font:inherit}
+.phone{position:relative;width:393px;height:852px;max-height:100dvh;background:#fff;border-radius:40px;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column}
+@media (max-width:500px){body{display:block;background:#fff}.phone{width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none}}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.screen{padding:17px 20px 24px;display:flex;flex-direction:column}
+.screen.top20{padding-top:20px}
+
+/* 하단 고정 CTA 영역: 화면이 바뀌어도 같은 위치 */
+.cta{flex:none;padding:12px 20px calc(20px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -10px 16px -12px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:12px}
+.cta.with-nav{padding-bottom:12px}
+.cta[hidden],.nav[hidden]{display:none}
+.cta .cap{margin-bottom:-4px;text-align:center;font-size:12px;line-height:18px;color:var(--grey-600)}
+.nav{flex:none;display:flex;border-top:1px solid var(--grey-200);background:#fff;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--grey-500)}
+.nav button .ic{font-size:20px;line-height:24px}
+.nav button[aria-current="page"]{color:var(--primary)}
+
+/* 공통 */
+.topbar{height:31px;position:relative;flex:none}
+.topbar .in{position:absolute;left:0;top:-4px;width:100%;display:flex;align-items:center;gap:8px}
+.back{padding:4px 8px 4px 0;display:flex}
+.back svg{display:block}
+.topbar .t{font-size:16px;font-weight:700;line-height:24px}
+.topbar .step{margin-left:auto;font-size:12px;line-height:18px;color:var(--grey-500)}
+.btn{width:100%;min-height:52px;border-radius:var(--r-l);background:var(--primary);color:#fff;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:1px 6px;transition:filter .15s,transform .1s}
+.btn:active{transform:scale(.985)}
+.btn.grey{background:var(--grey-100);color:var(--grey-900)}
+.btn:disabled{background:var(--grey-300);cursor:not-allowed}
+.btn-s{min-height:40px;border-radius:10px;padding:0 14px;font-size:14px;font-weight:700;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.btn-s.white{background:#fff;color:var(--grey-900)}
+.btn-s.grey{background:var(--grey-100);color:var(--grey-900)}
+.btn-s.full{width:100%}
+.tile{width:96px;height:96px;border-radius:30px;background:var(--tile-blue);box-shadow:inset 0 -6px 12px rgba(49,130,246,.12);display:grid;place-items:center;font-size:48px;line-height:72px;margin:0 auto}
+.tile.green{background:var(--tile-green)}
+.tile-s{width:44px;height:44px;border-radius:var(--r-l);background:var(--tile-blue);display:grid;place-items:center;font-size:22px;flex:none}
+.h1{font-size:25px;line-height:33.75px;font-weight:700;letter-spacing:-.5px;text-align:center}
+.h2{font-size:21px;line-height:29.4px;font-weight:700;letter-spacing:-.21px}
+.h2.c{text-align:center}
+.h3{font-size:15px;line-height:22.5px;font-weight:700}
+.hero-block{padding-top:12px}
+.hero-block .h2{padding-top:12px}
+.mt8{margin-top:8px}.mt10{margin-top:10px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.card{background:var(--grey-50);border:1px solid var(--grey-200);border-radius:var(--r-xl);padding:16px}
+.card.blue{background:var(--blue-50);border-color:transparent}
+.card.list{padding:4px 16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px solid var(--grey-200)}
+.card.list .row{padding:12px 0}
+.row:last-child{border-bottom:0}
+.row .k{font-size:14px;line-height:21px;color:var(--grey-700)}
+.row .v{font-size:16px;line-height:24px;font-weight:700;text-align:right}
+.row .v15{font-size:15px;line-height:22.5px;font-weight:700;text-align:right}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats.three{grid-template-columns:repeat(3,1fr)}
+.stat{background:var(--grey-100);border-radius:var(--r-l);padding:12px;text-align:center}
+.stat .l{font-size:12px;line-height:18px;color:var(--grey-600)}
+.stat .n{font-size:18px;line-height:27px;font-weight:700}
+.chip{display:inline-flex;align-items:center;background:var(--grey-100);border-radius:99px;padding:6px 12px;font-size:13px;line-height:19.5px;font-weight:600;white-space:nowrap}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--grey-100);color:var(--grey-700)}
+.tag.red{background:var(--red-bg);color:var(--red)}
+.tag.green{background:var(--green-bg);color:var(--green)}
+.tags{display:flex;gap:4px;flex-wrap:wrap;padding-top:3px}
+.bar{height:10px;background:var(--grey-200);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
+.det summary{list-style:none;cursor:pointer;font-size:13px;line-height:19.5px;font-weight:600;color:var(--primary);display:inline-block}
+.det summary::-webkit-details-marker{display:none}
+.det p{padding-top:6px;font-size:13px;line-height:19.5px;color:var(--grey-700)}
+.det[open] summary .arw{display:inline-block;transform:rotate(180deg)}
+.check{display:flex;gap:12px;align-items:flex-start;cursor:pointer;text-align:left;width:100%}
+.box{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--grey-300);display:grid;place-items:center;color:#fff;font-size:13px;font-weight:800;margin-top:2px;transition:background .15s,border-color .15s}
+.box.on{background:var(--primary);border-color:var(--primary)}
+.check .lbl{font-size:15px;line-height:22.5px;font-weight:700}
+.opt{width:100%;text-align:left;background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-l);padding:14px;font-size:15px;font-weight:600;transition:border-color .15s,background .15s}
+.opt:active,.opt.sel{border-color:var(--primary);background:var(--blue-50)}
+.pill{min-height:40px;border:1px solid var(--grey-200);border-radius:99px;padding:0 14px;font-size:14px;font-weight:600;background:#fff}
+.pill.sel{border-color:var(--primary);background:var(--blue-50);color:var(--primary)}
+.pills{display:flex;gap:8px;justify-content:center}
+.pills.col{flex-direction:column}
+.pills.col .pill{width:100%}
+.prevlink{display:block;margin:18px auto 0;font-size:13px;color:var(--grey-600);padding:10px}
+.field{width:100%;height:50px;border:1px solid var(--grey-200);border-radius:var(--r-m);padding:0 14px;font-size:16px;font-weight:600;color:var(--grey-900);background:#fff;outline:none}
+.field::placeholder{color:var(--grey-500);font-weight:400}
+.field:focus{border-color:var(--primary)}
+.flabel{font-size:13px;line-height:19.5px;font-weight:600;color:var(--grey-700);display:block;margin-bottom:6px}
+.inrow{display:flex;gap:8px}
+.inrow .field{flex:1;min-width:0}
+.inrow .btn-s{height:50px}
+.big-hero{background:var(--primary);border-radius:var(--r-2xl);padding:18px;color:#fff}
+.big-hero .cap{font-size:13px;line-height:19.5px;opacity:.9}
+.big-hero .amt{font-size:34px;line-height:51px;font-weight:800;letter-spacing:-.68px;padding-top:4px}
+.task{background:#fff;border:1px solid var(--grey-200);border-radius:var(--r-xl);padding:14px}
+.task.done{background:var(--blue-50);border-color:var(--primary)}
+.task .top{display:flex;align-items:center;gap:12px}
+.task .mid{flex:1;min-width:0}
+.task .ttl{font-size:15px;line-height:22.5px;font-weight:700}
+.task .sub{font-size:12px;line-height:18px;color:var(--grey-600)}
+.task .amt{font-size:14px;line-height:21px;font-weight:800;color:var(--primary);text-align:right;white-space:nowrap}
+.task .side{font-size:12px;font-weight:600;color:var(--grey-500);white-space:nowrap}
+.task .act{margin-top:8px}
+.task .det{margin-top:8px}
+.stack>*+*{margin-top:10px}
+.cmp{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center}
+.cmp .box2{background:var(--grey-100);border-radius:var(--r-m);padding:10px 4px;text-align:center}
+.cmp .l{font-size:13px;line-height:19.5px}
+.cmp .n{font-size:17px;line-height:25.5px;font-weight:700}
+.cmp .s{font-size:11px;line-height:16.5px;color:var(--grey-600)}
+.optrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--grey-200)}
+.optrow:last-child{border-bottom:0}
+.optrow .a{font-size:14px;line-height:21px;font-weight:700}
+.optrow .b{font-size:11px;line-height:16.5px;color:var(--grey-500)}
+.optrow .r{text-align:right}
+.optrow .r .a{font-size:15px;line-height:22.5px}
+.optrow .r .a.blue{color:var(--primary)}
+/* 슬라이더 */
+.range{position:relative;height:32px}
+.range input{position:absolute;inset:0;width:100%;height:32px;margin:0;opacity:0;cursor:pointer;z-index:2}
+.range .track{position:absolute;left:0;right:0;top:12px;height:8px;border-radius:99px;background:var(--grey-200)}
+.range .fill{position:absolute;left:0;top:12px;height:8px;border-radius:99px;background:var(--primary)}
+.range .knob{position:absolute;top:6px;width:20px;height:20px;margin-left:-10px;border-radius:10px;background:#fff;border:2px solid var(--primary);pointer-events:none}
+.range input:focus-visible~.knob{box-shadow:0 0 0 4px rgba(49,130,246,.25)}
+.amt-big{font-size:28px;line-height:42px;font-weight:800;letter-spacing:-.56px}
+/* 시트 */
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end;animation:fade .2s}
+.sheet{width:100%;background:#fff;border-radius:var(--r-3xl) var(--r-3xl) 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.toast{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);background:rgba(25,31,40,.92);color:#fff;font-size:14px;font-weight:600;padding:12px 18px;border-radius:12px;z-index:30;white-space:nowrap;animation:fade .2s}
+.steps .row{padding:12px 0}
+.num{width:28px;height:28px;border-radius:14px;background:var(--grey-100);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--grey-700)}
+.flow{display:flex;align-items:center;justify-content:space-between;text-align:center}
+.flow .e{font-size:26px;line-height:39px}
+.flow .l{font-size:13.3px;line-height:18px}
+.ul{text-decoration:underline;color:var(--primary);font-weight:700;font-size:13.3px}
+.sec-h{padding-top:20px;font-size:15px;line-height:22.5px;font-weight:700}
+.center{text-align:center}
+.cap12{font-size:12px;line-height:18px;color:var(--grey-600)}
+.trial{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.trial b{font-size:16px;line-height:24px;display:block}
+.hero-img{width:300px;height:300px;margin:0 auto;display:block}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="scroll" id="scroll"><div id="view"></div></div>
+  <div class="cta" id="cta" hidden></div>
+  <nav class="nav" id="nav" hidden aria-label="하단 탭">
+    <button data-tab="home"><span class="ic">🏠</span>홈</button>
+    <button data-tab="tips"><span class="ic">💡</span>줄이는 법</button>
+    <button data-tab="me"><span class="ic">👤</span>내 정보</button>
+  </nav>
+  <div id="layer"></div>
+</div>
+
+<script>
+const HERO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><defs>
+<linearGradient id="p1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C7D8F6"/><stop offset="1" stop-color="#8FAEE3"/></linearGradient>
+<linearGradient id="p2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF3FC"/><stop offset="1" stop-color="#BCCDEC"/></linearGradient>
+<linearGradient id="p3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E2EAF8"/></linearGradient>
+<linearGradient id="hd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6EA7FA"/><stop offset="1" stop-color="#1B5FD0"/></linearGradient>
+<radialGradient id="bf" cx="0.32" cy="0.28" r="0.85"><stop offset="0" stop-color="#8CBBFF"/><stop offset="0.5" stop-color="#3182F6"/><stop offset="1" stop-color="#1446A0"/></radialGradient>
+</defs>
+<rect x="150" y="104" width="214" height="280" rx="26" fill="url(#p1)" transform="rotate(-16 257 244)"/>
+<rect x="146" y="98" width="214" height="280" rx="26" fill="url(#p2)" transform="rotate(-7 253 238)"/>
+<g transform="rotate(2 250 240)">
+<rect x="150" y="104" width="214" height="280" rx="26" fill="#9CB4DC"/>
+<rect x="142" y="94" width="214" height="280" rx="26" fill="url(#p3)"/>
+<rect x="143" y="95" width="212" height="278" rx="25" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+<rect x="168" y="124" width="70" height="14" rx="7" fill="url(#hd)"/>
+<rect x="168" y="162" width="150" height="10" rx="5" fill="#D4DFF2"/>
+<rect x="168" y="186" width="120" height="10" rx="5" fill="#D4DFF2"/>
+<rect x="168" y="210" width="136" height="10" rx="5" fill="#D4DFF2"/>
+<rect x="168" y="234" width="96" height="10" rx="5" fill="#D4DFF2"/>
+</g>
+<circle cx="366" cy="356" r="74" fill="#0E3A85"/>
+<circle cx="358" cy="346" r="74" fill="url(#bf)"/>
+<circle cx="358" cy="346" r="73" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="2"/>
+<path d="M326 348 L350 372 L394 324" fill="none" stroke="#0B2E6E" stroke-opacity="0.35" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" transform="translate(2 5)"/>
+<path d="M326 348 L350 372 L394 324" fill="none" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M306 314 A56 56 0 0 1 352 290" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.55"/>
+</svg>`;
+
+/* ---------- 상태 ---------- */
+const S = {
+  stack: ['start'],
+  consent: {terms:true, privacy:true, toss:true, sensitive:true, marketing:true},
+  rentMonths: 11, rentDec: false,
+  depCount: 0, med: null, ins: null, pen: null,
+  plan: {total:200, debitRatio:0, items:[]},
+  saved: null,
+  season: 'nov',          // nov | dec
+  tipsDone: {}, tipsNA: {},
+  missing: {rent:true},
+  final: {a:true,b:true,c:true},
+  payAgree: true, alarm: true, notify: true,
+};
+const T = 1050, SPENT = 900, R0 = 1080500, D0 = 75000;
+
+/* ---------- 계산 (시연용 단순 모델) ---------- */
+function deduction(credit, debit){
+  let rem = T;
+  const ce = Math.max(credit - rem, 0); rem = Math.max(rem - credit, 0);
+  const de = Math.max(debit - rem, 0);
+  return Math.min((ce*0.15 + de*0.30)*10000, 3000000);
+}
+function planResult(total, ratio){
+  const debit = Math.round(total*ratio/100);
+  const credit = total - debit;
+  const d = deduction(SPENT + credit, debit);
+  const dBase = deduction(SPENT + total, 0);
+  const base = R0 + (dBase - D0)*0.15;
+  const val = R0 + (d - D0)*0.15;
+  return {credit, debit, base:round10(base), val:round10(val), diff:round10(val-base)};
+}
+function recRatio(total){
+  const room = Math.max(T - SPENT, 0);
+  if(total<=0) return 0;
+  return Math.min(100, Math.round(Math.max(total - room, 0)/total*100/5)*5);
+}
+const round10 = n => Math.round(n/10)*10;
+function won(n){
+  n = Math.round(n); const neg = n<0; n=Math.abs(n);
+  const man = Math.floor(n/10000), rest = n%10000;
+  let s = '';
+  if(man) s += man.toLocaleString('ko-KR')+'만';
+  if(rest) s += (man?' ':'')+rest.toLocaleString('ko-KR');
+  if(!s) s='0';
+  return (neg?'−':'')+s+'원';
+}
+
+/* ---------- 조각 ---------- */
+const BACK_ICON = '<svg width="14" height="20" viewBox="0 0 14 20" aria-hidden="true"><path d="M10 3L3.5 10l6.5 7" fill="none" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const topBar = (t, step) => `<div class="topbar"><div class="in"><button class="back" data-act="back" aria-label="뒤로">${BACK_ICON}</button><span class="t">${t}</span>${step?`<span class="step">${step}</span>`:''}</div></div>`;
+const det = (txt, sum='자세히 보기') => `<details class="det"><summary>${sum} <span class="arw">▾</span></summary><p>${txt}</p></details>`;
+const box = on => `<span class="box ${on?'on':''}">${on?'✓':''}</span>`;
+const tile = (e, cls='') => `<div class="tile ${cls}">${e}</div>`;
+const heroHead = (e, title, cls='') => `<div class="hero-block">${tile(e,cls)}<div class="h2 c">${title}</div></div>`;
+const qBar = (n, total) => `<div class="mt12 bar"><i style="width:${(n-1)/total*100}%"></i></div>`;
+const trialCard = (sub=true) => `<div class="card blue trial"><div><b>🎁 한 달 무료 체험 중</b>${sub?'<span class="cap12">끝나고 직접 정해요</span>':''}</div><button class="btn-s" data-go="sub">구독 안내</button></div>`;
+const task = (o) => `<div class="task ${o.done?'done':''}"><div class="top"><div class="tile-s">${o.e}</div><div class="mid"><div class="ttl">${o.t}</div>${o.sub?`<div class="sub">${o.sub}</div>`:''}${o.tags?`<div class="tags">${o.tags}</div>`:''}</div>${o.amt?`<div class="amt">${o.amt}</div>`:''}${o.side?`<div class="side">${o.side}</div>`:''}</div>${o.body||''}</div>`;
+const tagR = t => `<span class="tag red">${t}</span>`;
+const tagG = t => `<span class="tag">${t}</span>`;
+function rangeEl(id, val, max, step){
+  const pct = val/max*100;
+  return `<div class="range"><input type="range" id="${id}" min="0" max="${max}" step="${step}" value="${val}" aria-label="${id==='r1'?'쓸 예정 금액':'체크카드 비율'}"><div class="track"></div><div class="fill" style="width:${pct}%"></div><div class="knob" style="left:${pct}%"></div></div>`;
+}
+
+/* ---------- 화면 정의 ----------
+   각 화면: { tab?, body(), cta?: [{label, act|go, style}], cap?, sheet? } */
+const SCREENS = {
+  start: {
+    body: () => `<div class="screen" style="padding-top:100px">
+      <img class="hero-img" alt="" src="data:image/svg+xml;utf8,${encodeURIComponent(HERO_SVG)}">
+      <div class="center" style="padding-top:12px"><span class="tag red">연말정산 마감 D-52</span></div>
+      <div class="h1" style="padding-top:10px">올해 연말정산,<br><span style="color:var(--primary)">12월 31일 전에 덜 내는 법</span></div>
+      <p class="center" style="padding-top:10px;font-size:15px;color:var(--grey-700)">내 카드·월급·월세로 바로 계산해요</p>
+      <div class="chips" style="padding-top:16px"><span class="chip">🎁 한 달 무료 체험</span><span class="chip">💸 환급금 수수료 0원</span></div>
+    </div>`,
+    cta: [{label:'내 연말정산 보기', go:'consent'}], cap:'참고용 예상치 · 세무 상담 아님'
+  },
+
+  consent: {
+    body: () => {
+      const items = [
+        ['terms','[필수] 서비스 이용약관','예상 계산·정보 제공 도구 이용 조건이에요. 세무 상담·신고 대행이 아니에요.'],
+        ['privacy','[필수] 개인정보 수집·이용','토스에 이미 있는 정보 외에 따로 받는 개인정보는 없어요. 이용 목적과 보관 기간을 안내해요.'],
+        ['toss','[선택] 토스 데이터 이용','카드 결제·급여 입금·정기 이체를 올해 카드 사용액, 월급, 월세 후보 확인에만 써요. 동의하지 않으면 3가지만 직접 입력하면 돼요. 홈택스에는 대신 로그인하지 않아요.'],
+        ['sensitive','[선택] 민감정보 처리 (병원비)','건강 관련 정보라 따로 받아요. 동의하지 않으면 해당 항목만 빼고 계산해요.'],
+        ['marketing','[선택] 마케팅 알림 수신','관리 알림과 별개예요. 동의하지 않아도 이용할 수 있어요.'],
+      ];
+      return `<div class="screen">${topBar('이용 동의')}${heroHead('🛡️','시작 전에 동의해 주세요')}
+      <div style="height:29px"></div>
+      ${items.map(([k,l,d],i)=>`<div style="padding-top:${i?12:20}px"><button class="check" data-toggle="consent.${k}">${box(S.consent[k])}<span class="lbl">${l}</span></button></div>
+        <div style="padding:8px 0 10px 34px;border-bottom:1px solid var(--grey-200)">${det(d)}</div>`).join('')}
+      </div>`;
+    },
+    cta: () => {
+      const ok = S.consent.terms && S.consent.privacy;
+      const all = Object.values(S.consent).every(Boolean);
+      return [{label: all?'전체 동의하고 시작하기':'동의하고 시작하기', act:'consentGo', disabled:!ok}];
+    }
+  },
+
+  toss: {
+    body: () => `<div class="screen">${topBar('토스 데이터')}${heroHead('💳','입력은 토스가 해요')}
+      <div class="stats three mt10">${[['💳','카드 사용'],['💰','월급'],['🏠','월세']].map(([e,l])=>`<div class="stat" style="padding:12px"><div style="font-size:28px;line-height:42px">${e}</div><div style="font-size:14px;font-weight:700;line-height:21px">${l}</div></div>`).join('')}</div>
+      <div class="mt10">${det('동의한 범위 안에서 어제까지의 카드 결제, 급여 입금, 정기 이체만 확인해요. 카드 혜택(포인트·할인)은 쓰지 않아요.')}</div>
+    </div>`,
+    cta: [{label:'확인하기', go:'found'}]
+  },
+
+  manualIntro: {
+    body: () => `<div class="screen">${topBar('직접 입력')}${heroHead('✍️','3가지만 알려주세요')}</div>`,
+    cta: [{label:'입력하기', go:'manual'}]
+  },
+
+  manual: {
+    body: () => `<div class="screen top20">${topBar('직접 입력')}
+      <div class="h2" style="padding-top:12px">이것만 알려주세요</div>
+      ${[['연봉(세전, 만원)','4200'],['올해 카드 사용액(만원)','900'],['매달 월세(만원, 없으면 0)','35'],['월세 낸 개월 수(1~12)','11'],['성과금·상여(만원, 선택)','']].map(([l,v],i)=>`
+        <label style="display:block;padding-top:${i?14:8}px"><span class="flabel">${l}</span><input class="field" inputmode="numeric" ${v?`value="${v}"`:'placeholder="없으면 비워 두세요"'}></label>`).join('')}
+    </div>`,
+    cta: [{label:'다음', go:'qHome'}]
+  },
+
+  found: {
+    body: () => `<div class="screen">${topBar('자동으로 찾은 정보')}
+      <div class="h2" style="padding-top:12px">이거 맞아요?</div>
+      <div class="card blue mt12"><div class="cap12">월 실수령액 약 320만원 기준</div><div class="amt-big">연봉 약 4,200만원</div><div style="text-align:right"><button class="btn-s white" data-toast="연봉 수정은 시연에서 고정이에요">수정하기</button></div></div>
+      <div class="stats mt12"><div class="stat"><div class="l">신용카드</div><div class="n">900만원</div></div><div class="stat"><div class="l">체크·현금영수증</div><div class="n">0만원</div></div></div>
+      <div class="center mt10"><span class="chip">공제 제외 130만원 (공과금·통신비 등)</span></div>
+      <div class="card mt8"><div style="font-size:16px;font-weight:700;line-height:24px">➕ 추가로 받은 소득이 있나요? <span style="font-size:12px;color:var(--grey-600)">(선택)</span></div>
+        <label style="display:block;padding-top:8px"><span class="flabel">성과금·상여 (만원)</span><input class="field" inputmode="numeric" placeholder="예: 300"></label>
+        <div class="mt8">${det('올해 받았거나 받을 성과금·상여를 넣으면 총급여에 더해서 계산해요. 나중에 "줄이는 법" 탭에서도 바꿀 수 있어요.')}</div></div>
+      <div class="mt8">${det('전통시장·대중교통은 공제율이 더 높아서 1월에 정확히 확인해요. 연결 안 된 카드가 있으면 <button class="ul" data-toast="다른 결제 수단 연결은 시연에서 생략해요">다른 결제 수단도 있어요</button>를 눌러요.','추정 기준 보기')}</div>
+    </div>`,
+    cta: [{label:'맞아요', go:'qRent'}]
+  },
+
+  qRent: {
+    body: () => `<div class="screen">${topBar('질문 카드','1/6')}${qBar(1,6)}
+      <div class="hero-block">${tile('🏠')}<div class="h2 c">매달 집주인(김○○)에게<br>35만원 보내고 있어요. 월세 맞나요?</div></div>
+      <div class="card mt12">
+        <div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:16px">월세 낸 개월</b>
+          <div style="display:flex;align-items:center;gap:8px"><button class="pill" data-act="rentMinus" aria-label="한 달 줄이기">−</button><b style="font-size:18px;min-width:56px;text-align:center">${S.rentMonths}개월</b><button class="pill" data-act="rentPlus" aria-label="한 달 늘리기">＋</button></div></div>
+        <button class="check mt8" data-toggle="rentDec">${box(S.rentDec)}<span><span class="lbl">12월분도 낼 예정이에요</span><br><span class="chip" style="color:var(--grey-600)">총 ${S.rentMonths + (S.rentDec&&S.rentMonths<12?1:0)}개월</span></span></button>
+      </div>
+      <button class="opt mt12" data-go="qHome">네</button>
+      <button class="opt mt8" data-go="qHome">아니요</button>
+      <button class="prevlink" data-act="back">← 이전 화면으로</button>
+    </div>`
+  },
+
+  qHome: { body: () => qOpts('2/6',2,'🔑','무주택 세대주이고<br>전입신고도 했나요?',['네','아니요','모르겠어요'],'qDep') },
+  qDep: {
+    body: () => `<div class="screen">${topBar('질문 카드','3/6')}${qBar(3,6)}${heroHead('👨‍👩‍👧','같이 사는 부모님·자녀가 있나요?')}
+      <button class="opt mt12" data-go="qDepN">있어요</button><button class="opt mt8" data-act="depNone">없어요</button>
+      <button class="prevlink" data-act="back">← 이전 질문으로</button></div>`
+  },
+  qDepN: {
+    body: () => `<div class="screen">${topBar('질문 카드','3/6')}${qBar(3,6)}${heroHead('👨‍👩‍👧','몇 명인가요?')}
+      <div class="pills" style="padding-top:8px">${[1,2,3].map(n=>`<button class="pill" data-act="depSet" data-v="${n}">${n}명</button>`).join('')}</div>
+      <button class="prevlink" data-act="back">← 이전 질문으로</button></div>`
+  },
+  qMed: { body: () => qOpts('4/6',4,'🏥','올해 병원비가 많이 나왔나요?',['네','아니요','모르겠어요'],'qIns','qMedAmt') },
+  qMedAmt: { body: () => qAmt('4/6',4,'🏥','병원비는 대략 얼마예요?',['100만원 이하','100~300만원','300~500만원','500만원 이상'],'qIns',false,'med') },
+  qIns: { body: () => qOpts('5/6',5,'🛡️','보장성 보험료를 내고 있나요?',['네','아니요','모르겠어요'],'qPen','qInsAmt') },
+  qInsAmt: { body: () => qAmt('5/6',5,'🛡️','1년 보험료는 대략 얼마예요?',['50만원 이하','50~100만원','100만원 이상'],'qPen',true,'ins') },
+  qPen: { body: () => qOpts('6/6',6,'🐷','연금저축·IRP를 넣고 있나요?',['네','아니요','모르겠어요'],'result','qPenAmt') },
+  qPenAmt: { body: () => qAmt('6/6',6,'🐷','올해 얼마 넣었나요?',['100만원 이하','100~300만원','300~600만원','600만원 이상'],'result',true,'pen') },
+
+  result: {
+    body: () => `<div class="screen">${topBar('올해 예상 결과')}
+      <div class="big-hero mt12"><div class="cap">2026년 귀속 · 11월 8일 기준 · 지금처럼 신용카드만 쓸 때</div><div class="amt">환급 ${won(R0)}</div></div>
+      <div class="stats mt12"><div class="stat"><div class="l">예상 결정세액</div><div class="n">59만 5,380원</div></div><div class="stat"><div class="l">이미 낸 세금</div><div class="n">167만 5,880원</div></div></div>
+      ${thresholdCard('900만원 / 1,050만원', SPENT/T)}
+      <div class="center mt12"><span class="chip">작년(2025 귀속) 추가 납부 42만원</span></div>
+      <div class="h2" style="padding-top:20px">더 받을 수 있는 방법</div>
+      <div class="stack mt10">${homeTasks(false)}</div>
+      <div class="card blue mt12 center"><div class="cap12">카드 전환 외에 모두 해당되면</div><div style="font-size:24px;line-height:36px;font-weight:800;letter-spacing:-.48px">최대 −93만 9,000원</div></div>
+      <p class="center" style="padding-top:14px;font-size:14px;color:var(--grey-700)">남은 지출을 신용·체크 중 어디로 결제할지 정해봐요</p>
+    </div>`,
+    cta: [{label:'줄이는 방법 전체 보기', go:'tips', style:'grey', tab:true},{label:'지출 계획하기', go:'plan'}], cap:'참고용 예상치 · 세무 상담 아님'
+  },
+
+  plan: {
+    body: () => {
+      const p = S.plan;
+      return `<div class="screen">${topBar('지출 계획하기')}
+      <div class="card mt12" style="padding:12px 16px"><div class="row"><span class="k">올해 카드 사용</span><span class="v">900만원 / 1,050만원</span></div><div style="padding:8px 0"><div class="bar"><i style="width:${SPENT/T*100}%"></i></div></div><div class="cap12">문턱까지 150만원</div></div>
+      <div class="card mt12"><div style="font-size:16px;font-weight:700;line-height:24px">12월 31일까지 쓸 예정 금액</div>
+        <div class="amt-big" style="padding-top:4px" id="planTotal">${p.total}만원</div>
+        <div style="padding-top:4px">${rangeEl('r1', p.total, 500, 10)}</div>
+        ${p.items.length?`<div class="chips" style="justify-content:flex-start;padding-top:6px">${p.items.map((it,i)=>`<span class="chip">📦 ${it.n} ${it.v}만원 <button data-act="rmItem" data-v="${i}" aria-label="삭제" style="margin-left:6px;color:var(--grey-500)">✕</button></span>`).join('')}</div>`:''}
+        <button class="btn-s grey full mt8" data-act="openBig">+ 큰 지출 추가</button>
+        <div class="mt8">${det('원래 쓸 돈만 넣으세요. 더 쓰면 쓴 돈보다 아끼는 세금이 훨씬 적어요. 카드 혜택(포인트·할인)은 계산에 넣지 않았어요.')}</div></div>
+      <div class="card mt12"><div style="font-size:16px;font-weight:700;line-height:24px">어디로 결제할까요?</div>
+        ${rangeEl('r2', p.debitRatio, 100, 5)}
+        <div id="pStats" style="padding-top:4px">${planParts().stats}</div></div>
+      <div class="card mt12" id="pCmp">${planParts().cmp}</div>
+      <div class="card mt12" style="padding:4px 16px" id="pOpts">${planParts().opts}</div>
+      <p class="center cap12" style="padding-top:12px">카드에 따라 적용 혜택이 다를 수 있어요</p>
+    </div>`;
+    },
+    cta: [{label:'✨ 추천 비율로 맞추기', act:'recommend', style:'grey'},{label:'이 계획으로 저장', act:'savePlan'}], cap:'참고용 예상치 · 세무 상담 아님'
+  },
+
+  saved: {
+    body: () => { const s=S.saved||planResult(S.plan.total,S.plan.debitRatio); return `<div class="screen">${topBar('저장 완료')}${heroHead('✅','계획을 저장했어요','green')}
+      <div class="card mt12"><div class="row"><span class="k">쓸 예정</span><span class="v">${S.plan.total}만원</span></div><div class="row"><span class="k">💳 신용 / 🧾 체크</span><span class="v">${s.credit}만원 / ${s.debit}만원</span></div><div class="row"><span class="k">예상</span><span class="v">환급 ${won(s.val)}</span></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 0 12px"><b style="font-size:16px">🔔 문턱 넘으면 알려주세요</b><button data-toggle="alarm" aria-label="알림">${box(S.alarm)}</button></div>
+      ${det('카드 공제 문턱·한도에 닿을 때만 알려드려요. 같은 알림은 한 번만, 마케팅 알림과 섞지 않아요.','알림 자세히')}
+      <div class="mt12">${trialCard(false)}</div>
+    </div>`; },
+    cta: [{label:'홈으로', act:'goHome'}]
+  },
+
+  home: {
+    tab:'home',
+    body: () => {
+      const dec = S.season==='dec';
+      const s = S.saved||planResult(S.plan.total,S.plan.debitRatio);
+      return `<div class="screen top20">
+      <div><span class="tag red">12월 31일까지 D-${dec?17:52}</span></div>
+      <div class="h2" style="padding-top:6px">${dec?'이제 체크카드가 유리해요':'지금은 신용카드 써도 괜찮아요'}</div>
+      <div class="big-hero mt12"><div class="cap">2026년 귀속 · ${dec?'12월 14일':'11월 8일'} 기준</div><div class="amt">환급 ${dec?'115만 8,130원':won(s.val)}</div></div>
+      ${dec?thresholdCard('<span style="color:var(--green)">✓ 넘었어요</span>',1,'카드 공제 문턱'):thresholdCard('150만원 남음',SPENT/T,'카드 공제 문턱')}
+      <div class="mt12">${trialCard()}</div>
+      <div class="sec-h" style="padding-top:16px">이번 주 할 일</div>
+      <div class="stack mt10">${homeTasks(dec)}</div>
+    </div>`;
+    },
+    cta: () => [{label: S.season==='dec'?'📅 12월 마무리 리포트 (시연)':'📅 문턱 넘는 순간 보기 (시연)', act: S.season==='dec'?'goReport':'goDec'}],
+    cap:'참고용 예상치 · 세무 상담 아님'
+  },
+
+  tips: { tab:'tips', body: () => tipsBody() },
+
+  me: {
+    tab:'me',
+    body: () => `<div class="screen top20"><div class="h2" style="padding-top:6px">내 정보</div>
+      <div class="mt12">${trialCard()}</div>
+      <div class="card list mt12"><div class="row"><span class="k">관리 과세연도</span><span class="v15">2026년 귀속</span></div><div class="row"><span class="k">토스 데이터 이용</span><span class="v15">${S.consent.toss?'동의함':'동의 안 함'}</span></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 0 12px"><b style="font-size:16px">🔔 결제 수단 전환 알림</b><button data-toggle="alarm" aria-label="알림">${box(S.alarm)}</button></div>
+      <button class="btn grey mt12" data-toast="시연에서는 데이터를 저장하지 않아요">동의 철회 · 내 데이터 삭제</button>
+    </div>`
+  },
+
+  report: {
+    body: () => `<div class="screen">${topBar('12월 마무리 리포트')}${heroHead('🎉','올해 이만큼 챙겼어요','green')}
+      <div class="cmp mt10"><div class="box2" style="padding:10px 4px"><div class="l">11월 예상</div><div class="n">환급<br>108만 500원</div></div><div>→</div><div class="box2"><div class="l">12월 말</div><div class="n">환급<br>115만 8,130원</div></div></div>
+      <div class="chips" style="flex-direction:column;align-items:center;gap:4px;padding-top:6px"><span class="chip">변화 −7만 7,630원</span><span class="chip">체크카드 56% · 카드 전환 −4만 3,880원</span></div>
+      <div class="sec-h">1월에 확인할 것</div>
+      ${[['🏠','월세 세액공제 (11개월)'],['👨‍👩‍👧','부양가족 공제 확인'],['🏠','월세 12월분도 이체하기'],['🧾','현금영수증 등록 확인'],['🚌','전통시장·대중교통은 체크카드로'],['📄','간소화 자료로 증빙 확인']].map(([e,t])=>`<div style="display:flex;align-items:center;gap:12px;padding-top:8px"><div class="tile-s">${e}</div><span style="font-size:14px">${t}</span></div>`).join('')}
+      <div class="mt8">${det('예상액 변화는 입력된 자료가 바뀐 결과예요. 앱 덕분에 절세했다는 뜻이 아니에요.')}</div>
+    </div>`,
+    cta: [{label:'구독 미리 보기', go:'sub', style:'grey'},{label:'1월 연말정산 챙기기', go:'subJan'}], cap:'참고용 예상치 · 세무 상담 아님'
+  },
+
+  sub: { body: () => subBody('미리 보기'), cta: [{label:'닫기', act:'back', style:'grey'},{label:'시작할 때 알려주세요', act:'notifyMe'}] },
+  subJan: { body: () => subBody('2027년 1월'), cta: [{label:'나중에', act:'goHome', style:'grey'},{label:'구독 알아보기', go:'subAgree'}] },
+
+  subAgree: {
+    body: () => `<div class="screen">${topBar('구독 선택')}<div class="h2" style="padding-top:12px">연 구독 시작</div>
+      <div class="card list mt12"><div class="row"><span class="k">첫해 특별가</span><span class="v">14,900원</span></div><div class="row"><span class="k">갱신</span><span class="v">2028년 1월 · 24,900원</span></div><div class="row"><span class="k">해지</span><span class="v">내 정보에서 한 번에</span></div></div>
+      <div style="padding:26px 0 14px"><button class="check" data-toggle="payAgree">${box(S.payAgree)}<span class="lbl">[필수] 유료 결제에 동의해요</span></button></div>
+      <div class="mt8">${det('위 금액·갱신일·해지 방법을 확인했어요. 갱신 전에 다시 알려드려요. 시연이라 실제 결제 정보는 받지 않고 결제도 일어나지 않아요.')}</div>
+    </div>`,
+    cta: () => [{label:'동의하고 구독 시작', go:'helper', disabled:!S.payAgree}]
+  },
+
+  helper: {
+    body: () => `<div class="screen">${topBar('연말정산 도우미')}
+      <div class="hero-block">${tile('📋')}<div class="center" style="padding-top:12px"><span class="tag green">구독 중 (시연)</span></div><div class="h2 c" style="padding-top:6px">간소화 오픈 D-6<br>회사 마감 1월 24일</div></div>
+      <div class="card list mt12 steps">${['준비','자료 비교','부양가족 점검','최종 예상','제출 가이드','추가 납부 대비'].map((t,i)=>`<div class="row" style="justify-content:flex-start"><span class="num">${i+1}</span><span class="k">${t}</span></div>`).join('')}</div>
+      <div class="mt12">${det('정리·계산·체크리스트·안내만 해요. 신고서를 대신 쓰거나 제출하지 않아요.')}</div>
+    </div>`,
+    cta: [{label:'시작하기', go:'upload'}]
+  },
+
+  upload: {
+    body: () => `<div class="screen">${topBar('간소화 자료 비교')}${heroHead('📄','간소화 PDF를 올려주세요')}
+      <div class="mt8">${det('홈택스에서 내려받은 간소화 자료(PDF)를 올리면, 토스 데이터와 질문 답을 비교해서 빠졌을 수 있는 항목을 보여줘요. 홈택스에는 대신 로그인하지 않아요.')}</div></div>`,
+    cta: [{label:'📄 PDF 올리기 (시연)', go:'missing'}]
+  },
+
+  missing: {
+    body: () => {
+      const L = [['rent','🏠','월세 증빙','계약서 사본 · 이체 내역 · 주민등록등본','−65만 4,500원'],['dep','👨‍👩‍👧','부양가족 등록','나이·소득 요건 · 형제자매 중복 여부','−22만 5,000원'],['med','🏥','의료비 영수증','빠진 병원·약국 영수증',''],['don','💝','기부금 영수증','빠진 기부 영수증',''],['pen','🐷','연금저축·IRP 확인서','납입 확인서','']];
+      return `<div class="screen top20">${topBar('간소화 자료 비교')}<div class="h2" style="padding-top:12px">빠졌을 수 있는 항목</div>
+      <div class="stack mt10">${L.map(([k,e,t,s,a])=>{const on=S.missing[k];return task({e,t,sub:s,amt:a,done:on,body:`<div class="act"><button class="btn-s ${on?'white':'grey'} full" data-toggle="missing.${k}">${on?'챙길게요 ✓':'증빙 챙기기'}</button></div>`});}).join('')}</div></div>`;
+    },
+    cta: [{label:'다음: 제출 가이드', go:'submit'}]
+  },
+
+  submit: {
+    body: () => `<div class="screen">${topBar('제출 가이드')}
+      <div class="big-hero mt12"><div class="cap">최종 예상</div><div class="amt">환급 115만 8,130원</div></div>
+      <div class="card mt12"><div class="flow"><div><div class="e">⬇️</div><div class="l">간소화 자료<br>내려받기</div></div><div>→</div><div><div class="e">📤</div><div class="l">회사 시스템에<br>올리기</div></div><div>→</div><div><div class="e">✅</div><div class="l">1/24 전<br>직접 제출</div></div></div></div>
+      <div class="card mt12"><b style="font-size:16px">마지막 체크</b>
+        ${[['a','증빙 서류를 모았어요'],['b','부양가족 동의를 확인했어요'],['c','회사 시스템에 직접 제출했어요']].map(([k,t])=>`<button class="check" data-toggle="final.${k}" style="padding:10px 0;border-bottom:1px solid var(--grey-200)">${box(S.final[k])}<span style="font-size:15px;font-weight:600;line-height:22.5px">${t}</span></button>`).join('')}</div>
+      <div class="mt12">${det('회사에 직접 제출해야 해요. 대신 제출하지 않고 개별 세무 판단도 하지 않아요. 11월 예상 대비 변화는 입력·확인한 자료가 달라진 결과예요.')}</div>
+    </div>`,
+    cta: [{label:'체크 완료', act:'finish'}], cap:'참고용 예상치 · 세무 상담 아님'
+  },
+};
+
+/* 질문 카드 공통 */
+function qOpts(step, n, e, q, opts, next, yesNext){
+  return `<div class="screen">${topBar('질문 카드',step)}${qBar(n,6)}${heroHead(e,q)}
+    ${opts.map((o,i)=>`<button class="opt ${i?'mt8':'mt12'}" data-go="${i===0&&yesNext?yesNext:next}">${o}</button>`).join('')}
+    <button class="prevlink" data-act="back">← 이전 질문으로</button></div>`;
+}
+function qAmt(step, n, e, q, opts, next, input, key){
+  return `<div class="screen">${topBar('질문 카드',step)}${qBar(n,6)}${heroHead(e,q)}
+    <div class="pills col" style="padding-top:8px">${opts.map(o=>`<button class="pill ${S[key]===o?'sel':''}" data-act="pick" data-k="${key}" data-v="${o}" data-next="${next}">${o}</button>`).join('')}</div>
+    ${input?`<div class="inrow" style="padding-top:8px"><input class="field" inputmode="numeric" placeholder="직접 입력(만원)" style="font-weight:400"><button class="btn-s" data-go="${next}">다음</button></div>`:''}
+    <button class="prevlink" data-act="back">← 이전 질문으로</button></div>`;
+}
+function planParts(){
+  const p=S.plan, r=planResult(p.total,p.debitRatio), diff=r.diff;
+  const rc=planResult(p.total,0), rd=planResult(p.total,100), rr=planResult(p.total,recRatio(p.total));
+  return {
+    stats:`<div class="stats"><div class="stat"><div class="l">💳 신용카드</div><div class="n">${r.credit}만원</div></div><div class="stat"><div class="l">🧾 체크·현금영수증</div><div class="n">${r.debit}만원</div></div></div>`,
+    cmp:`<div class="cmp" style="padding-top:10px"><div class="box2"><div class="l">지금처럼</div><div class="n">${won(r.base)}</div><div class="s">환급</div></div><div>→</div><div class="box2"><div class="l">이 계획</div><div class="n" style="${diff>0?'color:var(--primary)':''}">${won(r.val)}</div><div class="s">환급</div></div></div><div class="center" style="padding-top:10px;font-size:16px;font-weight:700">${diff>0?`세금 ${won(diff)} 줄어요`:'지금은 차이가 없어요'}</div>`,
+    opts:optRow('💳 신용카드', rc, false)+optRow('🧾 체크·현금영수증', rd, true)+optRow('✨ 추천', rr, true)
+  };
+}
+function updatePlan(){
+  const q=planParts();
+  $('pStats').innerHTML=q.stats; $('pCmp').innerHTML=q.cmp; $('pOpts').innerHTML=q.opts;
+  $('planTotal').textContent=S.plan.total+'만원';
+  [['r1',S.plan.total,500],['r2',S.plan.debitRatio,100]].forEach(([id,v,m])=>{const el=$(id); if(!el) return; el.value=v; const w=el.parentNode; w.querySelector('.fill').style.width=(v/m*100)+'%'; w.querySelector('.knob').style.left=(v/m*100)+'%';});
+}
+function thresholdCard(right, ratio, label='카드 공제 문턱'){
+  return `<div class="card mt12" style="padding:12px 16px"><div class="row"><span class="k">${label}</span><span class="v">${right}</span></div><div style="padding:8px 0"><div class="bar"><i style="width:${Math.min(ratio,1)*100}%"></i></div></div></div>`;
+}
+function homeTasks(dec){
+  const p = dec?'세금 ':'';
+  return [
+    task({e:'🏠',t:'월세 세액공제 (11개월)',tags:tagR('⏰ 12/31 기준'),amt:p+'−65만 4,500원'}),
+    task({e:'👨‍👩‍👧',t:'부양가족 공제 확인',tags:tagR('⏰ 12/31 기준'),amt:p+'−22만 5,000원'}),
+    task({e:'🏠',t:'월세 12월분도 이체하기',tags:tagR('⏰ 12/31 전')+tagG('확인 필요'),amt:p+'−5만 9,500원'}),
+  ].join('');
+}
+function optRow(name, r, blue){
+  const better = r.diff>0;
+  return `<div class="optrow"><div><div class="a">${name}</div><div class="b">신용 ${r.credit}만원 · 체크 ${r.debit}만원</div></div><div class="r"><div class="a ${blue&&better?'blue':''}">환급 ${won(r.val)}</div>${better?`<div class="b">${won(r.diff)} 줄어요</div>`:''}</div></div>`;
+}
+function subBody(tagTxt){
+  return `<div class="screen">${topBar('구독 안내')}
+    <div class="hero-block">${tile('🎁')}<div class="center" style="padding-top:12px"><span class="tag">${tagTxt}</span></div><div class="h2 c" style="padding-top:6px">1월 연말정산, 같이 챙겨요</div></div>
+    <div class="card blue mt12 center"><div class="cap12">첫해 특별가</div><div style="font-size:34px;line-height:51px;font-weight:800;letter-spacing:-.68px">14,900원</div><div class="cap12">이후 갱신 24,900원/년 (예시)</div></div>
+    <div class="card mt12">${[['📋','1월 연말정산 도우미'],['📊','2~3월 결과 비교'],['🔔','내년 연중 관리']].map(([e,t])=>`<div style="display:flex;align-items:center;gap:12px;padding:6px 0 0"><div class="tile-s">${e}</div><span style="font-size:16px">${t}</span></div>`).join('')}</div>
+    <div class="chips mt12"><span class="chip">🎁 지금은 무료</span><span class="chip">🔒 자동 결제 없음</span></div>
+    <div class="mt8">${det('시연용 예시 가격이에요(가격 검증 중). 첫해 한정이며 갱신 전에 미리 알리고 동의를 받아요. 환급금에서 한 푼도 떼지 않아요. 무료 체험 중에는 결제 정보를 받지 않고, 무료로도 예상 결과 조회와 추가 납부 경보는 계속 쓸 수 있어요.')}</div>
+  </div>`;
+}
+function tipsBody(){
+  const med = S.med||'100~300만원', ins = S.ins||'75만원', pen = S.pen||'200만원';
+  const entered = [['🏥','병원비','세금 −11만 1,000원',med],['🛡️','보험료','세금 −9만원',ins],['🐷','연금저축·IRP','세금 −30만원 · 남은 한도 700만원',pen]];
+  const extra = [['💼','성과금·상여','받은 게 있으면 입력','없음'],['➕','그 밖에 아는 세금 감면','직접 입력','없음']];
+  const rowE = ([e,t,s,v]) => `<div class="row" style="padding:12px 0"><div><div style="font-size:14px;line-height:21px;color:var(--grey-700)">${e} <b style="color:var(--grey-900)">${t}</b></div><div style="font-size:11px;line-height:16.5px;color:var(--grey-500)">${s}</div></div><div style="display:flex;align-items:center;gap:6px"><b style="font-size:15px">${v}</b><button class="pill" style="min-height:32px;padding:0 12px" data-go="qMed">수정</button></div></div>`;
+  const todo = [
+    ['t1','🏠','월세 세액공제 (11개월)',tagR('⏰ 12/31 기준'),'세금 −65만 4,500원','월세는 계좌이체로 계속 내세요. 전입신고·무주택 세대주 요건은 12월 31일 기준이에요. 계약서 사본과 이체 내역은 1월에 필요해요.','확인했어요'],
+    ['t2','👨‍👩‍👧','부양가족 공제 확인',tagR('⏰ 12/31 기준'),'세금 −22만 5,000원','같이 사는 부모님·자녀의 나이·소득 요건을 확인하세요. 형제자매와 중복 공제는 안 돼요. 1월 도우미에서 한 번 더 확인해요.','확인했어요'],
+    ['t3','🏠','월세 12월분도 이체하기',tagR('⏰ 12/31 전')+tagG('확인 필요'),'세금 −5만 9,500원','월세 공제는 낸 개월 수만큼 계산돼요. 12월분을 계좌이체로 내면 한 달치가 더 포함돼요. 원래 내는 월세만 해당돼요.','12월분 낼게요'],
+    ['t4','🧾','현금영수증 등록 확인',tagR('⏰ 12/31 전'),'','체크카드·현금 결제는 현금영수증으로 잡혀야 공제돼요. 휴대폰 번호 등록과 현금 결제 시 발급 여부를 확인하세요. 원래 쓸 돈만 해당돼요.','확인했어요'],
+    ['t5','🚌','전통시장·대중교통은 체크카드로',tagR('⏰ 12/31 전'),'','원래 이용하던 전통시장·대중교통 지출은 문턱을 넘은 뒤 체크카드·현금영수증으로 결제하면 공제율이 40%예요. 새로 쓰라는 뜻이 아니에요. 도서·공연 등 문화 지출은 공제율이 달라요.','확인했어요'],
+    ['t6','💳','결제 수단 정하기',tagR('⏰ 12/31 전'),'세금 −7만 8,750원','카드 공제는 12월 31일까지 결제한 금액 기준이에요. 문턱(총급여의 25%)까지는 신용카드, 넘은 뒤부터는 체크카드·현금영수증이 공제율 2배예요. 원래 쓸 돈만 해당돼요.','지출 계획하기','plan'],
+  ];
+  const already = [
+    ['a1','👓','안경·렌즈, 이미 샀다면','1월 확인','이미 산 안경·렌즈는 의료비로 합산돼요(1인 연 50만 원까지). 새로 사라는 뜻이 아니에요. 의료비 합계가 총급여의 3%를 넘어야 효과가 있어요. 1월 간소화 자료로 확정해요.','안경·렌즈 금액(만원)'],
+    ['a2','💝','올해 이미 한 기부','1월 확인','이미 한 기부 금액을 넣으면 예상에 반영해요. 영수증이 간소화 자료에 올라오는지는 1월에 확인하세요. 종류별로 공제율이 달라 15%로 단순 계산한 추정이에요. 1월 간소화 자료로 확정해요.','기부 금액(만원)'],
+    ['a3','📚','올해 낸 교육비','1월 확인','본인·자녀 교육비로 이미 낸 비용을 넣으면 예상에 반영해요. 대상·한도가 종류별로 달라 연 300만 원까지 15%로 단순 계산한 추정이에요. 1월 간소화 자료로 확정해요.','교육비(만원)'],
+    ['a4','🔑','청약저축, 이미 넣고 있다면','12/31까지','무주택 세대주이고 이미 청약저축을 넣고 있다면 소득공제 대상일 수 있어요. 추가 납입을 권하지 않아요. 무주택 세대주·총급여 7천만 원 이하일 때 연 300만 원 한도 40% 소득공제로 계산한 추정이에요. 1월 간소화 자료로 확정해요.','청약저축(만원)'],
+  ];
+  const know = [
+    ['k1','💝','기부금 제도 안내 (권유 아님)','기부금은 종류에 따라 세액공제율이 달라요(15% 안팎, 일부는 소액까지 전액). 새로 쓰는 돈이라 세금 때문에 권하지 않아요. 이미 한 기부는 "올해 이미 한 기부"에 넣어 주세요.'],
+    ['k2','✨','올해 결혼·출산 변화가 있었다면','결혼·출산·입양 등이 있으면 받을 수 있는 공제 항목이 달라질 수 있어요. 1월 도우미에서 확인해요.'],
+    ['k3','👫','맞벌이 부부라면','카드 사용액과 의료비는 소득이 낮은 쪽이 문턱을 먼저 넘는 경우가 많아요. 부양가족은 한 사람에게만 등록돼요. 정확한 판단은 세무사 확인이 필요해요.'],
+    ['k4','💼','올해 이직했다면','이전 직장의 근로소득도 합산해서 정산해요. 이전 직장의 원천징수영수증을 새 회사에 내세요.'],
+    ['k5','💼','중소기업 취업 청년이라면','일정 요건의 청년이 중소기업에 다닌다면 소득세 감면이 있어요. 회사에 신청해야 적용돼요. 해당 여부는 회사나 세무사에게 확인하세요.'],
+  ];
+  const doneBtn = (k,l,go) => go?`<div class="act"><button class="btn-s grey full" data-go="${go}">${l}</button></div>`:`<div class="act"><button class="btn-s ${S.tipsDone[k]?'white':'grey'} full" data-toggle="tipsDone.${k}">${S.tipsDone[k]?'✓ '+l:l}</button></div>`;
+  return `<div class="screen top20">
+    <div class="h2" style="padding-top:6px">더 받을 수 있는 방법</div>
+    <div class="card blue mt12 center"><div class="cap12">카드 전환 외에 모두 해당되면</div><div style="font-size:24px;line-height:36px;font-weight:800;letter-spacing:-.48px">최대 −93만 9,000원</div></div>
+    <div class="card list mt12"><div class="cap12" style="padding-top:12px">앞에서 입력한 것</div>${entered.map(rowE).join('')}<div class="cap12" style="padding-top:12px">추가 입력</div>${extra.map(rowE).join('')}</div>
+    <div class="sec-h">⏰ 12/31 전에 할 일</div>
+    <div class="stack mt10">${todo.map(([k,e,t,tags,amt,d,l,go])=>task({e,t,tags,amt,done:S.tipsDone[k],body:`<div class="det-wrap" style="margin-top:8px">${det(d)}</div>${doneBtn(k,l,go)}`})).join('')}</div>
+    <div class="sec-h">✅ 이미 한 것 챙기기</div>
+    <div class="stack mt10">${already.map(([k,e,t,tg,d,ph])=>S.tipsNA[k]?task({e,t,tags:tagG('해당 없음'),side:`<button data-toggle="tipsNA.${k}" style="color:var(--primary);font-weight:600">되돌리기</button>`}):task({e,t,tags:tagG(tg),done:S.tipsDone[k],side:S.tipsDone[k]?'반영됨':'입력하기',body:`<div style="margin-top:8px">${det(d)}</div><div class="inrow mt8"><input class="field" inputmode="numeric" placeholder="${ph}" style="font-weight:400"><button class="btn-s" data-act="reflect" data-k="${k}">반영</button></div><button class="prevlink" style="margin:4px auto 0;padding:6px" data-toggle="tipsNA.${k}">해당 없어요</button>`})).join('')}</div>
+    <div class="sec-h">📌 알아두기</div>
+    <div class="stack mt10">${know.map(([k,e,t,d])=>task({e,t,tags:tagG('알아두기'),done:S.tipsDone[k],body:`<div style="margin-top:8px">${det(d)}</div>${doneBtn(k,'확인했어요')}`})).join('')}</div>
+    <div class="mt12">${trialCard()}</div>
+    <p class="center cap12" style="padding-top:14px">참고용 예상치 · 세무 상담 아님</p>
+  </div>`;
+}
+
+/* ---------- 렌더 ---------- */
+const $ = id => document.getElementById(id);
+function cur(){ return S.stack[S.stack.length-1]; }
+function render(keepScroll){
+  const key = cur(), sc = SCREENS[key];
+  const st = $('scroll').scrollTop;
+  $('view').innerHTML = sc.body();
+  if(!keepScroll) $('scroll').scrollTop = 0; else $('scroll').scrollTop = st;
+  // 하단 고정 CTA
+  const ctas = typeof sc.cta==='function' ? sc.cta() : sc.cta;
+  const cta = $('cta');
+  if(ctas || sc.cap){
+    cta.hidden = false;
+    cta.classList.toggle('with-nav', !!sc.tab);
+    cta.innerHTML = (sc.cap?`<p class="cap">${sc.cap}</p>`:'') + (ctas||[]).map((c,i)=>`<button class="btn ${c.style||''}" ${c.disabled?'disabled':''} ${c.go?`data-go="${c.go}"`:''} ${c.act?`data-act="${c.act}"`:''}>${c.label}</button>`).join('');
+  } else { cta.hidden = true; cta.innerHTML=''; }
+  // 하단 탭
+  const nav = $('nav'); nav.hidden = !sc.tab;
+  nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-current', b.dataset.tab===sc.tab?'page':'false'));
+  bindRanges();
+}
+function go(key){
+  if(SCREENS[key].tab){ S.stack = [key]; } else S.stack.push(key);
+  render();
+}
+function back(){ if(S.stack.length>1){ S.stack.pop(); render(); } else if(SCREENS[cur()].tab){ /* 탭 최상위 */ } }
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; $('phone').appendChild(t); setTimeout(()=>t.remove(),1800); }
+function setPath(obj, path, fn){ const ks=path.split('.'); let o=obj; for(let i=0;i<ks.length-1;i++) o=o[ks[i]]; const k=ks[ks.length-1]; o[k]=fn(o[k]); }
+
+function bindRanges(){
+  const r1=$('r1'), r2=$('r2');
+  if(r1) r1.oninput = e => { S.plan.total = +e.target.value; updatePlan(); };
+  if(r2) r2.oninput = e => { S.plan.debitRatio = +e.target.value; updatePlan(); };
+}
+
+/* 시트 */
+function openSheet(html){ $('layer').innerHTML = `<div class="dim" data-act="closeSheetBg"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`; }
+function closeSheet(){ $('layer').innerHTML=''; }
+function bigSheet(){
+  openSheet(`<div class="h3">📦 원래 예정된 큰 지출</div>
+    <div class="pills" style="justify-content:flex-start;padding-top:8px">${[['노트북',150],['가전',80],['',50]].map(([n,v])=>`<button class="pill" data-act="addItem" data-n="${n||'기타'}" data-v="${v}">${n?n+' ':''}${v}만원</button>`).join('')}</div>
+    <input class="field mt8" id="bigName" placeholder="직접 입력 · 항목 이름(선택)" style="font-weight:400">
+    <input class="field" id="bigAmt" inputmode="numeric" placeholder="금액(만원)" style="margin-top:6px;font-weight:400">
+    <button class="btn mt12" data-act="addCustom">추가</button>
+    <button class="btn grey mt12" data-act="closeSheet">닫기</button>`);
+}
+function thresholdSheet(){
+  openSheet(`<div style="padding-top:12px">${tile('🔔')}</div>
+    <div class="h2 c" style="padding-top:12px">카드 공제 문턱을 넘었어요!</div>
+    <p class="center" style="padding:8px 0 4px;font-size:16px;line-height:24px">이제부터 <b>체크카드</b>로 결제하면 공제가 2배예요</p>
+    <div class="center"><span class="chip">남은 지출 80만원 · 세금 −1만 8,000원</span></div>
+    <div class="mt8">${det('추정 연봉 기준이에요. <button class="ul" data-go="found" data-close="1">연봉 다시 확인하기</button> · 원래 쓸 돈만 해당돼요. 카드 혜택은 계산에 넣지 않았어요.')}</div>
+    <button class="btn mt12" data-act="closeSheet">알겠어요</button>
+    <button class="btn grey mt12" data-go="plan" data-close="1">계획 다시 보기</button>`);
+}
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go],[data-act],[data-toggle],[data-tab],[data-toast]');
+  if(!t) return;
+  if(t.tagName==='SUMMARY') return;
+  if(t.dataset.close) closeSheet();
+  if(t.dataset.tab){ go(t.dataset.tab); return; }
+  if(t.dataset.toast){ toast(t.dataset.toast); return; }
+  if(t.dataset.toggle){ setPath(S, t.dataset.toggle, v=>!v); render(true); return; }
+  if(t.dataset.go){
+    let k = t.dataset.go;
+    if(k==='qMed' && !S.consent.sensitive && cur()!=='tips') k='qIns';
+    go(k); return;
+  }
+  const a = t.dataset.act;
+  switch(a){
+    case 'back': back(); break;
+    case 'consentGo': go(S.consent.toss?'toss':'manualIntro'); break;
+    case 'rentMinus': S.rentMonths=Math.max(1,S.rentMonths-1); render(true); break;
+    case 'rentPlus': S.rentMonths=Math.min(12,S.rentMonths+1); render(true); break;
+    case 'depNone': S.depCount=0; go(S.consent.sensitive?'qMed':'qIns'); break;
+    case 'depSet': S.depCount=+t.dataset.v; go(S.consent.sensitive?'qMed':'qIns'); break;
+    case 'pick': S[t.dataset.k]=t.dataset.v; go(t.dataset.next); break;
+    case 'recommend': S.plan.debitRatio = recRatio(S.plan.total); updatePlan(); toast('추천 비율로 맞췄어요'); break;
+    case 'savePlan': S.saved = planResult(S.plan.total, S.plan.debitRatio); go('saved'); break;
+    case 'goHome': S.stack=['home']; render(); break;
+    case 'goDec': S.season='dec'; render(); thresholdSheet(); break;
+    case 'goReport': go('report'); break;
+    case 'openBig': bigSheet(); break;
+    case 'addItem': S.plan.items.push({n:t.dataset.n, v:+t.dataset.v}); S.plan.total=Math.min(500,S.plan.total+ +t.dataset.v); closeSheet(); render(true); toast(`${t.dataset.n} ${t.dataset.v}만원을 더했어요`); break;
+    case 'addCustom': { const v=+($('bigAmt').value||0); if(!v){ toast('금액을 넣어 주세요'); break; } const n=$('bigName').value||'기타'; S.plan.items.push({n,v}); S.plan.total=Math.min(500,S.plan.total+v); closeSheet(); render(true); toast(`${n} ${v}만원을 더했어요`); break; }
+    case 'rmItem': { const it=S.plan.items.splice(+t.dataset.v,1)[0]; S.plan.total=Math.max(0,S.plan.total-it.v); render(true); break; }
+    case 'closeSheet': closeSheet(); break;
+    case 'closeSheetBg': if(e.target===t) closeSheet(); break;
+    case 'notifyMe': toast('시작하면 알려드릴게요'); back(); break;
+    case 'reflect': S.tipsDone[t.dataset.k]=true; render(true); toast('예상에 반영했어요 (시연)'); break;
+    case 'finish': toast('수고했어요! 이제 회사 정산 결과를 기다려요'); S.stack=['home']; S.season='nov'; setTimeout(render,300); break;
+  }
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeSheet(); });
+render();
+</script>
+</body>
+</html>
