@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>덜내요 (가제) | 12월 31일 전에 덜 내는 법</title>
+<meta name="description" content="카드·월급·월세는 이미 알고 있어요. 남은 두 달, 어디로 결제할지만 정하세요. (준비 중인 서비스 소개)">
+<style>
+:root{--blue:#3182f6;--blue-w:#e8f3ff;--text:#191f28;--text2:#4e5968;--text3:#6b7684;--line:#e5e8eb;--bg:#fff;--bg2:#f2f4f6;--red:#c9222f}
+@media (prefers-color-scheme:dark){:root{--text:#f2f4f6;--text2:#b0b8c1;--text3:#8b95a1;--line:#333d4b;--bg:#17171c;--bg2:#202027;--blue-w:#1c2b45;--red:#ff7a85}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{max-width:480px;margin:0 auto;padding:40px 20px 120px}
+.tag{display:inline-block;background:var(--blue-w);color:var(--blue);font-weight:600;font-size:13px;padding:4px 10px;border-radius:999px}
+h1{font-size:29px;line-height:1.3;letter-spacing:-.02em;margin:16px 0 12px}
+h1 em{font-style:normal;color:var(--blue)}
+.sub{font-size:16px;color:var(--text2);margin:0 0 8px}
+.fine{font-size:12px;color:var(--text3);margin:0 0 20px}
+.btn{display:block;width:100%;min-height:52px;border:0;border-radius:14px;background:var(--blue);color:#fff;font-weight:600;font-size:17px;font-family:inherit;cursor:pointer;margin-top:12px}
+.btn.ghost{background:var(--bg2);color:var(--text)}
+.box{background:var(--bg2);border-radius:16px;padding:18px;margin:24px 0}
+.box h2{font-size:16px;margin:0 0 4px}
+.box p{margin:0 0 8px;font-size:13px;color:var(--text2)}
+input[type=range]{width:100%;accent-color:var(--blue);height:32px}
+.row{display:flex;justify-content:space-between;font-size:14px}
+.res{margin-top:10px;padding:12px;border-radius:12px;background:var(--blue-w);font-weight:700;font-size:15px}
+.trust{margin:20px 0;padding:16px;border:1px solid var(--line);border-radius:16px;font-size:14px;color:var(--text2)}
+.trust b{color:var(--text)}
+footer{margin-top:36px;font-size:12px;color:var(--text3)}
+.sticky{position:fixed;left:0;right:0;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%)}
+.sticky .btn{max-width:440px;margin:0 auto}
+dialog{border:0;border-radius:20px;padding:24px;width:calc(100% - 40px);max-width:420px;background:var(--bg);color:var(--text)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h2{font-size:21px;margin:0 0 6px}
+dialog p{margin:0 0 14px;color:var(--text2);font-size:14px}
+fieldset{border:0;padding:0;margin:0 0 14px}
+legend{font-weight:600;font-size:14px;margin-bottom:8px;padding:0}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts label{flex:1;min-width:84px}
+.opts input{position:absolute;opacity:0}
+.opts span{display:flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--line);border-radius:12px;font-size:14px;cursor:pointer;text-align:center;padding:0 8px}
+.opts input:checked+span{border-color:var(--blue);background:var(--blue-w);color:var(--blue);font-weight:600}
+.opts input:focus-visible+span{outline:2px solid var(--blue)}
+.offer{border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 14px}
+.offer b{display:block;margin-bottom:2px}
+#thanks{display:none;color:var(--blue);font-weight:600;font-size:14px;margin:0 0 10px}
+#admin{display:none;margin-top:24px;padding:16px;border:1px dashed var(--line);border-radius:12px;font-size:13px;white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">2026년 11월 · 12월 31일까지 D-52</span>
+  <h1 id="headline"></h1>
+  <p class="sub">카드·월급·월세는 토스가 이미 알고 있어요.<br>남은 두 달, 어디로 결제할지만 정하세요.</p>
+  <p class="fine">예상 결과 기준이며, 실제 결과는 달라질 수 있어요.</p>
+  <button class="btn" data-cta>내 연말정산 바로 보기</button>
+  <p class="fine" style="margin-top:8px">11~12월은 무료로 써보고, 1월에 정하세요.</p>
+
+  <section class="box" aria-label="슬라이더 미리보기">
+    <h2>남은 지출, 어디로 결제할지 움직여 보세요</h2>
+    <p>예시: 연봉 4,200만 원, 올해 카드 사용 900만 원, 12월 31일까지 200만 원 쓸 예정. 원래 쓸 돈만 넣은 예시예요.</p>
+    <input type="range" id="sl" min="0" max="100" step="5" value="0" aria-label="체크카드 비율">
+    <div class="row"><span>신용카드 <b id="cr">200만원</b></span><span>체크카드·현금영수증 <b id="ck">0원</b></span></div>
+    <div class="res" id="res">지금처럼 신용카드만 쓰면 세금 차이 없음</div>
+    <p style="margin-top:8px;font-size:12px;color:var(--text3)">예시 계산이에요. 실제 세금과 다를 수 있고, 카드 혜택(포인트·할인)은 넣지 않았어요.</p>
+  </section>
+
+  <div class="trust"><b>환급금에서 한 푼도 떼지 않아요.</b><br>환급액에 비례한 수수료는 없어요. 일부 기능은 정해진 구독료가 생길 수 있어요(1월에 직접 선택).</div>
+
+  <div id="admin"></div>
+  <footer>참고용 예상 계산·정보 제공 도구예요. 세무 상담이나 신고 대행이 아니며, 정확한 판단은 세무사에게 확인하세요. 국세청·홈택스와 관련 없는 서비스예요.</footer>
+</main>
+<div class="sticky"><button class="btn" data-cta>내 연말정산 바로 보기</button></div>
+
+<dialog id="door" aria-labelledby="dt">
+  <h2 id="dt">아직 준비 중이에요</h2>
+  <p>서비스를 만들기 전에 필요한 분께 맞는지 확인하고 있어요. 연락처·카드 정보는 받지 않아요.</p>
+  <div class="offer"><b>1월 연말정산 도우미 + 구독 특별가 알림</b><span style="font-size:13px;color:var(--text2)">1월 안에 시작하면 첫해 특별가 · 가격은 검증 중(예시 연 19,900~29,900원 안팎)</span>
+    <button class="btn ghost" id="offer" style="min-height:44px;font-size:15px">관심 있어요</button></div>
+  <fieldset><legend>미리보기 결과, 어땠나요?</legend><div class="opts" data-q="preview">
+    <label><input type="radio" name="q1" value="owe"><span>또 추가 납부</span></label>
+    <label><input type="radio" name="q1" value="refund"><span>환급</span></label>
+    <label><input type="radio" name="q1" value="none"><span>안 해봤어요</span></label></div></fieldset>
+  <fieldset><legend>지금 주로 쓰는 결제 수단은?</legend><div class="opts">
+    <label><input type="radio" name="q2" value="credit"><span>신용카드</span></label>
+    <label><input type="radio" name="q2" value="check"><span>체크카드</span></label>
+    <label><input type="radio" name="q2" value="mixed"><span>섞어서</span></label></div></fieldset>
+  <fieldset><legend>신용/체크 언제 바꿔야 할지 몰랐나요?</legend><div class="opts">
+    <label><input type="radio" name="q3" value="yes"><span>몰랐어요</span></label>
+    <label><input type="radio" name="q3" value="no"><span>알고 있었어요</span></label></div></fieldset>
+  <p id="thanks">응답 고마워요!</p>
+  <button class="btn" id="send">보내기</button>
+  <button class="btn ghost" id="close">닫기</button>
+</dialog>
+
+<script>
+(function(){
+  var COPY={
+    a:'미리보기에서 또 토해낸대요?<br><em>12월 31일 전까지, 조금이라도 덜 뱉어요.</em>',
+    b:'연말정산 미리보기, 해보셨어요?<br><em>토스가 대신 계산해봤어요.</em>',
+    c:'남은 두 달, 신용카드 vs 체크카드.<br><em>내 월급 기준으로 알려드려요.</em>'
+  };
+  var params=new URLSearchParams(location.search), v=(params.get('v')||'a').toLowerCase(); if(!COPY[v]) v='a';
+  document.getElementById('headline').innerHTML=COPY[v];
+
+  var KEY='fakedoor_events';
+  function read(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+  function log(type,payload){ var l=read(); l.push({type:type,ts:new Date().toISOString(),variant:v,payload:payload||null}); try{ localStorage.setItem(KEY,JSON.stringify(l)); }catch(e){} }
+  log('view');
+
+  // 슬라이더 미리보기 (예시 모델: 총급여 4,200만, 현재 신용 900만, 남은 200만)
+  var SAL=42000000, CUR=9000000, REM=2000000, MARG=0.15, touched=false;
+  function ded(cr,ck){ var th=SAL*0.25, co=Math.max(0,cr-th), ko=Math.max(0,ck-Math.max(0,th-cr)); return Math.min(co*0.15+ko*0.30,3000000); }
+  function won(n){ n=Math.round(n); var m=Math.floor(n/10000), r=n%10000; return m?(m.toLocaleString('ko-KR')+'만'+(r?' '+r.toLocaleString('ko-KR'):'')+'원'):(r.toLocaleString('ko-KR')+'원'); }
+  var sl=document.getElementById('sl');
+  sl.addEventListener('input',function(){
+    var pct=Number(sl.value), ck=Math.round(REM*pct/100/10000)*10000, cr=REM-ck;
+    var sav=(ded(CUR+cr,ck)-ded(CUR+REM,0))*MARG;
+    document.getElementById('cr').textContent=won(cr); document.getElementById('ck').textContent=ck?won(ck):'0원';
+    document.getElementById('res').textContent= sav>0?('세금 약 '+won(sav)+' 줄어요 (예시)'):'지금처럼 신용카드만 쓰면 세금 차이 없음';
+    if(!touched){ touched=true; log('slider_touch'); }
+  });
+
+  var door=document.getElementById('door');
+  function open(){ log('cta1'); door.showModal?door.showModal():door.setAttribute('open',''); }
+  document.querySelectorAll('[data-cta]').forEach(function(b){ b.addEventListener('click',open); });
+  document.getElementById('offer').addEventListener('click',function(){ log('cta2',{price_shown:'19,900~29,900'}); this.textContent='알려드릴게요 (연락처는 받지 않아요)'; this.disabled=true; });
+  document.getElementById('send').addEventListener('click',function(){
+    var a={}; ['q1','q2','q3'].forEach(function(n){ var e=document.querySelector('input[name='+n+']:checked'); if(e) a[n]=e.value; });
+    if(!Object.keys(a).length) return; log('survey',a); document.getElementById('thanks').style.display='block'; this.disabled=true; this.textContent='보냈어요';
+  });
+  document.getElementById('close').addEventListener('click',function(){ log('close'); door.close?door.close():door.removeAttribute('open'); });
+
+  if(params.get('admin')==='1'){
+    var ev=read(), c=function(t){return ev.filter(function(e){return e.type===t}).length}, pct=function(a,b){return b?Math.round(a/b*1000)/10+'%':'-'};
+    var el=document.getElementById('admin'); el.style.display='block';
+    el.textContent='[이 브라우저 기준 집계]\n방문 '+c('view')+' · 슬라이더 조작 '+c('slider_touch')+' · 1번 문 '+c('cta1')+' · 2번 문 '+c('cta2')+' · 설문 '+c('survey')+'\n1번 문 클릭률 '+pct(c('cta1'),c('view'))+' · 2번 문 클릭률 '+pct(c('cta2'),c('cta1'));
+  }
+})();
+</script>
+</body>
+</html>
