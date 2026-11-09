@@ -1,0 +1,343 @@
+<title>연말정산 카드뉴스</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800;900&display=swap">
+<style>
+/* Layout: one Instagram-style 4:5 carousel on a quiet stage; cards keep their fixed brand colors in both themes. */
+:root {
+  --stage: #E9ECF3; --stage-fg: #121A2E; --stage-muted: #68708A; --dot: #C3CADB;
+  --ink: #121A2E; --paper: #F3F5FA; --blue: #2F5BFF; --blue-soft: #E2E9FF; --yellow: #FFD43B;
+  --muted: #68708A; --line: #DCE2F0; --white: #FFFFFF; --on-dark-muted: #AEB8D6; --neg: #E5484D;
+  --font: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --stage: #0B1020; --stage-fg: #E9ECF6; --stage-muted: #8F98B3; --dot: #2C3550; color-scheme: dark } }
+:root[data-theme="dark"] { --stage: #0B1020; --stage-fg: #E9ECF6; --stage-muted: #8F98B3; --dot: #2C3550; color-scheme: dark }
+
+html, body { height: 100%; }
+body { background: var(--stage); color: var(--stage-fg); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+.stage { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  padding-block: 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.head { width: min(460px, 100%); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.head h1 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -0.01em; }
+.head p { margin: 0; font-size: 12px; color: var(--stage-muted); }
+
+.viewer { position: relative; width: min(460px, 100%); }
+.track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 14px; scrollbar-width: none;
+  box-shadow: 0 20px 50px -24px rgba(18,26,46,.45); cursor: grab; touch-action: pan-x pan-y; }
+.track::-webkit-scrollbar { display: none; }
+.track.dragging { scroll-snap-type: none; cursor: grabbing; }
+.track.dragging * { pointer-events: none; }
+.slide { flex: 0 0 100%; scroll-snap-align: center; container-type: inline-size; }
+
+/* every size below is in "design pixels" of the 1080-wide Figma frame */
+.card { --u: calc(100cqw / 1080); position: relative; aspect-ratio: 4 / 5; overflow: hidden; user-select: none;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: calc(88 * var(--u)) calc(96 * var(--u)); background: var(--paper); color: var(--ink); letter-spacing: -0.01em; }
+.card img { -webkit-user-drag: none; pointer-events: none; }
+.card .top, .card .foot { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 3; }
+.tag { font-size: calc(26 * var(--u)); font-weight: 800; letter-spacing: .04em; padding: calc(10 * var(--u)) calc(22 * var(--u));
+  border-radius: 999px; background: var(--blue-soft); color: var(--blue); }
+.pg, .brand { font-size: calc(25 * var(--u)); font-weight: 700; color: var(--muted); }
+.body { position: relative; z-index: 2; display: flex; flex-direction: column; gap: calc(36 * var(--u)); }
+.t { margin: 0; font-weight: 800; line-height: 1.22; letter-spacing: -0.035em; text-wrap: balance; }
+
+/* swipe hint: soft shadow on the right edge (no text) */
+.slide:not(:last-child) .card::after { content: ""; position: absolute; inset: 0 0 0 auto; width: calc(90 * var(--u)); z-index: 4; pointer-events: none;
+  background: linear-gradient(90deg, rgba(18,26,46,0), rgba(18,26,46,.10)); }
+.s1 .card::after { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.10)) !important; }
+
+/* 01 HOOK */
+.s1 .card { background: var(--ink); color: var(--white); }
+.s1 .tag { background: var(--blue); color: var(--white); }
+.s1 .pg, .s1 .brand { color: var(--on-dark-muted); }
+.s1 .body { gap: calc(40 * var(--u)); }
+.hook { display: flex; flex-direction: column; }
+.hook .l { font-size: calc(84 * var(--u)); font-weight: 800; line-height: 1.18; letter-spacing: -0.04em; }
+.hook .n { font-size: calc(196 * var(--u)); font-weight: 900; line-height: 1.04; letter-spacing: -0.05em; color: var(--yellow); }
+.bar { width: calc(120 * var(--u)); height: calc(6 * var(--u)); background: var(--yellow); transform-origin: left; }
+.s1 .q { font-size: calc(38 * var(--u)); font-weight: 800; line-height: 1.4; max-width: calc(440 * var(--u)); }
+.worker { position: absolute; right: calc(-20 * var(--u)); bottom: 0; width: calc(680 * var(--u)); z-index: 1; }
+.worker img { display: block; width: 100%; transform-origin: 70% 30%; }
+.s1 .card::before { content: ""; position: absolute; inset: auto 0 0 0; height: calc(260 * var(--u)); z-index: 2;
+  background: linear-gradient(180deg, rgba(14,22,43,0), rgba(14,22,43,.92) 75%); pointer-events: none; }
+.s1 .card:hover .worker { animation: shake .5s ease-in-out; }
+
+/* list rows (02, 04) */
+.rows { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+.row { display: flex; align-items: center; gap: calc(24 * var(--u)); padding: calc(30 * var(--u)) calc(32 * var(--u));
+  background: var(--white); border: calc(2 * var(--u)) solid var(--line); border-radius: calc(24 * var(--u));
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s; }
+.row:hover { transform: translateX(calc(14 * var(--u))); border-color: var(--blue); box-shadow: 0 calc(18 * var(--u)) calc(44 * var(--u)) rgba(47,91,255,.22); }
+.mark { flex: 0 0 auto; width: calc(56 * var(--u)); height: calc(56 * var(--u)); border-radius: 50%; display: grid; place-items: center;
+  background: var(--yellow); font-weight: 900; font-size: calc(30 * var(--u)); transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
+.row:hover .mark { transform: rotate(-14deg) scale(1.12); }
+.row .lbl { font-size: calc(38 * var(--u)); font-weight: 800; }
+.s2 .why { font-size: calc(40 * var(--u)); font-weight: 800; color: var(--blue); margin: 0; }
+
+/* 03 INSIGHT */
+.s3 .card { background: var(--blue-soft); }
+.s3 .tag { background: var(--white); }
+.s3 .t { font-size: calc(84 * var(--u)); }
+.cal { margin-inline: calc(-96 * var(--u)); }
+.cal img { display: block; width: 100%; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.cal:hover img { transform: translateY(calc(-14 * var(--u))) scale(1.03); }
+.s3 .p { margin: 0; font-size: calc(36 * var(--u)); line-height: 1.55; }
+.pill { align-self: flex-start; background: var(--yellow); color: var(--ink); font-weight: 800; font-size: calc(38 * var(--u));
+  padding: calc(22 * var(--u)) calc(40 * var(--u)); border-radius: 999px; transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+.pill:hover { transform: scale(1.05) rotate(-1.5deg); }
+
+/* 04 SOLUTION */
+.s4 .t { font-size: calc(80 * var(--u)); }
+.phone { position: absolute; right: calc(-10 * var(--u)); top: calc(420 * var(--u)); width: calc(600 * var(--u)); z-index: 1; }
+.phone img { display: block; width: 100%; transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+.s4 .card:hover .phone img { transform: translateY(calc(-12 * var(--u))) rotate(2deg); }
+.s4 .rows { width: calc(640 * var(--u)); position: relative; z-index: 2; }
+.s4 .row { gap: calc(28 * var(--u)); padding: calc(32 * var(--u)) calc(34 * var(--u)); box-shadow: 0 calc(12 * var(--u)) calc(32 * var(--u)) rgba(18,26,46,.08); }
+.num { font-size: calc(48 * var(--u)); font-weight: 900; color: var(--blue); }
+.feat b { display: block; font-size: calc(36 * var(--u)); font-weight: 800; line-height: 1.3; }
+.feat span { display: block; font-size: calc(26 * var(--u)); color: var(--muted); line-height: 1.4; }
+.row.dark { background: var(--ink); border-color: var(--ink); }
+.row.dark .num { color: var(--yellow); }
+.row.dark b { color: var(--white); }
+.row.dark span { color: var(--on-dark-muted); }
+.row.dark:hover { border-color: var(--yellow); }
+
+/* 05 PREVIEW */
+.s5 .t { font-size: calc(72 * var(--u)); }
+.cmp { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: calc(20 * var(--u)); }
+.box { display: flex; flex-direction: column; align-items: center; gap: calc(16 * var(--u)); padding: calc(36 * var(--u)) calc(20 * var(--u));
+  background: var(--white); border: calc(2 * var(--u)) solid var(--line); border-radius: calc(32 * var(--u));
+  box-shadow: 0 calc(12 * var(--u)) calc(32 * var(--u)) rgba(18,26,46,.08); transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s; }
+.box:hover { transform: translateY(calc(-16 * var(--u))); border-color: var(--blue); box-shadow: 0 calc(22 * var(--u)) calc(48 * var(--u)) rgba(47,91,255,.24); }
+.chip { font-size: calc(26 * var(--u)); font-weight: 800; padding: calc(10 * var(--u)) calc(22 * var(--u)); border-radius: 999px; background: var(--blue-soft); color: var(--blue); }
+.chip.on { background: var(--blue); color: var(--white); }
+.box small { font-size: calc(28 * var(--u)); font-weight: 700; color: var(--muted); }
+.amt { font-size: calc(60 * var(--u)); font-weight: 900; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.amt.neg { color: var(--neg); } .amt.pos { color: var(--blue); }
+.arrow { font-size: calc(64 * var(--u)); font-weight: 900; color: var(--blue); }
+.how { display: flex; flex-direction: column; gap: calc(14 * var(--u)); padding: calc(36 * var(--u)) calc(40 * var(--u)); border-radius: calc(32 * var(--u)); background: var(--blue-soft); }
+.how .chip { align-self: flex-start; background: var(--white); font-size: calc(28 * var(--u)); }
+.chk { display: flex; align-items: center; gap: calc(20 * var(--u)); font-size: calc(32 * var(--u)); font-weight: 800;
+  padding: calc(6 * var(--u)) calc(14 * var(--u)); margin-inline: calc(-14 * var(--u)); border-radius: calc(18 * var(--u)); transition: background .25s, transform .25s; }
+.chk i { flex: 0 0 auto; width: calc(44 * var(--u)); height: calc(44 * var(--u)); border-radius: 50%; background: var(--yellow);
+  display: grid; place-items: center; font-style: normal; font-size: calc(24 * var(--u)); font-weight: 900; }
+.how .chk:hover { background: var(--white); transform: translateX(calc(10 * var(--u))); }
+.note { margin: 0; font-size: calc(23 * var(--u)); color: var(--muted); line-height: 1.5; }
+
+/* 06 SURVEY */
+.s6 .card { background: var(--blue); color: var(--white); }
+.s6 .tag { background: var(--yellow); color: var(--ink); }
+.s6 .pg, .s6 .brand { color: var(--blue-soft); }
+.s6 .body { gap: calc(56 * var(--u)); }
+.s6 .t { font-size: calc(96 * var(--u)); line-height: 1.2; }
+.s6 .p { margin: 0; font-size: calc(38 * var(--u)); line-height: 1.5; }
+.qcard { display: flex; flex-direction: column; gap: calc(10 * var(--u)); padding: calc(44 * var(--u)); border-radius: calc(32 * var(--u)); background: var(--white); color: var(--ink);
+  box-shadow: 0 calc(12 * var(--u)) calc(32 * var(--u)) rgba(18,26,46,.12); }
+.qcard .chk { font-size: calc(34 * var(--u)); padding: calc(10 * var(--u)) calc(16 * var(--u)); margin: 0; }
+.qcard .chk:hover { background: var(--blue-soft); transform: translateX(calc(14 * var(--u))); }
+
+/* entrance moment when a slide becomes active */
+.active .hook .n { animation: pop .6s cubic-bezier(.3,1.5,.5,1) backwards; }
+.active .bar { animation: grow .6s .15s ease-out backwards; }
+.active .worker img { animation: rise .7s .1s cubic-bezier(.2,.8,.2,1) backwards; }
+.active .row, .active .chk, .active .box { animation: slide .5s cubic-bezier(.2,.8,.2,1) backwards; }
+.active .rows > :nth-child(2), .active .chk:nth-of-type(2), .active .box:last-child { animation-delay: .08s; }
+.active .rows > :nth-child(3), .active .chk:nth-of-type(3) { animation-delay: .16s; }
+.active .cal img { animation: rise .7s cubic-bezier(.2,.8,.2,1) backwards; }
+.active .pill { animation: pop .5s .35s cubic-bezier(.3,1.5,.5,1) backwards; }
+.active .phone img { animation: rise .8s .1s cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes pop { from { transform: scale(.82); opacity: .2 } to { transform: none; opacity: 1 } }
+@keyframes grow { from { transform: scaleX(0) } to { transform: none } }
+@keyframes rise { from { transform: translateY(calc(40 * var(--u))); opacity: .3 } to { transform: none; opacity: 1 } }
+@keyframes slide { from { transform: translateX(calc(-30 * var(--u))); opacity: .3 } to { transform: none; opacity: 1 } }
+@keyframes shake { 0%,100% { transform: none } 25% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) } 75% { transform: rotate(-1deg) } }
+
+/* controls */
+.nav { width: min(460px, 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dots { display: flex; gap: 7px; }
+.dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: var(--dot); cursor: pointer; transition: width .25s, background .25s; }
+.dots button[aria-current="true"] { width: 20px; background: var(--blue); }
+.arrows { display: flex; gap: 8px; }
+.arrows button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--dot); background: transparent; color: var(--stage-fg);
+  font-size: 18px; cursor: pointer; transition: background .2s, border-color .2s; }
+.arrows button:hover:not(:disabled) { border-color: var(--blue); }
+.arrows button:disabled { opacity: .35; cursor: default; }
+button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.hint { font-size: 12px; color: var(--stage-muted); margin: 0; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+
+<main class="stage">
+  <div class="head"><h1>연말정산 카드뉴스 · 초안</h1><p>1080 × 1350 · 6장</p></div>
+
+  <div class="viewer">
+    <div class="track" id="track" tabindex="0" aria-label="카드뉴스 슬라이드">
+      <section class="slide s1" aria-label="1 / 6">
+        <div class="card">
+          <div class="top"><span class="tag">HOOK</span><span class="pg">01 / 06</span></div>
+          <div class="body">
+            <div class="hook"><span class="l">연말정산 때</span><span class="n">100만 원</span><span class="l">뱉어본 사람?</span></div>
+            <div class="bar"></div>
+            <p class="t q">그 전에 알 수 있었다면<br>달랐을까?</p>
+          </div>
+          <div class="worker"><img src="img/worker.jpg" alt="고지서를 보고 놀란 직장인 일러스트"></div>
+          <div class="foot"><span class="brand">연말정산 미리 준비 프로젝트</span></div>
+        </div>
+      </section>
+
+      <section class="slide s2" aria-label="2 / 6">
+        <div class="card">
+          <div class="top"><span class="tag">PROBLEM</span><span class="pg">02 / 06</span></div>
+          <div class="body">
+            <h2 class="t" style="font-size:calc(76 * var(--u))">올해 얼마나 돌려받을지<br>알고 있어?</h2>
+            <div class="rows">
+              <div class="row"><span class="mark">?</span><span class="lbl">신용카드 vs 체크카드, 뭘 써야 할까</span></div>
+              <div class="row"><span class="mark">?</span><span class="lbl">얼마나 써야 공제가 시작될까</span></div>
+              <div class="row"><span class="mark">?</span><span class="lbl">환급일까, 추가 납부일까</span></div>
+            </div>
+            <p class="why">왜 우리는 꼭 1월이 돼서야 확인할까?</p>
+          </div>
+          <div class="foot"><span class="brand">연말정산 미리 준비 프로젝트</span></div>
+        </div>
+      </section>
+
+      <section class="slide s3" aria-label="3 / 6">
+        <div class="card">
+          <div class="top"><span class="tag">INSIGHT</span><span class="pg">03 / 06</span></div>
+          <div class="body">
+            <h2 class="t">지금 알면,<br>1월에 놀라지 않아.</h2>
+            <div class="cal"><img src="img/calendar.jpg" alt="지금에서 1월 연말정산으로 이어지는 달력 일러스트"></div>
+            <p class="p">지금까지 쓴 돈으로 올해 예상 결과를 확인하고,<br>남은 기간 예정된 지출까지 미리 점검해 보면</p>
+            <span class="pill">추가 납부도 미리 대비할 수 있어!</span>
+          </div>
+          <div class="foot"><span class="brand">연말정산 미리 준비 프로젝트</span></div>
+        </div>
+      </section>
+
+      <section class="slide s4" aria-label="4 / 6">
+        <div class="card">
+          <div class="top"><span class="tag">SOLUTION</span><span class="pg">04 / 06</span></div>
+          <div class="body">
+            <h2 class="t">그래서 이런 걸<br>만들고 있어.</h2>
+            <div class="rows">
+              <div class="row"><span class="num">01</span><span class="feat"><b>연말정산 예상 시뮬레이션</b><span>지금 기준 환급·추가 납부 예상액 확인</span></span></div>
+              <div class="row"><span class="num">02</span><span class="feat"><b>월별 절세 체크인</b><span>시즌이 아니어도 매달 예상 결과 갱신</span></span></div>
+              <div class="row dark"><span class="num">03</span><span class="feat"><b>미래 지출 시나리오 비교</b><span>12월 예정 지출을 넣고 결과 미리 비교</span></span></div>
+            </div>
+          </div>
+          <div class="phone"><img src="img/phone.jpg" alt="앱 아이콘이 있는 스마트폰 일러스트"></div>
+          <div class="foot"><span class="brand">연말정산 미리 준비 프로젝트</span></div>
+        </div>
+      </section>
+
+      <section class="slide s5" aria-label="5 / 6">
+        <div class="card">
+          <div class="top"><span class="tag">PREVIEW</span><span class="pg">05 / 06</span></div>
+          <div class="body">
+            <h2 class="t">지금 관리하면<br>결과가 얼마나 달라질까?</h2>
+            <div class="cmp">
+              <div class="box"><span class="chip">현재 기준</span><small>예상 추가 납부액</small><span class="amt neg" data-to="-102000">-102,000원</span></div>
+              <span class="arrow">›</span>
+              <div class="box"><span class="chip on">결제수단 조정 시</span><small>예상 환급액</small><span class="amt pos" data-to="27000">+27,000원</span></div>
+            </div>
+            <div class="how">
+              <span class="chip">어떻게 달라졌을까?</span>
+              <div class="chk"><i>✓</i>남은 결제 일부를 체크카드로 전환</div>
+              <div class="chk"><i>✓</i>12월 예정 지출의 결제수단 미리 정하기</div>
+              <div class="chk"><i>✓</i>남은 기간 매달 사용 내역 점검</div>
+            </div>
+            <p class="note">*가상의 예시예요. 실제 결과는 개인의 소득, 공제 요건과 한도에 따라 달라져요.</p>
+          </div>
+          <div class="foot"><span class="brand">연말정산 미리 준비 프로젝트</span></div>
+        </div>
+      </section>
+
+      <section class="slide s6" aria-label="6 / 6">
+        <div class="card">
+          <div class="top"><span class="tag">SURVEY</span><span class="pg">06 / 06</span></div>
+          <div class="body">
+            <h2 class="t">이런 서비스,<br>진짜 필요할까?</h2>
+            <p class="p">연말정산을 미리 준비하는 서비스를 만들고 있어.<br>너의 경험이 궁금해!</p>
+            <div class="qcard">
+              <div class="chk"><i>✓</i>연말정산, 어떻게 준비하고 있어?</div>
+              <div class="chk"><i>✓</i>가장 불편했던 점은 뭐였어?</div>
+              <div class="chk"><i>✓</i>어떤 기능이 가장 필요해?</div>
+            </div>
+          </div>
+          <div class="foot"><span class="brand">연말정산 미리 준비 프로젝트</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="dots" id="dots" role="tablist" aria-label="슬라이드 선택"></div>
+    <div class="arrows">
+      <button type="button" id="prev" aria-label="이전 카드">←</button>
+      <button type="button" id="next" aria-label="다음 카드">→</button>
+    </div>
+  </div>
+  <p class="hint">드래그하거나 스와이프해서 넘겨보고, 카드 위에 마우스를 올려보세요.</p>
+</main>
+
+<script>
+(() => {
+  const track = document.getElementById('track');
+  const slides = [...track.querySelectorAll('.slide')];
+  const dots = document.getElementById('dots');
+  const prev = document.getElementById('prev'), next = document.getElementById('next');
+  let cur = 0;
+
+  slides.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-label', `${i + 1}번 카드`);
+    b.addEventListener('click', () => go(i));
+    dots.appendChild(b);
+  });
+
+  function go(i) { i = Math.max(0, Math.min(slides.length - 1, i)); track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
+  prev.addEventListener('click', () => go(cur - 1));
+  next.addEventListener('click', () => go(cur + 1));
+  track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); } });
+
+  const fmt = n => (n > 0 ? '+' : n < 0 ? '-' : '') + Math.abs(Math.round(n)).toLocaleString('ko-KR') + '원';
+  function countUp(slide) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    slide.querySelectorAll('.amt[data-to]').forEach(el => {
+      const to = +el.dataset.to, t0 = performance.now(), dur = 900;
+      const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(to * e); if (p < 1) requestAnimationFrame(step); else el.textContent = fmt(to); };
+      requestAnimationFrame(step);
+    });
+  }
+
+  function setActive(i) {
+    if (i === cur && slides[i].classList.contains('active')) return;
+    cur = i;
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    [...dots.children].forEach((d, k) => d.setAttribute('aria-current', k === i ? 'true' : 'false'));
+    prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+    countUp(slides[i]);
+  }
+  let raf;
+  track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => setActive(Math.round(track.scrollLeft / track.clientWidth))); }, { passive: true });
+  setActive(0);
+
+  // mouse drag (touch already swipes natively)
+  let down = false, startX = 0, startLeft = 0, moved = false;
+  track.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; });
+  window.addEventListener('pointermove', e => {
+    if (!down) return; const dx = e.clientX - startX;
+    if (!moved && Math.abs(dx) > 4) { moved = true; track.classList.add('dragging'); }
+    if (moved) track.scrollLeft = startLeft - dx;
+  });
+  window.addEventListener('pointerup', e => {
+    if (!down) return; down = false; if (!moved) return;
+    const dx = e.clientX - startX, w = track.clientWidth;
+    let target = Math.round(startLeft / w); if (dx < -w * 0.15) target++; else if (dx > w * 0.15) target--;
+    track.classList.remove('dragging'); go(target);
+  });
+  window.addEventListener('resize', () => track.scrollTo({ left: cur * track.clientWidth }));
+})();
+</script>

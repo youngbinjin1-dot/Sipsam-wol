@@ -1,0 +1,4207 @@
+{
+  "Kit": {
+    "$extensions": {
+      "com.figma": {
+        "source": "library",
+        "modes": [
+          "Mode"
+        ]
+      }
+    },
+    "Mode": {
+      "Component Fill": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.1,
+          "hex": "#0000001A"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 1
+          }
+        }
+      },
+      "Component Stroke": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7662,
+            0.6,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#C399FF"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 1
+          }
+        }
+      }
+    }
+  },
+  "Color Contrast": {
+    "$extensions": {
+      "com.figma": {
+        "source": "library",
+        "modes": [
+          "Default",
+          "Increased Contrast"
+        ]
+      }
+    },
+    "Default": {
+      "Light": {
+        "Labels": {
+          "Primary": {
+            "$type": "color",
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 1,
+              "hex": "#000000"
+            },
+            "$description": "Light appearance. Increased Contrast currently matches Default; pending supplied contrast values.",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0
+              }
+            }
+          }
+        }
+      },
+      "Dark": {
+        "Labels": {
+          "Primary": {
+            "$type": "color",
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                1,
+                1,
+                1
+              ],
+              "alpha": 1,
+              "hex": "#FFFFFF"
+            },
+            "$description": "Dark appearance. Increased Contrast currently matches Default; pending supplied contrast values.",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "Increased Contrast": {
+      "Light": {
+        "Labels": {
+          "Primary": {
+            "$type": "color",
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 1,
+              "hex": "#000000"
+            },
+            "$description": "Light appearance. Increased Contrast currently matches Default; pending supplied contrast values.",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0
+              }
+            }
+          }
+        }
+      },
+      "Dark": {
+        "Labels": {
+          "Primary": {
+            "$type": "color",
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                1,
+                1,
+                1
+              ],
+              "alpha": 1,
+              "hex": "#FFFFFF"
+            },
+            "$description": "Dark appearance. Increased Contrast currently matches Default; pending supplied contrast values.",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "Color Scheme": {
+    "$extensions": {
+      "com.figma": {
+        "source": "library",
+        "modes": [
+          "Light",
+          "Dark"
+        ]
+      }
+    },
+    "Light": {
+      "Labels": {
+        "Primary": {
+          "$type": "color",
+          "$value": "{Color Contrast.Light.Labels.Primary}",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 24,
+              "scopes": [
+                "ALL_SCOPES"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Dark": {
+      "Labels": {
+        "Primary": {
+          "$type": "color",
+          "$value": "{Color Contrast.Dark.Labels.Primary}",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 24,
+              "scopes": [
+                "ALL_SCOPES"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "Variable collection": {
+    "$extensions": {
+      "com.figma": {
+        "source": "library",
+        "modes": [
+          "Mode 1"
+        ]
+      }
+    },
+    "Mode 1": {
+      "basic": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9294,
+            0.9569,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#EDF4FF"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 10
+          }
+        }
+      }
+    }
+  },
+  "COLOR": {
+    "$extensions": {
+      "com.figma": {
+        "source": "library",
+        "modes": [
+          "Mode 1"
+        ]
+      }
+    },
+    "Mode 1": {
+      "PRIMARY": {
+        "블루-500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1922,
+              0.5098,
+              0.9647
+            ],
+            "alpha": 1,
+            "hex": "#3182F6"
+          },
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 78
+            }
+          }
+        }
+      },
+      "BACKGROUND": {
+        "기본": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "alpha": 1,
+            "hex": "#FFFFFF"
+          },
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 30
+            }
+          }
+        }
+      },
+      "블루-50": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9098,
+            0.9529,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#E8F3FF"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 58
+          }
+        }
+      },
+      "그레이-500": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5451,
+            0.5843,
+            0.6314
+          ],
+          "alpha": 1,
+          "hex": "#8B95A1"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 46
+          }
+        }
+      },
+      "그레이-900": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.098,
+            0.1216,
+            0.1569
+          ],
+          "alpha": 1,
+          "hex": "#191F28"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 111
+          }
+        }
+      }
+    }
+  },
+  "TDS Color": {
+    "$extensions": {
+      "com.figma": {
+        "source": "local",
+        "modes": [
+          "Light",
+          "Dark"
+        ]
+      }
+    },
+    "Light": {
+      "blue": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1922,
+              0.5098,
+              0.9647
+            ],
+            "alpha": 1,
+            "hex": "#3182F6"
+          },
+          "$description": "TDS 발행값 · 카노니컬 Toss Blue, 유일한 강조 hue",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 238,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-500)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0617,
+              0.3974,
+              0.7992
+            ],
+            "alpha": 1,
+            "hex": "#1065CC"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · pressed-blue",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 2,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-600)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0515,
+              0.337,
+              0.7362
+            ],
+            "alpha": 1,
+            "hex": "#0D56BC"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · pressed gradient stop",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 2,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-700)"
+              }
+            }
+          }
+        },
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9098,
+              0.9529,
+              1
+            ],
+            "alpha": 1,
+            "hex": "#E8F3FF"
+          },
+          "$description": "TDS 발행값 · brand-weak 배경",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 57,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-50)"
+              }
+            }
+          }
+        }
+      },
+      "grey": {
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.098,
+              0.1216,
+              0.1569
+            ],
+            "alpha": 1,
+            "hex": "#191F28"
+          },
+          "$description": "TDS 발행값 · primary text",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 265,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-900)"
+              }
+            }
+          }
+        },
+        "800": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.2,
+              0.2392,
+              0.2941
+            ],
+            "alpha": 1,
+            "hex": "#333D4B"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 7,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-800)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.3059,
+              0.349,
+              0.4078
+            ],
+            "alpha": 1,
+            "hex": "#4E5968"
+          },
+          "$description": "TDS 발행값 · secondary text",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 198,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-700)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.4196,
+              0.4627,
+              0.5176
+            ],
+            "alpha": 1,
+            "hex": "#6B7684"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 177,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-600)"
+              }
+            }
+          }
+        },
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.5451,
+              0.5843,
+              0.6314
+            ],
+            "alpha": 1,
+            "hex": "#8B95A1"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 296,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.6902,
+              0.7216,
+              0.7569
+            ],
+            "alpha": 1,
+            "hex": "#B0B8C1"
+          },
+          "$description": "TDS 발행값 · disabled text, strong line",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 4,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-400)"
+              }
+            }
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.8196,
+              0.8392,
+              0.8588
+            ],
+            "alpha": 1,
+            "hex": "#D1D6DB"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 17,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-300)"
+              }
+            }
+          }
+        },
+        "200": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.898,
+              0.9098,
+              0.9216
+            ],
+            "alpha": 1,
+            "hex": "#E5E8EB"
+          },
+          "$description": "TDS 발행값 · default divider/border",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 49,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-200)"
+              }
+            }
+          }
+        },
+        "150": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.8795,
+              0.8956,
+              0.9112
+            ],
+            "alpha": 1,
+            "hex": "#E0E4E8"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · TDS에 없는 step",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-150)"
+              }
+            }
+          }
+        },
+        "100": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.949,
+              0.9569,
+              0.9647
+            ],
+            "alpha": 1,
+            "hex": "#F2F4F6"
+          },
+          "$description": "TDS 발행값 · secondary surface",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 127,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-100)"
+              }
+            }
+          }
+        },
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9765,
+              0.9804,
+              0.9843
+            ],
+            "alpha": 1,
+            "hex": "#F9FAFB"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 54,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-50)"
+              }
+            }
+          }
+        }
+      },
+      "white": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#FFFFFF"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 205,
+            "scopes": [
+              "ALL_FILLS",
+              "STROKE",
+              "EFFECT_COLOR"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--white)"
+            }
+          }
+        }
+      },
+      "yellow": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.7647,
+              0.2588
+            ],
+            "alpha": 1,
+            "hex": "#FFC342"
+          },
+          "$description": "TDS 발행값 · illustration / emoji body",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.8371,
+              0.4677
+            ],
+            "alpha": 1,
+            "hex": "#FFD577"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-400)"
+              }
+            }
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.8667,
+              0.4706
+            ],
+            "alpha": 1,
+            "hex": "#FFDD78"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-300)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9813,
+              0.7585,
+              0.0252
+            ],
+            "alpha": 1,
+            "hex": "#FAC106"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-600)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.8004,
+              0.1717
+            ],
+            "alpha": 1,
+            "hex": "#FFCC2C"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-700)"
+              }
+            }
+          }
+        }
+      },
+      "orange": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.5347,
+              0.001
+            ],
+            "alpha": 1,
+            "hex": "#FF8800"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · semantic warning",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--orange-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9996,
+              0.7009,
+              0.5193
+            ],
+            "alpha": 1,
+            "hex": "#FFB384"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--orange-400)"
+              }
+            }
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9996,
+              0.7775,
+              0.651
+            ],
+            "alpha": 1,
+            "hex": "#FFC6A6"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--orange-300)"
+              }
+            }
+          }
+        }
+      },
+      "red": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9412,
+              0.2667,
+              0.3216
+            ],
+            "alpha": 1,
+            "hex": "#F04452"
+          },
+          "$description": "TDS 발행값 · error / danger",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 8,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--red-500)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9337,
+              0.2215,
+              0.2823
+            ],
+            "alpha": 1,
+            "hex": "#EE3848"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--red-600)"
+              }
+            }
+          }
+        }
+      },
+      "green": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.4677,
+              0.2211
+            ],
+            "alpha": 1,
+            "hex": "#007738"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · success (발행 green500보다 훨씬 어두움)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 31,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--green-500)"
+              }
+            }
+          }
+        }
+      },
+      "navy": {
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.003,
+              0.0387,
+              0.1453
+            ],
+            "alpha": 1,
+            "hex": "#010A25"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · text-shadow base, overlay rgba 원본",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--navy-900)"
+              }
+            }
+          }
+        }
+      },
+      "brown": {
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.3778,
+              0.1686,
+              0.0981
+            ],
+            "alpha": 1,
+            "hex": "#602B19"
+          },
+          "$description": "Illustration warm (UI 표면에는 사용 안 함)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-900)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.4473,
+              0.2757,
+              0.2471
+            ],
+            "alpha": 1,
+            "hex": "#72463F"
+          },
+          "$description": "Illustration warm",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-700)"
+              }
+            }
+          }
+        },
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.5723,
+              0.3698,
+              0.3031
+            ],
+            "alpha": 1,
+            "hex": "#925E4D"
+          },
+          "$description": "Illustration warm",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.7704,
+              0.4911,
+              0.3879
+            ],
+            "alpha": 1,
+            "hex": "#C47D63"
+          },
+          "$description": "Illustration warm",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-400)"
+              }
+            }
+          }
+        }
+      },
+      "alpha": {
+        "fg-tertiary": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.003,
+              0.0387,
+              0.1453
+            ],
+            "alpha": 0.58,
+            "hex": "#010A2594"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · 흐린 본문 텍스트",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 3,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-fg-tertiary)"
+              }
+            }
+          }
+        },
+        "fg-quaternary": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.003,
+              0.0387,
+              0.1453
+            ],
+            "alpha": 0.28,
+            "hex": "#010A2547"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · placeholder",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 1,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-fg-quaternary)"
+              }
+            }
+          }
+        },
+        "line-subtle": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.08,
+            "hex": "#00000014"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · 그레이 배경 위 카드 보더",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-line-subtle)"
+              }
+            }
+          }
+        },
+        "bg-overlay": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.56,
+            "hex": "#0000008F"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · bottom-sheet scrim",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-bg-overlay)"
+              }
+            }
+          }
+        },
+        "press-overlay": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.26,
+            "hex": "#00000042"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · pressed-state tint",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-press-overlay)"
+              }
+            }
+          }
+        }
+      },
+      "adaptive": {
+        "background": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "alpha": 1,
+            "hex": "#FFFFFF"
+          },
+          "$description": "TDS 발행값 · 기본 화면 바탕",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 77,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-background)"
+              }
+            }
+          }
+        },
+        "layeredBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "alpha": 1,
+            "hex": "#FFFFFF"
+          },
+          "$description": "TDS 발행값 · 겹친 표면",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 128,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-layeredBackground)"
+              }
+            }
+          }
+        },
+        "floatBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "alpha": 1,
+            "hex": "#FFFFFF"
+          },
+          "$description": "TDS 발행값 · 떠 있는 표면",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 158,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-floatBackground)"
+              }
+            }
+          }
+        },
+        "dimmedBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.2,
+            "hex": "#00000033"
+          },
+          "$description": "TDS 발행값 · 스크림",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-dimmedBackground)"
+              }
+            }
+          }
+        },
+        "hairlineBorder": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.899,
+              0.9103,
+              0.9216
+            ],
+            "alpha": 1,
+            "hex": "#E5E8EB"
+          },
+          "$description": "TDS 발행값 · 헤어라인",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-hairlineBorder)"
+              }
+            }
+          }
+        },
+        "greyBackground": {
+          "$type": "color",
+          "$value": "{grey.100}",
+          "$description": "TDS 발행값 · 라이트는 grey/100 참조, 다크는 다크 grey 단계가 아닌 고유값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 16,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-greyBackground)"
+              }
+            }
+          }
+        }
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{blue.500}",
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 0,
+            "scopes": [
+              "ALL_FILLS",
+              "STROKE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--primary)"
+            }
+          }
+        }
+      }
+    },
+    "Dark": {
+      "blue": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.2039,
+              0.5216,
+              0.9804
+            ],
+            "alpha": 1,
+            "hex": "#3485FA"
+          },
+          "$description": "TDS 발행값 · 카노니컬 Toss Blue, 유일한 강조 hue",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 238,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-500)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0617,
+              0.3974,
+              0.7992
+            ],
+            "alpha": 1,
+            "hex": "#1065CC"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · pressed-blue",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 2,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-600)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0515,
+              0.337,
+              0.7362
+            ],
+            "alpha": 1,
+            "hex": "#0D56BC"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · pressed gradient stop",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 2,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-700)"
+              }
+            }
+          }
+        },
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1255,
+              0.1725,
+              0.302
+            ],
+            "alpha": 1,
+            "hex": "#202C4D"
+          },
+          "$description": "TDS 발행값 · brand-weak 배경",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 57,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--blue-50)"
+              }
+            }
+          }
+        }
+      },
+      "grey": {
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "alpha": 1,
+            "hex": "#FFFFFF"
+          },
+          "$description": "TDS 발행값 · primary text",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 265,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-900)"
+              }
+            }
+          }
+        },
+        "800": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.8941,
+              0.8941,
+              0.898
+            ],
+            "alpha": 1,
+            "hex": "#E4E4E5"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 7,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-800)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.7647,
+              0.7647,
+              0.7765
+            ],
+            "alpha": 1,
+            "hex": "#C3C3C6"
+          },
+          "$description": "TDS 발행값 · secondary text",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 198,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-700)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.6196,
+              0.6196,
+              0.6431
+            ],
+            "alpha": 1,
+            "hex": "#9E9EA4"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 177,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-600)"
+              }
+            }
+          }
+        },
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.4941,
+              0.4941,
+              0.5294
+            ],
+            "alpha": 1,
+            "hex": "#7E7E87"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 296,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.3843,
+              0.3843,
+              0.4275
+            ],
+            "alpha": 1,
+            "hex": "#62626D"
+          },
+          "$description": "TDS 발행값 · disabled text, strong line",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 4,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-400)"
+              }
+            }
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.302,
+              0.302,
+              0.349
+            ],
+            "alpha": 1,
+            "hex": "#4D4D59"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 17,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-300)"
+              }
+            }
+          }
+        },
+        "200": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.2353,
+              0.2353,
+              0.2784
+            ],
+            "alpha": 1,
+            "hex": "#3C3C47"
+          },
+          "$description": "TDS 발행값 · default divider/border",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 49,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-200)"
+              }
+            }
+          }
+        },
+        "150": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.8795,
+              0.8956,
+              0.9112
+            ],
+            "alpha": 1,
+            "hex": "#E0E4E8"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · TDS에 없는 step",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-150)"
+              }
+            }
+          }
+        },
+        "100": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1725,
+              0.1725,
+              0.2078
+            ],
+            "alpha": 1,
+            "hex": "#2C2C35"
+          },
+          "$description": "TDS 발행값 · secondary surface",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 127,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-100)"
+              }
+            }
+          }
+        },
+        "50": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1255,
+              0.1255,
+              0.1529
+            ],
+            "alpha": 1,
+            "hex": "#202027"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 54,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--grey-50)"
+              }
+            }
+          }
+        }
+      },
+      "white": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#FFFFFF"
+        },
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 205,
+            "scopes": [
+              "ALL_FILLS",
+              "STROKE",
+              "EFFECT_COLOR"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--white)"
+            }
+          }
+        }
+      },
+      "yellow": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.6941,
+              0.2039
+            ],
+            "alpha": 1,
+            "hex": "#FFB134"
+          },
+          "$description": "TDS 발행값 · illustration / emoji body",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.8371,
+              0.4677
+            ],
+            "alpha": 1,
+            "hex": "#FFD577"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-400)"
+              }
+            }
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9216,
+              0.5451,
+              0.1176
+            ],
+            "alpha": 1,
+            "hex": "#EB8B1E"
+          },
+          "$description": "TDS 발행값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-300)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9813,
+              0.7585,
+              0.0252
+            ],
+            "alpha": 1,
+            "hex": "#FAC106"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-600)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.8004,
+              0.1717
+            ],
+            "alpha": 1,
+            "hex": "#FFCC2C"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--yellow-700)"
+              }
+            }
+          }
+        }
+      },
+      "orange": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.5347,
+              0.001
+            ],
+            "alpha": 1,
+            "hex": "#FF8800"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · semantic warning",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--orange-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9996,
+              0.7009,
+              0.5193
+            ],
+            "alpha": 1,
+            "hex": "#FFB384"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--orange-400)"
+              }
+            }
+          }
+        },
+        "300": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9996,
+              0.7775,
+              0.651
+            ],
+            "alpha": 1,
+            "hex": "#FFC6A6"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--orange-300)"
+              }
+            }
+          }
+        }
+      },
+      "red": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9412,
+              0.2588,
+              0.3176
+            ],
+            "alpha": 1,
+            "hex": "#F04251"
+          },
+          "$description": "TDS 발행값 · error / danger",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 8,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--red-500)"
+              }
+            }
+          }
+        },
+        "600": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9337,
+              0.2215,
+              0.2823
+            ],
+            "alpha": 1,
+            "hex": "#EE3848"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--red-600)"
+              }
+            }
+          }
+        }
+      },
+      "green": {
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.4677,
+              0.2211
+            ],
+            "alpha": 1,
+            "hex": "#007738"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · success (발행 green500보다 훨씬 어두움)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 31,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--green-500)"
+              }
+            }
+          }
+        }
+      },
+      "navy": {
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.003,
+              0.0387,
+              0.1453
+            ],
+            "alpha": 1,
+            "hex": "#010A25"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · text-shadow base, overlay rgba 원본",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--navy-900)"
+              }
+            }
+          }
+        }
+      },
+      "brown": {
+        "900": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.3778,
+              0.1686,
+              0.0981
+            ],
+            "alpha": 1,
+            "hex": "#602B19"
+          },
+          "$description": "Illustration warm (UI 표면에는 사용 안 함)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-900)"
+              }
+            }
+          }
+        },
+        "700": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.4473,
+              0.2757,
+              0.2471
+            ],
+            "alpha": 1,
+            "hex": "#72463F"
+          },
+          "$description": "Illustration warm",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-700)"
+              }
+            }
+          }
+        },
+        "500": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.5723,
+              0.3698,
+              0.3031
+            ],
+            "alpha": 1,
+            "hex": "#925E4D"
+          },
+          "$description": "Illustration warm",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-500)"
+              }
+            }
+          }
+        },
+        "400": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.7704,
+              0.4911,
+              0.3879
+            ],
+            "alpha": 1,
+            "hex": "#C47D63"
+          },
+          "$description": "Illustration warm",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--brown-400)"
+              }
+            }
+          }
+        }
+      },
+      "alpha": {
+        "fg-tertiary": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.003,
+              0.0387,
+              0.1453
+            ],
+            "alpha": 0.58,
+            "hex": "#010A2594"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · 흐린 본문 텍스트",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 3,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-fg-tertiary)"
+              }
+            }
+          }
+        },
+        "fg-quaternary": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.003,
+              0.0387,
+              0.1453
+            ],
+            "alpha": 0.28,
+            "hex": "#010A2547"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · placeholder",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 1,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-fg-quaternary)"
+              }
+            }
+          }
+        },
+        "line-subtle": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.08,
+            "hex": "#00000014"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · 그레이 배경 위 카드 보더",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-line-subtle)"
+              }
+            }
+          }
+        },
+        "bg-overlay": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.56,
+            "hex": "#0000008F"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · bottom-sheet scrim",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-bg-overlay)"
+              }
+            }
+          }
+        },
+        "press-overlay": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.26,
+            "hex": "#00000042"
+          },
+          "$description": "번들 고유값(TDS 공식 발행값 아님) · pressed-state tint",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--alpha-press-overlay)"
+              }
+            }
+          }
+        }
+      },
+      "adaptive": {
+        "background": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0904,
+              0.0902,
+              0.1102
+            ],
+            "alpha": 1,
+            "hex": "#17171C"
+          },
+          "$description": "TDS 발행값 · 기본 화면 바탕",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 77,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-background)"
+              }
+            }
+          }
+        },
+        "layeredBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1258,
+              0.126,
+              0.1531
+            ],
+            "alpha": 1,
+            "hex": "#202027"
+          },
+          "$description": "TDS 발행값 · 겹친 표면",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 128,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-layeredBackground)"
+              }
+            }
+          }
+        },
+        "floatBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.1725,
+              0.1728,
+              0.2077
+            ],
+            "alpha": 1,
+            "hex": "#2C2C35"
+          },
+          "$description": "TDS 발행값 · 떠 있는 표면",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 158,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-floatBackground)"
+              }
+            }
+          }
+        },
+        "dimmedBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0.56,
+            "hex": "#0000008F"
+          },
+          "$description": "TDS 발행값 · 스크림",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-dimmedBackground)"
+              }
+            }
+          }
+        },
+        "hairlineBorder": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.2355,
+              0.2359,
+              0.2793
+            ],
+            "alpha": 1,
+            "hex": "#3C3C47"
+          },
+          "$description": "TDS 발행값 · 헤어라인",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE",
+                "EFFECT_COLOR"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-hairlineBorder)"
+              }
+            }
+          }
+        },
+        "greyBackground": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0625,
+              0.0624,
+              0.0739
+            ],
+            "alpha": 1,
+            "hex": "#101013"
+          },
+          "$description": "TDS 발행값 · 라이트는 grey/100 참조, 다크는 다크 grey 단계가 아닌 고유값",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 16,
+              "scopes": [
+                "ALL_FILLS",
+                "STROKE"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--adaptive-greyBackground)"
+              }
+            }
+          }
+        }
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{blue.500}",
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 0,
+            "scopes": [
+              "ALL_FILLS",
+              "STROKE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--primary)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "TDS Spacing": {
+    "$extensions": {
+      "com.figma": {
+        "source": "local",
+        "modes": [
+          "Value"
+        ]
+      }
+    },
+    "Value": {
+      "space": {
+        "1": {
+          "$type": "number",
+          "$value": 4,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 145,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-1)"
+              }
+            }
+          }
+        },
+        "2": {
+          "$type": "number",
+          "$value": 8,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 90,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-2)"
+              }
+            }
+          }
+        },
+        "3": {
+          "$type": "number",
+          "$value": 12,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 706,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-3)"
+              }
+            }
+          }
+        },
+        "4": {
+          "$type": "number",
+          "$value": 16,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 192,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-4)"
+              }
+            }
+          }
+        },
+        "5": {
+          "$type": "number",
+          "$value": 20,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 109,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-5)"
+              }
+            }
+          }
+        },
+        "6": {
+          "$type": "number",
+          "$value": 24,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 35,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-6)"
+              }
+            }
+          }
+        },
+        "7": {
+          "$type": "number",
+          "$value": 28,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-7)"
+              }
+            }
+          }
+        },
+        "8": {
+          "$type": "number",
+          "$value": 32,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-8)"
+              }
+            }
+          }
+        },
+        "10": {
+          "$type": "number",
+          "$value": 40,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 16,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-10)"
+              }
+            }
+          }
+        },
+        "12": {
+          "$type": "number",
+          "$value": 48,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-12)"
+              }
+            }
+          }
+        },
+        "16": {
+          "$type": "number",
+          "$value": 64,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-16)"
+              }
+            }
+          }
+        },
+        "20": {
+          "$type": "number",
+          "$value": 80,
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "WIDTH_HEIGHT",
+                "GAP"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--space-20)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "TDS Radius": {
+    "$extensions": {
+      "com.figma": {
+        "source": "local",
+        "modes": [
+          "Value"
+        ]
+      }
+    },
+    "Value": {
+      "radius": {
+        "xs": {
+          "$type": "number",
+          "$value": 4,
+          "$description": "small badges",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 28,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-xs)"
+              }
+            }
+          }
+        },
+        "s": {
+          "$type": "number",
+          "$value": 8,
+          "$description": "inline tags",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 520,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-s)"
+              }
+            }
+          }
+        },
+        "m": {
+          "$type": "number",
+          "$value": 12,
+          "$description": "text inputs",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 1192,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-m)"
+              }
+            }
+          }
+        },
+        "l": {
+          "$type": "number",
+          "$value": 14,
+          "$description": "L button (48px)",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 232,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-l)"
+              }
+            }
+          }
+        },
+        "xl": {
+          "$type": "number",
+          "$value": 16,
+          "$description": "XL button (56px), cards",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 220,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-xl)"
+              }
+            }
+          }
+        },
+        "2xl": {
+          "$type": "number",
+          "$value": 20,
+          "$description": "sheets, dialogs",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-2xl)"
+              }
+            }
+          }
+        },
+        "3xl": {
+          "$type": "number",
+          "$value": 24,
+          "$description": "big cards / sections",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 6,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-3xl)"
+              }
+            }
+          }
+        },
+        "4xl": {
+          "$type": "number",
+          "$value": 32,
+          "$description": "hero blocks",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-4xl)"
+              }
+            }
+          }
+        },
+        "full": {
+          "$type": "number",
+          "$value": 999,
+          "$description": "chips, pills, capsules",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 1580,
+              "scopes": [
+                "CORNER_RADIUS"
+              ],
+              "codeSyntax": {
+                "WEB": "var(--radius-full)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "TDS Typography": {
+    "$extensions": {
+      "com.figma": {
+        "source": "local",
+        "modes": [
+          "Value"
+        ]
+      }
+    },
+    "Value": {
+      "font-family": {
+        "base": {
+          "$type": "string",
+          "$value": "Pretendard",
+          "$description": "TPS 대체 서체. 스택: Pretendard Variable, Pretendard, -apple-system, ..., sans-serif",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 837,
+              "scopes": [
+                "FONT_FAMILY"
+              ]
+            }
+          }
+        },
+        "emoji": {
+          "$type": "string",
+          "$value": "Tossface",
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0,
+              "scopes": [
+                "FONT_FAMILY"
+              ]
+            }
+          }
+        }
+      },
+      "typography": {
+        "display-1": {
+          "size": {
+            "$type": "number",
+            "$value": 56,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-display-1-size)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 72.8,
+            "$description": "px = size × 1.3",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-display-1-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.28,
+            "$description": "px = size × -0.005em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-display-1-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "display-2": {
+          "size": {
+            "$type": "number",
+            "$value": 40,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-display-2-size)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 48,
+            "$description": "px = size × 1.2",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-display-2-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.8,
+            "$description": "px = size × -0.02em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-display-2-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "h1": {
+          "size": {
+            "$type": "number",
+            "$value": 28,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h1-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 700,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h1-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 36.4,
+            "$description": "px = size × 1.3",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h1-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.56,
+            "$description": "px = size × -0.02em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h1-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "h2": {
+          "size": {
+            "$type": "number",
+            "$value": 24,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 18,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h2-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 700,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h2-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 31.2,
+            "$description": "px = size × 1.3",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h2-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.48,
+            "$description": "px = size × -0.02em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h2-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "h3": {
+          "size": {
+            "$type": "number",
+            "$value": 22,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h3-size)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 28.6,
+            "$description": "px = size × 1.3",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h3-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.33,
+            "$description": "px = size × -0.015em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h3-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "h4": {
+          "size": {
+            "$type": "number",
+            "$value": 20,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 7,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h4-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 700,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 331,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h4-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 27,
+            "$description": "px = size × 1.35",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 5,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h4-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.3,
+            "$description": "px = size × -0.015em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-h4-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "title-1": {
+          "size": {
+            "$type": "number",
+            "$value": 18,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 121,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-1-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 600,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-1-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 26.1,
+            "$description": "px = size × 1.45",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-1-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.18,
+            "$description": "px = size × -0.01em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-1-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "title-2": {
+          "size": {
+            "$type": "number",
+            "$value": 17,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-2-size)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 24.65,
+            "$description": "px = size × 1.45",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-2-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.17,
+            "$description": "px = size × -0.01em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-title-2-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "body-1": {
+          "size": {
+            "$type": "number",
+            "$value": 17,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-1-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 400,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-1-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 25.5,
+            "$description": "px = size × 1.5",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-1-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.08,
+            "$description": "px = size × -0.005em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-1-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "body-2": {
+          "size": {
+            "$type": "number",
+            "$value": 15,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-2-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 400,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-2-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 22.5,
+            "$description": "px = size × 1.5",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-2-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.07,
+            "$description": "px = size × -0.005em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-2-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "body-3": {
+          "size": {
+            "$type": "number",
+            "$value": 13,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-3-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 400,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 274,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-3-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 19.5,
+            "$description": "px = size × 1.5",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 51,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-3-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": 0,
+            "$description": "px = size × 0em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-body-3-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "label-l": {
+          "size": {
+            "$type": "number",
+            "$value": 17,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 30,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-l-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 700,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-l-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 21.25,
+            "$description": "px = size × 1.25",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-l-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.08,
+            "$description": "px = size × -0.005em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-l-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "label-m": {
+          "size": {
+            "$type": "number",
+            "$value": 15,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 109,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-m-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 600,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-m-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 18.75,
+            "$description": "px = size × 1.25",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-m-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": -0.07,
+            "$description": "px = size × -0.005em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-m-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "label-s": {
+          "size": {
+            "$type": "number",
+            "$value": 13,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 251,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-s-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 600,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-s-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 16.25,
+            "$description": "px = size × 1.25",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-s-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": 0,
+            "$description": "px = size × 0em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-label-s-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "caption": {
+          "size": {
+            "$type": "number",
+            "$value": 12,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 208,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 500,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 225,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 16.8,
+            "$description": "px = size × 1.4",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": 0,
+            "$description": "px = size × 0em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 831,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-letter-spacing)"
+                }
+              }
+            }
+          }
+        },
+        "caption-s": {
+          "size": {
+            "$type": "number",
+            "$value": 11,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 18,
+                "scopes": [
+                  "FONT_SIZE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-s-size)"
+                }
+              }
+            }
+          },
+          "weight": {
+            "$type": "number",
+            "$value": 500,
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 0,
+                "scopes": [
+                  "FONT_STYLE"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-s-weight)"
+                }
+              }
+            }
+          },
+          "line-height": {
+            "$type": "number",
+            "$value": 15.4,
+            "$description": "px = size × 1.4",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LINE_HEIGHT"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-s-line-height)"
+                }
+              }
+            }
+          },
+          "letter-spacing": {
+            "$type": "number",
+            "$value": 0,
+            "$description": "px = size × 0em",
+            "$extensions": {
+              "com.figma": {
+                "usageCount": 2,
+                "scopes": [
+                  "LETTER_SPACING"
+                ],
+                "codeSyntax": {
+                  "WEB": "var(--typography-caption-s-letter-spacing)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "TDS Opacity": {
+    "$extensions": {
+      "com.figma": {
+        "source": "local",
+        "modes": [
+          "Value"
+        ]
+      }
+    },
+    "Value": {
+      "disabled-opacity": {
+        "$type": "number",
+        "$value": 30,
+        "$description": "0.30 (퍼센트로 30). 컴포넌트 전체 노드에 적용",
+        "$extensions": {
+          "com.figma": {
+            "usageCount": 0,
+            "scopes": [
+              "OPACITY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--disabled-opacity)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "TDS Motion": {
+    "$extensions": {
+      "com.figma": {
+        "source": "local",
+        "modes": [
+          "Value"
+        ]
+      }
+    },
+    "Value": {
+      "motion": {
+        "dur-fast": {
+          "$type": "duration",
+          "$value": {
+            "value": 120,
+            "unit": "ms"
+          },
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0
+            }
+          }
+        },
+        "dur-base": {
+          "$type": "duration",
+          "$value": {
+            "value": 200,
+            "unit": "ms"
+          },
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0
+            }
+          }
+        },
+        "dur-slow": {
+          "$type": "duration",
+          "$value": {
+            "value": 320,
+            "unit": "ms"
+          },
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0
+            }
+          }
+        },
+        "ease": {
+          "$type": "cubicBezier",
+          "$value": [
+            0.22,
+            0.61,
+            0.36,
+            1
+          ],
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0
+            }
+          }
+        },
+        "ease-out": {
+          "$type": "cubicBezier",
+          "$value": [
+            0.16,
+            1,
+            0.3,
+            1
+          ],
+          "$extensions": {
+            "com.figma": {
+              "usageCount": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}
