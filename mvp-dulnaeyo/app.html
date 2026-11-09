@@ -266,7 +266,7 @@ function actCard(a,opt){ opt=opt||{};
       '<p class="fine" style="margin:6px 0 0">'+(cur?'반영됨: '+man(cur)+extra+' · <button data-act="inpClear" data-v="'+a.id+'" style="border:0;background:none;color:var(--blue);text-decoration:underline;padding:0">지우기</button><br>':'')+a.input.note+' 1월 간소화 자료로 확정해요.</p></div>'; }
   var btns='';
   if(!opt.compact){
-    if(a.id==='card') btns+='<button class="btn sm" data-act="to" data-v="s05" style="flex:1">결제 수단 정하기</button>';
+    if(a.id==='card') btns+='<button class="btn sm" data-act="to" data-v="s05" style="flex:1">지출 계획하기</button>';
     if(a.toggle) btns+='<button class="btn sm '+(S[a.toggle]?'sec':'')+'" data-act="tog" data-v="'+a.toggle+'" style="flex:1">'+(S[a.toggle]?'12월분 낼 예정 ✓ 반영됨':'12월분 낼게요')+'</button>';
     else if(a.id!=='card') btns+='<button class="btn sm sec" data-act="pick" data-v="'+a.id+'" style="flex:1">'+(S.picked[a.id]?(a.input?'해당 없어요 ✓ (되돌리기)':'확인했어요 ✓ (되돌리기)'):(a.input?'해당 없어요':'확인했어요'))+'</button>';
   }
@@ -348,7 +348,7 @@ V.s04=function(){ var e=S.nov, t=resultText(e.diff), L=actions(), pot=potential(
   L.slice(0,3).forEach(function(a){ h+=actCard(a,{compact:true}); });
   if(pot>0) h+='<div class="card blue"><b>모두 해당되면 카드 전환 외에 최대 약 '+kor(pot)+'</b><p class="fine" style="margin:4px 0 0">확인이 필요한 항목 포함 · 추정</p></div>';
   h+='<div class="card blue"><b>다음: 남은 지출, 결제 수단 정하기</b><p class="fine" style="margin:4px 0 0">12월 31일까지 원래 쓸 돈을 신용카드·체크카드 중 어디로 결제하면 세금이 얼마나 줄어드는지 슬라이더로 비교해요. 더 쓰라는 게 아니에요.</p></div>'+
-  '<p class="fine">'+DISCL+'</p><button class="btn" data-act="to" data-v="s05">카드 결제 수단 정해보기</button><button class="btn sec" data-act="tabTo" data-v="ways">줄이는 방법 전체 보기</button>'; return h; };
+  '<p class="fine">'+DISCL+'</p><button class="btn" data-act="to" data-v="s05">지출 계획하기</button><button class="btn sec" data-act="tabTo" data-v="ways">줄이는 방법 전체 보기</button>'; return h; };
 
 function cmpHtml(){ var p=S.plan, sav=cardSaving(p), d=diffOf(p);
   return '<div class="card '+(sav>0?'blue':'')+'"><div class="ver"><div>지금처럼<b>'+resultText(taxOf({spend:p.spend,big:p.big,checkPct:0})-S.paid)[0].replace('예상 ','<br>')+'</b></div><span>→</span><div>이 계획<b>'+resultText(d)[0].replace('예상 ','<br>')+'</b></div></div>'+
