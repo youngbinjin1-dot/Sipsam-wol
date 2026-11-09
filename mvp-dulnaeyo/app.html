@@ -287,6 +287,13 @@ V.s04=function(){ var e=S.nov, t=resultText(e.diff), L=actions(), pot=potential(
 function cmpHtml(){ var p=S.plan, sav=cardSaving(p), d=diffOf(p);
   return '<div class="card '+(sav>0?'blue':'')+'"><div class="ver"><div>지금처럼<b>'+resultText(taxOf({spend:p.spend,big:p.big,checkPct:0})-S.paid)[0].replace('예상 ','<br>')+'</b></div><span>→</span><div>이 계획<b>'+resultText(d)[0].replace('예상 ','<br>')+'</b></div></div>'+
   '<b>'+(sav>0?'세금 약 '+kor(sav)+' 줄어요 (추정)':'지금은 신용카드만 써도 차이가 없어요')+'</b><p class="fine" style="margin:4px 0 0">공제 금액이 아니라 실제로 줄어드는 세금이에요. 카드 포인트·할인 같은 혜택은 계산에 넣지 않았어요(혜택이 더 클 수도 있어요).</p></div>'; }
+function tableHtml(){ var p=S.plan, tot=p.spend+p.big, rec=recPct(p);
+  var rows=[['신용카드로 결제',0],['체크카드·현금영수증으로 결제',100],['추천 (문턱까지 신용 → 이후 체크)',rec]];
+  var base=taxOf({spend:p.spend,big:p.big,checkPct:0});
+  var h='<div class="card" style="padding:4px 16px"><p class="fine" style="margin:12px 0 0">같은 '+man(tot)+'을 어디로 결제하느냐에 따른 예상 (올해 합산 기준)</p>';
+  rows.forEach(function(r,i){ var q={spend:p.spend,big:p.big,checkPct:r[1]}, d=diffOf(q), sv=base-taxOf(q), s=split(q);
+    h+='<div class="row"><span class="k">'+r[0]+'<span class="src">신용 '+man(s.cr)+' · 체크 '+man(s.chk)+'</span></span><span class="v" style="color:'+(sv>0?'var(--blue)':'var(--t1)')+'">'+resultText(d)[0].replace('예상 ','<br>')+'<span class="src" style="text-align:right">'+(sv>0?'신용카드보다 '+kor(sv)+' 줄어요':'기준')+'</span></span></div>'; });
+  return h+'</div>'; }
 V.s05=function(){ var p=S.plan, s=split(p), th=thr(), rem=Math.max(0,th-counted()), sav=cardSaving(p), d=diffOf(p), d0=S.nov.diff;
   var tot=p.spend+p.big;
   return top('카드 사용 슬라이더')+'<h2>남은 지출, 어디로 결제할지 움직여 보세요</h2>'+
@@ -297,7 +304,7 @@ V.s05=function(){ var p=S.plan, s=split(p), th=thr(), rem=Math.max(0,th-counted(
   (p.big?'<div class="chips"><span class="tag">큰 지출 '+man(p.big)+' 포함</span><button class="chip" data-act="bigClear">빼기</button></div>':'<button class="btn sm sec" data-act="bigAsk">+ 큰 지출 추가 (예: 12월 노트북 150만 원)</button>')+'</div>'+
   '<div class="card"><b>어디로 결제할까요?</b><input type="range" min="0" max="100" step="5" value="'+p.checkPct+'" data-sl="checkPct" aria-label="체크카드 비율">'+
   '<div style="display:flex;justify-content:space-between;font-size:14px"><span>신용카드 <b id="crVal">'+man(s.cr)+'</b></span><span>체크카드·현금영수증 <b id="chkVal">'+man(s.chk)+'</b></span></div></div>'+
-  '<div id="cmp">'+cmpHtml()+'</div>'+
+  '<div id="cmp">'+cmpHtml()+'</div><h3 style="margin-top:16px">신용카드 vs 체크카드, 따로 비교</h3><div id="tbl">'+tableHtml()+'</div>'+
   '<div class="card"><b>💡 추천</b><p style="margin:4px 0 8px;font-size:14px">'+(rem>0?man(Math.min(tot,rem))+'까지는 신용카드, 그 다음부터는 체크카드':'지금부터는 체크카드·현금영수증')+'</p><button class="btn sm sec" data-act="recommend">추천 비율로 맞추기</button></div>'+
   '<p class="fine">특정 카드 상품은 추천하지 않고 결제 수단 종류만 비교해요. '+DISCL+'</p>'+
   '<button class="btn" data-act="savePlan">이 계획으로 저장할게요</button>'; };
@@ -416,7 +423,7 @@ document.addEventListener('change',function(ev){ var t=ev.target, k=t.getAttribu
   if(['all','terms','privacy','link','sens','mkt','subPaidOk'].indexOf(k)>-1) render(); });
 document.addEventListener('input',function(ev){ var t=ev.target;
   var d=t.getAttribute&&t.getAttribute('data-d'); if(d){ S.d[d]=Math.max(0,Number(t.value)||0)*10000; return; }
-  var sl=t.getAttribute&&t.getAttribute('data-sl'); if(sl){ S.plan[sl]=Number(t.value); S.plan.saved=false; var s=split(S.plan); $('spVal').textContent=man(S.plan.spend); $('crVal').textContent=man(s.cr); $('chkVal').textContent=man(s.chk); $('cmp').innerHTML=cmpHtml(); } });
+  var sl=t.getAttribute&&t.getAttribute('data-sl'); if(sl){ S.plan[sl]=Number(t.value); S.plan.saved=false; var s=split(S.plan); $('spVal').textContent=man(S.plan.spend); $('crVal').textContent=man(s.cr); $('chkVal').textContent=man(s.chk); $('cmp').innerHTML=cmpHtml(); $('tbl').innerHTML=tableHtml(); } });
 document.addEventListener('click',function(ev){
   var el=ev.target.closest('[data-act]'); if(!el) return; var a=el.getAttribute('data-act'), v=el.getAttribute('data-v');
   if(S.counting && a!=='back') S.touches++;
