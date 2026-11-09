@@ -1,0 +1,5 @@
+# intent/ 변경은 PO가 승인한다.
+# TODO: 아래 계정을 실제 PO의 GitHub 계정(또는 팀)으로 바꿔 주세요.
+/intent/                         @youngbinjin1-dot
+/.claude/skills/write-intent/    @youngbinjin1-dot
+/REVIEW.md                       @youngbinjin1-dot

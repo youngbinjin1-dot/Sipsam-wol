@@ -5,9 +5,9 @@
 
 | 파일 | 용도 |
 |---|---|
-| [Intent.md](Intent.md) | 왜 만드는가, 방법 5가지, 판단 원칙, 하지 않을 것 |
-| [Spec.md](Spec.md) | 두 산출물의 화면·동작·계산 명세 |
-| [Plan.md](Plan.md) | 진행 단계, 성공 기준, 열린 질문 |
+| [intent.md](../../intent/2026-11-09-dulnaeyo-mvp/intent.md) | 왜 만드는가, 방법 5가지, 판단 원칙, 하지 않을 것 |
+| [spec.md](../../intent/2026-11-09-dulnaeyo-mvp/spec.md) | 두 산출물의 화면·동작·계산 명세 |
+| [plan.md](../../intent/2026-11-09-dulnaeyo-mvp/plan.md) | 진행 단계, 성공 기준, 열린 질문 |
 | `index.html` | **페이크 도어 랜딩** — 슬라이더 미리보기, 1·2번 문, 설문 |
 | `app.html` | **앱 모의실행** — 시작 → 작동 → 마무리 전체 흐름 |
 

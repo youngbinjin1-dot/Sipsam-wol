@@ -76,7 +76,7 @@
 | 사람들이 신용/체크를 “언제” 바꿔야 할지 몰라서 못 바꾸는가? | 설문 |
 
 테스트 중에는 클릭 직후 “아직 준비 중”임을 바로 알리고, 결제 정보는 절대 받지 않는다.  
-테스트 진행 방식(퍼널·이메일 수집·입력 최소화 원칙)은 [`intent-fakedoor-test.md`](intent-fakedoor-test.md)를 따른다.
+테스트 진행 방식(퍼널·이메일 수집·입력 최소화 원칙)은 [`intent-fakedoor-test.md`](../2026-11-09-instagram-fakedoor-test/intent.md)를 따른다.
 
 ## 9. 성공의 모습
 
