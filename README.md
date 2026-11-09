@@ -19,21 +19,40 @@
 
 ## 저장소 구성
 
+```
+hometax/
+├── CLAUDE.md                     # 에이전트 작업 규칙
+├── REVIEW.md                     # 리뷰 기준
+├── .github/CODEOWNERS            # intent/ 리뷰어를 PO로 지정
+├── .claude/skills/write-intent/  # 팀 공통 intent 작성 스킬
+├── intent/                       # ← 모든 intent는 여기에 (한 기능 = 한 폴더)
+│   ├── README.md                 # 작성 규칙과 상태 정의
+│   ├── _template.md
+│   ├── 2026-11-09-year-end-tax-toss-inapp/   # intent · spec · prd (11월 시즌 버전)
+│   ├── 2026-11-09-instagram-fakedoor-test/   # intent
+│   └── 2026-11-09-dulnaeyo-mvp/              # intent · spec · plan
+├── lessons/                      # 회고·사후 분석
+├── src/                          # 앱 모의실행, MVP, 디자인 토큰
+└── docs/                         # 시장분석, 카드뉴스, 회의록, 페르소나, 디자인 시스템, 사업계획
+```
+
 | 경로 | 내용 |
 |---|---|
-| [`index.html`](index.html) | **앱 모의실행** — 브라우저로 열면 바로 시연할 수 있어요 (외부 의존성 없음) |
-| [`prd.md`](prd.md) | 제품 요구사항 문서 (11월 시즌 버전) |
-| [`persona-tax-saving.md`](persona-tax-saving.md) | 타깃 페르소나 |
-| [`MVP/`](MVP/) | 초기 MVP 프로토타입과 화면 캡처 |
-| [`docs/`](docs/) | 국내 사업계획 등 부속 문서 |
-| [`시장분석/`](시장분석/) | 3C · SWOT · PEST · 5 Forces · 전략 문장 |
-| [`카드뉴스/`](카드뉴스/) | 홍보용 카드뉴스 |
-| [`회의록/`](회의록/) | 기획 회의·회고록 |
-| [`tokens/`](tokens/) | 디자인 토큰 (`variables.json`) |
+| [`intent/`](intent/) | 기능별 intent·spec·plan — 규칙은 [`intent/README.md`](intent/README.md) |
+| [`src/index.html`](src/index.html) | **앱 모의실행** — 브라우저로 열면 바로 시연할 수 있어요 (외부 의존성 없음) |
+| [`src/mvp-dulnaeyo/`](src/mvp-dulnaeyo/) | 페이크 도어 랜딩 + 앱 모의실행 MVP |
+| [`src/tokens/`](src/tokens/) | 디자인 토큰 (`variables.json`) |
+| [`lessons/`](lessons/) | 회고록 |
+| [`docs/시장분석/`](docs/시장분석/) | 3C · SWOT · PEST · 5 Forces · 전략 문장 |
+| [`docs/카드뉴스/`](docs/카드뉴스/) | 홍보용 카드뉴스 |
+| [`docs/meetings/`](docs/meetings/) | 기획 회의록 |
+| [`docs/persona-tax-saving.md`](docs/persona-tax-saving.md) | 타깃 페르소나 |
+| [`docs/design/`](docs/design/) | 토스 디자인 시스템 참고 문서 |
+| [`docs/domestic-business-plan/`](docs/domestic-business-plan/) | 국내 사업계획 |
 
 ## 시연 방법
 
-1. [`index.html`](index.html)을 브라우저로 열어요. (모바일 폭에서는 휴대폰 화면 하나로 보여요.)
+1. [`src/index.html`](src/index.html)을 브라우저로 열어요. (모바일 폭에서는 휴대폰 화면 하나로 보여요.)
 2. **내 연말정산 바로 보기** → 이용 동의 → 토스 데이터 확인 → 질문 카드 → **올해 예상 결과**
 3. **카드 사용 슬라이더**에서 남은 지출과 결제 수단 비율을 움직여 비교해요.
 4. 홈의 시연 버튼으로 12월 14일(결제 수단 전환 알림) → 12월 31일(마무리 리포트) → 1월(구독·도우미)로 이동해요.
