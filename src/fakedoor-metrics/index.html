@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>덜내요 Fake Door 전환 지표 시트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+:root{
+  --navy:#252a6b; --navy-weak:#eef0f7; --surface:#fcfcfb; --sel:#2a78d6;
+  --text-1:#0b0b0b; --text-2:#52514e; --text-3:#8a8984; --line:#e3e2de; --soft:#f5f4f1; --calc:#f7f8fb;
+  --critical:#d03b3b; --warning:#fab219;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--text-1);font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased}
+.top{padding:20px 24px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:10}
+.top h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+.top p{margin:0 0 12px;color:var(--text-2);font-size:14px}
+.bar{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.tabs{display:flex;gap:2px}
+.tabs button{font:inherit;font-size:14px;border:1px solid var(--line);border-bottom:0;background:var(--soft);padding:9px 18px;border-radius:8px 8px 0 0;cursor:pointer;color:var(--text-2)}
+.tabs button[aria-selected=true]{background:#fff;color:var(--navy);font-weight:700;position:relative;top:1px}
+.actions{display:flex;gap:6px;padding-bottom:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 11px;cursor:pointer;color:var(--text-2)}
+.btn:hover{border-color:var(--navy);color:var(--navy)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+main{padding:20px 24px 80px}
+.panel[hidden]{display:none}
+.hint{font-size:13px;color:var(--text-3);margin:0 0 10px}
+.hint kbd{font-family:inherit;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:12px}
+
+/* 시트 */
+.sheet-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;max-height:calc(100vh - 230px)}
+table.sheet{border-collapse:separate;border-spacing:0;font-size:14px;min-width:100%}
+.sheet th{position:sticky;top:0;background:var(--navy);color:#fff;font-weight:600;text-align:left;padding:8px 8px;font-size:13px;white-space:nowrap;z-index:2;border-right:1px solid rgba(255,255,255,.15)}
+.sheet th.calc{background:#3a4086}
+.sheet th small{display:block;font-weight:400;opacity:.75;font-size:11px}
+.sheet td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;height:34px;white-space:nowrap}
+.sheet td.rn{background:var(--soft);color:var(--text-3);text-align:center;font-size:12px;width:38px;position:sticky;left:0;z-index:1}
+.sheet th.rn{left:0;z-index:3;width:38px}
+.sheet td input{font:inherit;font-size:14px;border:0;outline:0;width:100%;height:33px;padding:0 7px;background:transparent;color:var(--text-1)}
+.sheet td.num input{text-align:right;font-variant-numeric:tabular-nums}
+.sheet td:focus-within{outline:2px solid var(--sel);outline-offset:-2px;background:#fff}
+.sheet td.calc{background:var(--calc);text-align:right;padding:0 8px;font-variant-numeric:tabular-nums;color:var(--text-1)}
+.sheet td.bad{box-shadow:inset 0 0 0 2px var(--critical)}
+.sheet td.del{width:34px;text-align:center}
+.sheet td.del button{border:0;background:none;color:var(--text-3);cursor:pointer;font-size:14px}
+.sheet td.del button:hover{color:var(--critical)}
+.sheet tfoot td{background:var(--navy-weak);font-weight:700;padding:0 10px;text-align:right;font-variant-numeric:tabular-nums;position:sticky;bottom:0}
+.sheet tfoot td.lbl{text-align:left;color:var(--navy)}
+.below{color:var(--critical)}
+.below::before{content:"▼ ";font-size:10px}
+.w-date{min-width:124px}.w-txt{min-width:92px}.w-num{min-width:70px}.w-memo{min-width:160px}.w-calc{min-width:92px}
+.warnline{font-size:13px;color:var(--critical);margin-top:8px;min-height:18px}
+
+/* 요약 */
+.controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-size:14px;color:var(--text-2)}
+.controls select{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.thr{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 18px;align-items:center;font-size:13px;color:var(--text-2)}
+.thr label{display:flex;align-items:center;gap:6px;background:var(--soft);padding:5px 8px;border-radius:6px}
+.thr input{font:inherit;width:62px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;text-align:right}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+@media(max-width:900px){.charts{grid-template-columns:1fr}}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 6px}
+.chart h3{font-size:15px;margin:0 0 2px}
+.chart p{font-size:12px;color:var(--text-2);margin:0 0 6px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text-2);margin-bottom:4px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px}
+.empty{color:var(--text-3);font-size:13px;padding:40px 0;text-align:center}
+.axis text{fill:var(--text-3);font-size:11px}.axis path,.axis line{stroke:var(--line)}
+.grid line{stroke:var(--line);stroke-opacity:.7}.grid path{display:none}
+.tip{position:fixed;pointer-events:none;background:#111;color:#fff;font-size:12px;padding:7px 9px;border-radius:7px;opacity:0;z-index:30;line-height:1.5;white-space:nowrap}
+.prog{display:flex;align-items:center;gap:6px;padding:0 10px}
+.prog .track{flex:1;height:8px;background:var(--soft);border-radius:4px;overflow:hidden;min-width:60px}
+.prog .fill{height:100%;background:var(--sel);border-radius:4px}
+.prog span{font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+footer{font-size:12px;color:var(--text-3);margin-top:20px}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>덜내요 Fake Door 전환 지표 시트</h1>
+  <p>광고 → 랜딩 → CTA → 신청까지의 행동 데이터를 기록하면 전환 지표가 자동으로 계산됩니다.</p>
+  <div class="bar">
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="log">① 측정 기록</button>
+      <button role="tab" aria-selected="false" data-tab="sum">② 요약 · 차트</button>
+      <button role="tab" aria-selected="false" data-tab="exp">③ 실험 계획</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="btnImport">CSV 불러오기</button>
+      <button class="btn primary" id="btnExport">CSV 내보내기 (엑셀)</button>
+      <button class="btn" id="btnReset">전체 비우기</button>
+      <input type="file" id="fileIn" accept=".csv,text/csv" hidden>
+    </div>
+  </div>
+</div>
+
+<main>
+  <!-- ① 측정 기록 -->
+  <section class="panel" id="p-log">
+    <p class="hint">하루 · 채널 · 소재 단위로 한 줄씩 기록하세요. 회색 열은 자동 계산됩니다. <kbd>Enter</kbd> 아래 칸 · <kbd>Tab</kbd> 오른쪽 칸 · 엑셀에서 여러 칸을 복사해 붙여넣을 수 있습니다.</p>
+    <div class="sheet-wrap"><table class="sheet" id="logSheet"></table></div>
+    <div class="warnline" id="logWarn"></div>
+    <button class="btn" id="addRow" style="margin-top:6px">+ 행 추가</button>
+  </section>
+
+  <!-- ② 요약 -->
+  <section class="panel" id="p-sum" hidden>
+    <div class="controls">
+      <label>묶는 기준 <select id="groupBy">
+        <option value="exp">실험</option><option value="ch">채널</option><option value="cr" selected>소재</option><option value="date">날짜</option>
+      </select></label>
+      <label>실험 필터 <select id="expFilter"></select></label>
+    </div>
+    <div class="thr" id="thrBox"><b style="color:var(--text-1)">판단 기준 (%)</b></div>
+    <div class="sheet-wrap" style="max-height:none"><table class="sheet" id="sumSheet"></table></div>
+    <div class="controls" style="margin-top:18px">
+      <label>차트 지표 <select id="metricSel"></select></label>
+    </div>
+    <div class="charts">
+      <div class="chart"><h3 id="c1t">묶음별 비교</h3><p>막대 = 선택한 지표 · 검은 선 = 판단 기준(입력한 경우)</p><div id="chartBar"></div></div>
+      <div class="chart"><h3>날짜별 추이 (소재별)</h3><p>선택한 지표의 일별 변화</p><div class="legend" id="lineLegend"></div><div id="chartLine"></div></div>
+    </div>
+    <div class="chart" style="margin-top:16px"><h3>단계별 인원 (퍼널)</h3><p>필터한 범위 전체 합계 기준</p><div id="chartFunnel"></div></div>
+  </section>
+
+  <!-- ③ 실험 계획 -->
+  <section class="panel" id="p-exp" hidden>
+    <p class="hint">실험 이름은 ① 측정 기록의 ‘실험’ 열과 같게 쓰면, 모인 방문 세션이 최소 표본 대비 얼마나 찼는지 표시됩니다.</p>
+    <div class="sheet-wrap"><table class="sheet" id="expSheet"></table></div>
+    <button class="btn" id="addExp" style="margin-top:10px">+ 실험 추가</button>
+  </section>
+
+  <footer>입력한 내용은 이 브라우저에만 저장되고 외부로 전송되지 않습니다. 다른 사람과 나누려면 CSV로 내보내세요. · 클릭·이메일 등록만으로 실제 지불 의사나 시장 수요를 확정할 수 없습니다.</footer>
+</main>
+<div class="tip" id="tip"></div>
+
+<script>
+/* ===================== 정의 ===================== */
+const LOG_COLS = [
+  {k:"date", h:"날짜", t:"date", w:"w-date"},
+  {k:"exp",  h:"실험", t:"text", w:"w-txt", ph:"예: 영상 A/B"},
+  {k:"ch",   h:"채널", t:"text", w:"w-txt", ph:"인스타그램"},
+  {k:"cr",   h:"소재", sub:"영상·문구 버전", t:"text", w:"w-txt", ph:"영상 A"},
+  {k:"imp",  h:"노출", t:"num", w:"w-num"},
+  {k:"clk",  h:"광고 클릭", t:"num", w:"w-num"},
+  {k:"vis",  h:"방문 세션", t:"num", w:"w-num"},
+  {k:"cta",  h:"CTA 실행", sub:"세션", t:"num", w:"w-num"},
+  {k:"sig",  h:"신청 완료", sub:"중복 제거 후", t:"num", w:"w-num"},
+  {k:"memo", h:"메모", t:"text", w:"w-memo"},
+];
+const METRICS = [
+  {k:"ctr",   h:"광고 클릭률",   sub:"클릭÷노출",   num:"clk", den:"imp"},
+  {k:"lcta",  h:"랜딩 CTA 전환율", sub:"CTA÷방문", num:"cta", den:"vis"},
+  {k:"email", h:"이메일 전환율", sub:"신청÷방문",   num:"sig", den:"vis"},
+  {k:"after", h:"CTA 이후 신청률", sub:"신청÷CTA", num:"sig", den:"cta"},
+];
+const NUMS = ["imp","clk","vis","cta","sig"];
+const STAGE_NAMES = {imp:"노출", clk:"광고 클릭", vis:"방문 세션", cta:"CTA 실행", sig:"신청 완료"};
+const EXP_COLS = [
+  {k:"name", h:"실험 이름", t:"text", w:"w-txt"},
+  {k:"hyp",  h:"가설", t:"text", w:"w-memo"},
+  {k:"chg",  h:"바꾸는 것 하나", t:"text", w:"w-txt"},
+  {k:"cmp",  h:"비교 소재", sub:"예: 영상 A vs B", t:"text", w:"w-txt"},
+  {k:"metric", h:"주요 지표", t:"text", w:"w-txt"},
+  {k:"crit", h:"판단 기준", t:"text", w:"w-memo"},
+  {k:"start", h:"시작", t:"date", w:"w-date"},
+  {k:"end",  h:"종료", t:"date", w:"w-date"},
+  {k:"min",  h:"최소 표본", sub:"방문 세션", t:"num", w:"w-num"},
+  {k:"status", h:"상태", t:"text", w:"w-num", ph:"계획"},
+  {k:"result", h:"결과 메모", t:"text", w:"w-memo"},
+];
+const PALETTE = ["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300","#6250d6","#e34948"];
+
+/* ===================== 상태 ===================== */
+const KEY = "dulnaeyo-fakedoor-metrics-v1";
+let state = {log:[], exp:[], thr:{}};
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.log) state = Object.assign(state, s); } catch(e) {}
+const blankLog = () => Object.fromEntries(LOG_COLS.map(c => [c.k, ""]));
+const blankExp = () => Object.fromEntries(EXP_COLS.map(c => [c.k, ""]));
+if (!state.log.length) for (let i = 0; i < 5; i++) state.log.push(blankLog());
+if (!state.exp.length) for (let i = 0; i < 2; i++) state.exp.push(blankExp());
+let saveT; function save(){ clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }, 200); }
+
+/* ===================== 공통 ===================== */
+const n = v => { const x = parseFloat(String(v).replace(/,/g, "")); return isFinite(x) ? x : 0; };
+const fmtN = d3.format(",");
+const rate = (r, m) => n(r[m.den]) > 0 ? n(r[m.num]) / n(r[m.den]) * 100 : null;
+const fmtP = v => v == null ? "–" : (v >= 10 ? v.toFixed(1) : v.toFixed(2)) + "%";
+const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const tip = document.getElementById("tip");
+function showTip(ev, html){ tip.innerHTML = html; tip.style.opacity = 1; const w = tip.offsetWidth;
+  tip.style.left = (ev.clientX + 14 + w > innerWidth ? ev.clientX - w - 14 : ev.clientX + 14) + "px"; tip.style.top = (ev.clientY + 14) + "px"; }
+const hideTip = () => tip.style.opacity = 0;
+const isBelow = (m, v) => v != null && state.thr[m.k] !== undefined && state.thr[m.k] !== "" && v < n(state.thr[m.k]);
+
+/* ===================== 탭 ===================== */
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+  document.querySelectorAll(".panel").forEach(p => p.hidden = p.id !== "p-" + b.dataset.tab);
+  if (b.dataset.tab === "sum") renderSummary();
+  if (b.dataset.tab === "exp") renderExp();
+});
+
+/* ===================== 시트 공통 (입력·키보드·붙여넣기) ===================== */
+function buildSheet(table, cols, rows, opts){
+  const at = opts.calcAfter ?? cols.length;   // 계산 열을 넣을 위치
+  const hcell = c => `<th class="${c.w}">${c.h}${c.sub ? `<small>${c.sub}</small>` : ""}</th>`;
+  const head = `<thead><tr><th class="rn">#</th>${cols.slice(0, at).map(hcell).join("")}` +
+    (opts.calcHead || "") + cols.slice(at).map(hcell).join("") + `<th></th></tr></thead>`;
+  const icell = (r, i) => (c, j) => `<td class="${c.t === "num" ? "num" : ""}" data-k="${c.k}"><input data-r="${i}" data-c="${j}" ${c.t === "date" ? 'type="date"' : c.t === "num" ? 'inputmode="numeric"' : ""} value="${esc(r[c.k])}" placeholder="${esc(c.ph || "")}"></td>`;
+  const body = `<tbody>${rows.map((r, i) => `<tr data-i="${i}"><td class="rn">${i+1}</td>` +
+    cols.map(icell(r, i)).slice(0, at).join("") +
+    (opts.calcCells ? opts.calcCells(r, i) : "") + cols.map(icell(r, i)).slice(at).join("") + `<td class="del"><button title="행 삭제" aria-label="${i+1}행 삭제">✕</button></td></tr>`).join("")}</tbody>`;
+  table.innerHTML = head + body + (opts.foot ? opts.foot() : "");
+}
+function wireSheet(table, cols, getRows, onChange, onStructure){
+  table.addEventListener("input", e => {
+    const el = e.target; if (el.dataset.r === undefined) return;
+    const rows = getRows(), c = cols[+el.dataset.c];
+    rows[+el.dataset.r][c.k] = el.value; onChange(+el.dataset.r); save();
+  });
+  table.addEventListener("keydown", e => {
+    const el = e.target; if (el.dataset.r === undefined) return;
+    const r = +el.dataset.r, c = +el.dataset.c;
+    let tr = r, tc = c;
+    if (e.key === "Enter") { tr = r + (e.shiftKey ? -1 : 1); e.preventDefault();
+      if (tr >= getRows().length) { getRows().push(onStructure.blank()); onStructure.rebuild(); } }
+    else if (e.key === "ArrowDown" && el.type !== "date") tr = r + 1;
+    else if (e.key === "ArrowUp" && el.type !== "date") tr = r - 1;
+    else return;
+    const t = table.querySelector(`input[data-r="${tr}"][data-c="${tc}"]`); if (t) { e.preventDefault(); t.focus(); t.select?.(); }
+  });
+  table.addEventListener("paste", e => {
+    const el = e.target; if (el.dataset.r === undefined) return;
+    const txt = (e.clipboardData || window.clipboardData).getData("text");
+    if (!/[\t\n]/.test(txt.trim())) return;
+    e.preventDefault();
+    const grid = txt.replace(/\r/g, "").replace(/\n$/, "").split("\n").map(l => l.split("\t"));
+    const rows = getRows(), r0 = +el.dataset.r, c0 = +el.dataset.c;
+    grid.forEach((line, i) => {
+      while (rows.length <= r0 + i) rows.push(onStructure.blank());
+      line.forEach((v, j) => { const c = cols[c0 + j]; if (c) rows[r0 + i][c.k] = c.t === "date" ? normDate(v) : v.trim(); });
+    });
+    onStructure.rebuild(); save();
+  });
+  table.addEventListener("click", e => {
+    if (!e.target.closest("td.del button")) return;
+    const i = +e.target.closest("tr").dataset.i; getRows().splice(i, 1);
+    if (!getRows().length) getRows().push(onStructure.blank());
+    onStructure.rebuild(); save();
+  });
+}
+function normDate(v){
+  v = v.trim(); const m = v.match(/^(\d{4})[.\-/ ]\s*(\d{1,2})[.\-/ ]\s*(\d{1,2})/);
+  return m ? `${m[1]}-${m[2].padStart(2,"0")}-${m[3].padStart(2,"0")}` : v;
+}
+
+/* ===================== ① 측정 기록 ===================== */
+const logTable = document.getElementById("logSheet");
+const calcCells = r => METRICS.map(m => { const v = rate(r, m); return `<td class="calc w-calc" data-m="${m.k}"><span class="${isBelow(m, v) ? "below" : ""}">${fmtP(v)}</span></td>`; }).join("");
+function totals(rows){ const t = Object.fromEntries(NUMS.map(k => [k, 0])); rows.forEach(r => NUMS.forEach(k => t[k] += n(r[k]))); return t; }
+function logFoot(){
+  const t = totals(state.log);
+  return `<tfoot><tr><td class="rn"></td><td class="lbl" colspan="4">합계</td>` +
+    NUMS.map(k => `<td>${fmtN(t[k])}</td>`).join("") +
+    METRICS.map(m => `<td>${fmtP(rate(t, m))}</td>`).join("") + `<td></td><td></td></tr></tfoot>`;
+}
+function rebuildLog(){
+  buildSheet(logTable, LOG_COLS, state.log, {
+    calcHead: METRICS.map(m => `<th class="calc w-calc">${m.h}<small>${m.sub}</small></th>`).join(""),
+    calcCells, foot: logFoot, calcAfter: LOG_COLS.findIndex(c => c.k === "memo") });
+  state.log.forEach((_, i) => checkRow(i)); updateWarn();
+}
+function checkRow(i){
+  const r = state.log[i], tr = logTable.querySelector(`tbody tr[data-i="${i}"]`); if (!tr) return;
+  const bad = {clk: n(r.clk) > n(r.imp) && r.imp !== "", cta: n(r.cta) > n(r.vis) && r.vis !== "", sig: n(r.sig) > n(r.cta) && r.cta !== ""};
+  ["clk","cta","sig"].forEach(k => tr.querySelector(`td[data-k="${k}"]`).classList.toggle("bad", !!bad[k]));
+}
+function updateWarn(){
+  const bad = state.log.map((r, i) => (n(r.clk) > n(r.imp) && r.imp !== "") || (n(r.cta) > n(r.vis) && r.vis !== "") || (n(r.sig) > n(r.cta) && r.cta !== "") ? i + 1 : 0).filter(Boolean);
+  document.getElementById("logWarn").textContent = bad.length ? `값 확인: ${bad.join(", ")}행 — 다음 단계 수가 앞 단계보다 큽니다.` : "";
+}
+wireSheet(logTable, LOG_COLS, () => state.log, i => {
+  const tr = logTable.querySelector(`tbody tr[data-i="${i}"]`);
+  tr.querySelectorAll("td.calc").forEach(td => { const m = METRICS.find(x => x.k === td.dataset.m), v = rate(state.log[i], m);
+    td.innerHTML = `<span class="${isBelow(m, v) ? "below" : ""}">${fmtP(v)}</span>`; });
+  logTable.querySelector("tfoot").outerHTML = logFoot();
+  checkRow(i); updateWarn();
+}, {blank: blankLog, rebuild: rebuildLog});
+document.getElementById("addRow").onclick = () => {
+  const last = state.log[state.log.length - 1] || {}, r = blankLog();
+  r.exp = last.exp || ""; r.ch = last.ch || ""; // 반복 입력 줄이기
+  state.log.push(r); rebuildLog(); save();
+  logTable.querySelector(`input[data-r="${state.log.length - 1}"][data-c="0"]`).focus();
+};
+rebuildLog();
+
+/* ===================== ② 요약 · 차트 ===================== */
+const thrBox = document.getElementById("thrBox");
+thrBox.insertAdjacentHTML("beforeend", METRICS.map(m =>
+  `<label>${m.h}<input data-thr="${m.k}" inputmode="decimal" placeholder="미정" value="${esc(state.thr[m.k] ?? "")}"></label>`).join("") +
+  `<span style="color:var(--text-3)">기준을 입력하면 기준 미만 값에 ▼ 표시가 붙습니다.</span>`);
+thrBox.addEventListener("input", e => { if (!e.target.dataset.thr) return; state.thr[e.target.dataset.thr] = e.target.value.trim(); save(); renderSummary(); rebuildLog(); });
+const metricSel = document.getElementById("metricSel");
+metricSel.innerHTML = METRICS.map(m => `<option value="${m.k}">${m.h}</option>`).join("");
+["groupBy","expFilter","metricSel"].forEach(id => document.getElementById(id).addEventListener("change", renderSummary));
+const GROUP_LABEL = {exp:"실험", ch:"채널", cr:"소재", date:"날짜"};
+
+function filledRows(){
+  const f = document.getElementById("expFilter").value;
+  return state.log.filter(r => NUMS.some(k => r[k] !== "") && (f === "__all" || (r.exp || "(미지정)") === f));
+}
+function renderSummary(){
+  // 실험 필터 옵션
+  const sel = document.getElementById("expFilter"), cur = sel.value || "__all";
+  const exps = [...new Set(state.log.filter(r => NUMS.some(k => r[k] !== "")).map(r => r.exp || "(미지정)"))];
+  sel.innerHTML = `<option value="__all">전체</option>` + exps.map(e => `<option>${esc(e)}</option>`).join("");
+  sel.value = exps.includes(cur) ? cur : "__all";
+
+  const g = document.getElementById("groupBy").value, rows = filledRows();
+  const groups = d3.rollups(rows, v => totals(v), r => r[g] || "(미지정)").sort((a, b) => g === "date" ? d3.ascending(a[0], b[0]) : 0);
+  const tot = totals(rows);
+  const head = `<thead><tr><th>${GROUP_LABEL[g]}</th>${NUMS.map(k => `<th class="w-num">${STAGE_NAMES[k]}</th>`).join("")}${METRICS.map(m => `<th class="calc w-calc">${m.h}<small>${m.sub}</small></th>`).join("")}</tr></thead>`;
+  const line = (label, t) => `<td style="padding:0 10px">${esc(label)}</td>${NUMS.map(k => `<td class="calc" style="background:#fff">${fmtN(t[k])}</td>`).join("")}${METRICS.map(m => { const v = rate(t, m); return `<td class="calc"><span class="${isBelow(m, v) ? "below" : ""}">${fmtP(v)}</span></td>`; }).join("")}`;
+  document.getElementById("sumSheet").innerHTML = head +
+    `<tbody>${groups.length ? groups.map(([k, t]) => `<tr>${line(k, t)}</tr>`).join("") : `<tr><td colspan="${1 + NUMS.length + METRICS.length}" class="empty">① 측정 기록에 숫자를 입력하면 요약이 채워집니다.</td></tr>`}</tbody>` +
+    `<tfoot><tr><td class="lbl">합계</td>${NUMS.map(k => `<td>${fmtN(tot[k])}</td>`).join("")}${METRICS.map(m => `<td>${fmtP(rate(tot, m))}</td>`).join("")}</tr></tfoot>`;
+
+  const m = METRICS.find(x => x.k === metricSel.value);
+  document.getElementById("c1t").textContent = `${GROUP_LABEL[g]}별 ${m.h}`;
+  drawBar(groups, m); drawLine(rows, m); drawFunnel(tot);
+}
+
+function drawBar(groups, m){
+  const el = document.getElementById("chartBar"); el.innerHTML = "";
+  const data = groups.map(([k, t]) => ({k, v: rate(t, m), t})).filter(d => d.v != null);
+  if (!data.length) { el.innerHTML = `<div class="empty">데이터가 없습니다</div>`; return; }
+  const thr = state.thr[m.k] !== undefined && state.thr[m.k] !== "" ? n(state.thr[m.k]) : null;
+  const W = el.clientWidth || 440, H = 260, M = {t:18, r:10, b:40, l:44};
+  const inner = Math.min(W - M.l - M.r, data.length * 120), off = M.l + (W - M.l - M.r - inner) / 2;
+  const x = d3.scaleBand().domain(data.map(d => d.k)).range([off, off + inner]).padding(.35);
+  const y = d3.scaleLinear().domain([0, d3.max([...data.map(d => d.v), thr || 0]) * 1.15 || 1]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("width","100%").attr("role","img").attr("aria-label", m.h);
+  svg.append("g").attr("class","grid").attr("transform",`translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W-M.l-M.r)).tickFormat(""));
+  svg.append("g").attr("class","axis").attr("transform",`translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d => d + "%")).call(g => g.select(".domain").remove());
+  svg.append("g").attr("class","axis").attr("transform",`translate(0,${H-M.b})`).call(d3.axisBottom(x).tickSizeOuter(0))
+    .selectAll("text").text(d => d.length > 9 ? d.slice(0, 8) + "…" : d);
+  const bw = x.bandwidth(), r = Math.min(4, bw/2);
+  svg.selectAll("path.b").data(data).join("path").attr("fill", PALETTE[0])
+    .attr("d", d => { const x0 = x(d.k), yt = y(d.v), y0 = y(0), rr = Math.min(r, y0 - yt); if (y0 - yt <= 0) return "";
+      return `M${x0},${y0}V${yt+rr}Q${x0},${yt} ${x0+rr},${yt}H${x0+bw-rr}Q${x0+bw},${yt} ${x0+bw},${yt+rr}V${y0}Z`; });
+  if (bw >= 30) svg.selectAll("text.v").data(data).join("text").attr("x", d => x(d.k) + bw/2).attr("y", d => y(d.v) - 5)
+    .attr("text-anchor","middle").attr("font-size",11).attr("fill","#52514e").text(d => fmtP(d.v));
+  if (thr != null) svg.append("line").attr("x1", M.l).attr("x2", W - M.r).attr("y1", y(thr)).attr("y2", y(thr)).attr("stroke","#0b0b0b").attr("stroke-width",1.5).attr("stroke-dasharray","5 4");
+  svg.selectAll("rect.hit").data(data).join("rect").attr("x", d => x(d.k) - x.step()*x.paddingInner()/2).attr("width", x.step()).attr("y", M.t).attr("height", H - M.b - M.t).attr("fill","transparent")
+    .on("mousemove", (ev, d) => showTip(ev, `<b>${esc(d.k)}</b><br>${m.h}: ${fmtP(d.v)}<br>${STAGE_NAMES[m.num]} ${fmtN(d.t[m.num])} ÷ ${STAGE_NAMES[m.den]} ${fmtN(d.t[m.den])}` + (thr != null ? `<br>기준 ${thr}%` : "")))
+    .on("mouseleave", hideTip);
+}
+
+function drawLine(rows, m){
+  const el = document.getElementById("chartLine"), lg = document.getElementById("lineLegend"); el.innerHTML = ""; lg.innerHTML = "";
+  const dated = rows.filter(r => /^\d{4}-\d{2}-\d{2}$/.test(r.date));
+  const crs = [...new Set(dated.map(r => r.cr || "(미지정)"))];
+  const series = crs.slice(0, 8).map((c, i) => ({c, color: PALETTE[i],
+    pts: d3.rollups(dated.filter(r => (r.cr || "(미지정)") === c), v => totals(v), r => r.date)
+      .map(([d, t]) => ({d: new Date(d), ds: d, v: rate(t, m)})).filter(p => p.v != null).sort((a, b) => a.d - b.d)})).filter(s => s.pts.length);
+  if (!series.length) { el.innerHTML = `<div class="empty">날짜가 입력된 데이터가 없습니다</div>`; return; }
+  if (crs.length > 8) lg.insertAdjacentHTML("beforeend", `<span>소재가 8개를 넘어 앞의 8개만 표시</span>`);
+  if (series.length > 1) lg.innerHTML += series.map(s => `<span><i class="sw" style="background:${s.color}"></i>${esc(s.c)}</span>`).join("");
+  const all = series.flatMap(s => s.pts), thr = state.thr[m.k] !== undefined && state.thr[m.k] !== "" ? n(state.thr[m.k]) : null;
+  const W = el.clientWidth || 440, H = 240, M = {t:14, r:20, b:30, l:44};
+  const uniqDates = [...new Set(all.map(p => p.ds))].sort().map(d => new Date(d));
+  const x = d3.scaleTime().domain(d3.extent(all, p => p.d)).range([M.l, W - M.r]);
+  if (x.domain()[0].getTime() === x.domain()[1].getTime()) x.domain([d3.timeDay.offset(x.domain()[0], -1), d3.timeDay.offset(x.domain()[1], 1)]);
+  const y = d3.scaleLinear().domain([0, d3.max([...all.map(p => p.v), thr || 0]) * 1.15 || 1]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("width","100%").attr("role","img").attr("aria-label", `${m.h} 날짜별 추이`);
+  svg.append("g").attr("class","grid").attr("transform",`translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W-M.l-M.r)).tickFormat(""));
+  svg.append("g").attr("class","axis").attr("transform",`translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d => d + "%")).call(g => g.select(".domain").remove());
+  svg.append("g").attr("class","axis").attr("transform",`translate(0,${H-M.b})`).call(d3.axisBottom(x).tickValues(uniqDates.length > 8 ? uniqDates.filter((_, i) => i % Math.ceil(uniqDates.length / 8) === 0) : uniqDates).tickFormat(d3.timeFormat("%m/%d")).tickSizeOuter(0));
+  if (thr != null) svg.append("line").attr("x1", M.l).attr("x2", W - M.r).attr("y1", y(thr)).attr("y2", y(thr)).attr("stroke","#0b0b0b").attr("stroke-width",1.5).attr("stroke-dasharray","5 4");
+  const ln = d3.line().x(p => x(p.d)).y(p => y(p.v));
+  series.forEach(s => {
+    svg.append("path").attr("d", ln(s.pts)).attr("fill","none").attr("stroke", s.color).attr("stroke-width",2);
+    svg.selectAll(null).data(s.pts).join("circle").attr("cx", p => x(p.d)).attr("cy", p => y(p.v)).attr("r",4).attr("fill", s.color).attr("stroke","#fcfcfb").attr("stroke-width",2);
+  });
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke","#8a8984").attr("stroke-width",1).style("opacity",0);
+  const dates = [...new Set(all.map(p => p.ds))].sort();
+  svg.append("rect").attr("x", M.l).attr("y", M.t).attr("width", W - M.l - M.r).attr("height", H - M.t - M.b).attr("fill","transparent")
+    .on("mousemove", ev => {
+      const [mx] = d3.pointer(ev), t = x.invert(mx);
+      const ds = dates.reduce((a, b) => Math.abs(new Date(b) - t) < Math.abs(new Date(a) - t) ? b : a);
+      cross.attr("x1", x(new Date(ds))).attr("x2", x(new Date(ds))).style("opacity",1);
+      showTip(ev, `<b>${ds}</b><br>` + series.map(s => { const p = s.pts.find(q => q.ds === ds); return `<i class="sw" style="background:${s.color}"></i> ${esc(s.c)}: ${p ? fmtP(p.v) : "–"}`; }).join("<br>"));
+    })
+    .on("mouseleave", () => { cross.style("opacity",0); hideTip(); });
+}
+
+function drawFunnel(t){
+  const el = document.getElementById("chartFunnel"); el.innerHTML = "";
+  if (!NUMS.some(k => t[k] > 0)) { el.innerHTML = `<div class="empty">데이터가 없습니다</div>`; return; }
+  const W = el.clientWidth || 800, rowH = 40, M = {l:90, r:130}, H = rowH * NUMS.length + 6;
+  const x = d3.scaleLinear().domain([0, d3.max(NUMS, k => t[k]) || 1]).range([0, W - M.l - M.r]);
+  const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("width","100%").attr("role","img").attr("aria-label","단계별 인원");
+  const g = svg.selectAll("g").data(NUMS).join("g").attr("transform", (k, i) => `translate(0,${3 + i * rowH})`);
+  g.append("text").attr("x", M.l - 10).attr("y", rowH/2).attr("dy",".35em").attr("text-anchor","end").attr("font-size",12).attr("fill","#52514e").text(k => STAGE_NAMES[k]);
+  g.append("rect").attr("x", M.l).attr("y", 8).attr("height", rowH - 16).attr("width", W - M.l - M.r).attr("rx",4).attr("fill","#f0efec");
+  g.append("rect").attr("x", M.l).attr("y", 8).attr("height", rowH - 16).attr("rx",4).attr("fill", PALETTE[0]).attr("width", k => t[k] > 0 ? Math.max(3, x(t[k])) : 0);
+  g.append("text").attr("x", W - M.r + 10).attr("y", rowH/2).attr("dy",".35em").attr("font-size",12).attr("fill","#0b0b0b")
+    .text((k, i) => i ? `${fmtN(t[k])}  (${t[NUMS[i-1]] > 0 ? fmtP(t[k] / t[NUMS[i-1]] * 100) : "–"})` : fmtN(t[k]));
+  g.append("rect").attr("width", W).attr("height", rowH).attr("fill","transparent")
+    .on("mousemove", (ev, k) => { const i = NUMS.indexOf(k);
+      showTip(ev, `<b>${STAGE_NAMES[k]}</b> ${fmtN(t[k])}` + (i ? `<br>앞 단계 대비 ${t[NUMS[i-1]] > 0 ? fmtP(t[k]/t[NUMS[i-1]]*100) : "–"}<br>노출 대비 ${t.imp > 0 ? fmtP(t[k]/t.imp*100) : "–"}` : "")); })
+    .on("mouseleave", hideTip);
+}
+
+/* ===================== ③ 실험 계획 ===================== */
+const expTable = document.getElementById("expSheet");
+function progCell(r){
+  const min = n(r.min), got = d3.sum(state.log.filter(l => r.name && l.exp === r.name), l => n(l.vis));
+  if (!r.name || !min) return `<td class="calc" style="text-align:left;color:var(--text-3);width:150px">–</td>`;
+  const p = Math.min(100, got / min * 100);
+  return `<td style="width:150px"><div class="prog"><div class="track"><div class="fill" style="width:${p}%"></div></div><span>${fmtN(got)}/${fmtN(min)}</span></div></td>`;
+}
+function rebuildExp(){ buildSheet(expTable, EXP_COLS, state.exp, {calcHead: `<th class="calc">표본 진행<small>방문 세션</small></th>`, calcCells: progCell}); }
+function renderExp(){ rebuildExp(); }
+wireSheet(expTable, EXP_COLS, () => state.exp, i => {
+  const tr = expTable.querySelector(`tbody tr[data-i="${i}"]`), cells = tr.querySelectorAll("td");
+  cells[cells.length - 2].outerHTML = progCell(state.exp[i]);
+}, {blank: blankExp, rebuild: rebuildExp});
+document.getElementById("addExp").onclick = () => { state.exp.push(blankExp()); rebuildExp(); save(); };
+rebuildExp();
+
+/* ===================== CSV 내보내기 / 불러오기 ===================== */
+const csvCell = v => { v = String(v ?? ""); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
+function download(name, text){
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + text], {type:"text/csv;charset=utf-8"}));
+  a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+document.getElementById("btnExport").onclick = () => {
+  const tab = document.querySelector(".tabs button[aria-selected=true]").dataset.tab;
+  if (tab === "exp") {
+    download("실험계획.csv", [EXP_COLS.map(c => c.h).join(","), ...state.exp.map(r => EXP_COLS.map(c => csvCell(r[c.k])).join(","))].join("\n"));
+  } else {
+    const rows = state.log.filter(r => LOG_COLS.some(c => r[c.k] !== ""));
+    download("측정기록.csv", [[...LOG_COLS.map(c => c.h), ...METRICS.map(m => m.h)].join(","),
+      ...rows.map(r => [...LOG_COLS.map(c => csvCell(r[c.k])), ...METRICS.map(m => { const v = rate(r, m); return v == null ? "" : v.toFixed(2); })].join(","))].join("\n"));
+  }
+};
+const fileIn = document.getElementById("fileIn");
+document.getElementById("btnImport").onclick = () => fileIn.click();
+fileIn.onchange = async () => {
+  const f = fileIn.files[0]; if (!f) return;
+  const rows = d3.csvParse((await f.text()).replace(/^﻿/, ""));
+  const isExp = rows.columns.includes("실험 이름");
+  const cols = isExp ? EXP_COLS : LOG_COLS;
+  const data = rows.map(r => Object.fromEntries(cols.map(c => [c.k, c.t === "date" ? normDate(r[c.h] || "") : (r[c.h] || "")])));
+  if (!data.length) return;
+  if (!confirm(`${isExp ? "실험 계획" : "측정 기록"} ${data.length}행을 불러옵니다. 지금 내용은 바뀝니다. 계속할까요?`)) { fileIn.value = ""; return; }
+  if (isExp) { state.exp = data; rebuildExp(); } else { state.log = data; rebuildLog(); }
+  save(); renderSummary(); fileIn.value = "";
+};
+document.getElementById("btnReset").onclick = () => {
+  if (!confirm("측정 기록, 실험 계획, 판단 기준을 모두 비웁니다. 계속할까요?")) return;
+  state = {log: Array.from({length:5}, blankLog), exp: Array.from({length:2}, blankExp), thr:{}};
+  thrBox.querySelectorAll("input").forEach(i => i.value = "");
+  rebuildLog(); rebuildExp(); renderSummary(); save();
+};
+
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (!document.getElementById("p-sum").hidden) renderSummary(); }, 150); });
+</script>
+</body>
+</html>
