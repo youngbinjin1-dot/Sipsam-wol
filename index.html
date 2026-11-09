@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>덜내요 (가제) | 앱 모의실행</title>
+<style>
+:root{
+  --blue:#3182f6; --blue-d:#1b64da; --blue-w:#e8f3ff; --t1:#191f28; --t2:#4e5968; --t3:#6b7684; --t4:#8b95a1;
+  --line:#e5e8eb; --g1:#f2f4f6; --g0:#f9fafb; --red:#f04452; --red-w:#ffeeee; --ok:#0f7b4a; --ok-w:#e6f6ee; --warn:#b45f06; --warn-w:#fff3e0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#e9edf2;color:var(--t1);font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+.stage{display:flex;gap:24px;justify-content:center;align-items:flex-start;padding:24px 12px}
+.phone{width:390px;height:780px;max-height:calc(100vh - 48px);background:#fff;border-radius:32px;box-shadow:0 12px 40px rgba(0,0,0,.18);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.screen{flex:1;overflow-y:auto;padding:20px 20px 24px}
+.nav{display:flex;border-top:1px solid var(--line);background:#fff}
+.nav[hidden]{display:none}
+.nav button{flex:1;min-height:56px;border:0;background:none;color:var(--t4);font-size:12px;font-weight:600}
+.nav button[aria-current=true]{color:var(--blue)}
+.nav .ic{display:block;font-size:20px;line-height:1.2}
+.topbar{display:flex;align-items:center;gap:8px;margin:-4px 0 12px}
+.back{border:0;background:none;font-size:22px;padding:4px 8px 4px 0;color:var(--t2)}
+.step{font-size:12px;color:var(--t4);margin-left:auto}
+h1{font-size:25px;line-height:1.35;letter-spacing:-.02em;margin:8px 0 10px}
+h1 em{font-style:normal;color:var(--blue)}
+h2{font-size:21px;line-height:1.4;margin:6px 0 8px;letter-spacing:-.01em}
+h3{font-size:15px;margin:0 0 4px}
+p{margin:0 0 10px}
+.sub{color:var(--t2);font-size:15px}
+.fine{font-size:12px;color:var(--t3)}
+.tag{display:inline-block;background:var(--blue-w);color:var(--blue);font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px}
+.tag.red{background:var(--red-w);color:#c9222f}.tag.gray{background:var(--g1);color:var(--t2)}.tag.ok{background:var(--ok-w);color:var(--ok)}
+.btn{display:block;width:100%;min-height:52px;border:0;border-radius:14px;background:var(--blue);color:#fff;font-size:16px;font-weight:700;margin-top:12px}
+.btn:disabled{background:#d1d6db;cursor:not-allowed}
+.btn.sec{background:var(--g1);color:var(--t1)}
+.btn.sm{min-height:40px;font-size:14px;border-radius:10px;margin-top:8px}
+.btn.danger{background:var(--red)}
+.card{background:var(--g0);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.card.blue{background:var(--blue-w);border-color:transparent}
+.card.red{background:var(--red-w);border-color:transparent}
+.card.ok{background:var(--ok-w);border-color:transparent}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .k{font-size:14px;color:var(--t2)}
+.row .v{font-weight:700;font-size:15px;text-align:right}
+.row .src{display:block;font-size:11px;color:var(--t4);font-weight:400}
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px;white-space:nowrap}
+.b-ok{background:var(--ok-w);color:var(--ok)} .b-est{background:var(--warn-w);color:var(--warn)}
+.big{font-size:32px;font-weight:800;letter-spacing:-.02em;margin:4px 0}
+.big.owe{color:var(--red)} .big.ref{color:var(--blue)}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk input{width:22px;height:22px;margin-top:2px;accent-color:var(--blue);flex:none}
+.chk b{display:block;font-size:15px}.chk span{font-size:13px;color:var(--t3)}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;margin:8px 0;font-size:15px;font-weight:600}
+.opt[aria-pressed=true]{border-color:var(--blue);background:var(--blue-w)}
+.opt small{display:block;color:var(--t3);font-size:12px;margin-top:2px;font-weight:400}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;min-height:40px;padding:0 14px;font-size:14px;font-weight:600}
+.chip[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0}
+.toggle input{width:44px;height:24px;accent-color:var(--blue);flex:none}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:99px}
+.bar.done i{background:var(--ok)}
+input[type=range]{width:100%;accent-color:var(--blue);height:32px}
+.lbl{display:block;font-size:13px;font-weight:600;color:var(--t2);margin:14px 0 0}
+.inp{display:block;width:100%;min-height:50px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;font-size:16px;margin-top:6px;font-family:inherit;color:var(--t1);background:#fff}
+.inp:focus{outline:2px solid var(--blue);border-color:var(--blue)}
+.err{color:#c9222f;font-size:13px;font-weight:600;margin:12px 0 0}
+.links{display:flex;justify-content:center;gap:20px;margin-top:16px}.links button{border:0;background:none;color:var(--t3);font-size:14px;text-decoration:underline;min-height:40px}
+.logo{width:56px;height:56px;border-radius:18px;background:var(--blue);color:#fff;font-size:28px;font-weight:800;display:grid;place-items:center;margin-bottom:10px}
+.appname{font-size:20px;font-weight:800;margin-bottom:4px}
+.sheetbg{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;z-index:10}
+.sheetbg[hidden]{display:none}
+.sheet{background:#fff;width:100%;border-radius:24px 24px 0 0;padding:24px 20px 20px;max-height:90%;overflow:auto}
+.toast{position:absolute;left:20px;right:20px;bottom:76px;background:#333d4b;color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;text-align:center;z-index:20}
+.toast[hidden]{display:none}
+.act{border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;background:#fff}
+.act .hd{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.act .eff{font-weight:800;color:var(--blue);white-space:nowrap;font-size:15px}
+.act .eff.na{color:var(--t4);font-weight:600;font-size:13px}
+.act p{font-size:13px;color:var(--t2);margin:6px 0 0}
+.act.on{border-color:var(--blue);background:var(--blue-w)}
+.ver{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;text-align:center;margin:10px 0}
+.ver div{background:var(--g1);border-radius:12px;padding:10px 4px;font-size:13px}
+.ver b{display:block;font-size:17px}
+.side{width:300px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 18px rgba(0,0,0,.08);position:sticky;top:24px}
+.side h4{margin:0 0 10px;font-size:15px}
+.phase{display:flex;gap:6px;margin-bottom:16px}
+.phase div{flex:1;text-align:center;padding:8px 0;border-radius:10px;background:var(--g1);color:var(--t4);font-size:13px;font-weight:700}
+.phase div.on{background:var(--blue);color:#fff}.phase div.done{background:var(--blue-w);color:var(--blue)}
+.met{list-style:none;margin:0 0 16px;padding:0;font-size:13px}
+.met li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);color:var(--t3)}
+.met li.hit{color:var(--t1);font-weight:700}
+.met li.hit span:last-child{color:var(--ok)}
+.side .btn{margin-top:6px}
+@media(max-width:760px){
+  .stage{display:block;padding:0}.phone{width:100%;height:100vh;max-height:none;border-radius:0;box-shadow:none}.side{display:none}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="screen" id="screen"></div>
+    <nav class="nav" id="nav" hidden></nav>
+    <div class="sheetbg" id="sheetBg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+    <div class="toast" id="toast" hidden></div>
+  </div>
+  <aside class="side" id="side"></aside>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var APP='덜내요';
+
+/* ---------- 표기 ---------- */
+function kor(n){ n=Math.round(Math.abs(n)); var m=Math.floor(n/10000), r=n%10000;
+  if(!m) return r.toLocaleString('ko-KR')+'원';
+  return m.toLocaleString('ko-KR')+'만'+(r?' '+r.toLocaleString('ko-KR'):'')+'원'; }
+function man(n){ return (n/10000).toLocaleString('ko-KR')+'만원'; }
+var DISCL='참고용 예상치이며 세무 상담이 아니에요. 정확한 판단은 세무사에게 확인하세요.';
+
+/* ---------- 예시 계산 모델 (근사, 시연용) ----------
+   카드 공제: 총급여 25% 초과분부터. 문턱은 신용카드 사용액부터 채움. 신용 15% · 체크/현금영수증 30%, 한도 300만원.
+   카드·인적공제는 소득공제라 한계세율(15%)을 곱하고, 월세·의료비는 세액공제라 세금에서 바로 뺀다. */
+var MARG=0.15;
+function cardDed(sal,credit,check){
+  var th=sal*0.25, co=Math.max(0,credit-th), ko=Math.max(0,check-Math.max(0,th-credit));
+  return Math.min(co*0.15+ko*0.30,3000000);
+}
+var BANDS={b1:['100만원 이하',700000],b2:['100~300만원',2000000],b3:['300~500만원',4000000],b4:['500만원 이상',6000000]};
+function rentRate(sal){ return sal<=55000000?0.17:(sal<=80000000?0.15:0); }
+function rentEligible(){ return S.ans.rent==='yes' && S.ans.house==='yes' && rentRate(S.d.salary)>0; }
+function rentCredit(){ return rentEligible()? Math.min(S.d.rent*12,10000000)*rentRate(S.d.salary):0; }
+function depDed(){ return S.ans.dep==='yes'? S.ans.depN*1500000*MARG:0; }
+function medCredit(){ var b=BANDS[S.ans.medBand]; if(!(S.sens&&S.ans.med==='yes'&&b)) return 0; return Math.max(0,b[1]-S.d.salary*0.03)*0.15; }
+function baseTax(){ return 2365625*(S.d.salary/50000000); }
+function split(p){ var rem=p.spend+p.big, chk=Math.round(rem*p.checkPct/100/10000)*10000; return {rem:rem,chk:chk,cr:rem-chk}; }
+function taxOf(p,noExtra){
+  var s=split(p), ded=cardDed(S.d.salary,S.d.credit+s.cr,S.d.check+s.chk)*MARG;
+  var t=baseTax()-ded-(noExtra?0:depDed()+rentCredit()+medCredit());
+  return Math.max(0,Math.round(t/10)*10);
+}
+function recPct(p){ var s=p.spend+p.big; if(!s) return 0; var crPart=Math.max(0,Math.min(s,S.d.salary*0.25-S.d.credit-S.d.check)); return Math.round((s-crPart)/s*20)*5; }
+function baseline(){ return {spend:2000000,big:0,checkPct:0}; }
+function diffOf(p){ return taxOf(p)-S.paid; }          // 양수 = 추가 납부
+function cardSaving(p){ return taxOf({spend:p.spend,big:p.big,checkPct:0})-taxOf(p); }
+function resultText(diff){ return diff>0?['추가 납부 예상 '+kor(diff),'owe']:diff<0?['환급 예상 '+kor(diff),'ref']:['납부·환급 차이 없음','ref']; }
+
+/* ---------- 상태 ---------- */
+function fresh(){ return {
+  screen:'s00', tab:'home', history:[], stage:'nov',
+  terms:false, privacy:false, link:false, sens:false, mkt:false,
+  
+  manual:false, d:{salary:42000000,credit:9000000,check:0,excl:1300000,rent:350000}, salaryOk:false,
+  ans:{rent:null,house:null,dep:null,depN:0,life:null,med:null,medBand:null}, qi:0, pend:null,
+  paid:0, nov:null, plan:{spend:2000000,big:0,checkPct:0,saved:false}, picked:{}, noti:true,
+  seenSheet:false, report:null, dec:null, final:null, helper:{up:false,ok:{}}, subOk:false, subOn:false, subPaidOk:false,
+  touches:0, counting:false, touchFinal:null, trial:true, checks:{}
+};}
+var S=fresh(), M={};
+var ML=[['link','토스 연동 동의'],['touch','첫 결과까지 터치'],['salary','연봉 추정 [맞아요]'],['plan','슬라이더 계획 저장'],['sheet','전환 알림 확인'],['sub','1월 구독 시작(시연)'],['helper','도우미 제출 가이드 완료']];
+function track(k,v){ M[k]=v===undefined?1:v; }
+
+/* ---------- 이동 ---------- */
+var TABS={home:1,ways:1,me:1}, STARTS=['s00','s01','link','manual','s02','s03'], ENDS=['s09','s10','s11','s12','s13','done'];
+function go(sc,o){ o=o||{};
+  if(!o.noPush && S.screen!==sc) S.history.push(S.screen);
+  S.screen=sc; if(TABS[sc]) S.tab=sc; if(sc==='s05') S.tab='ways';
+  if(sc==='link'&&!S.est0&&!S.counting&&S.touchFinal==null) S.counting=true;
+  render(); $('screen').scrollTop=0; }
+function back(){ var p=S.history.pop(); if(p) go(p,{noPush:true}); }
+function phase(){ return ENDS.indexOf(S.screen)>-1?2:(STARTS.indexOf(S.screen)>-1?0:1); }
+
+/* ---------- 공통 조각 ---------- */
+function top(t,step){ return '<div class="topbar"><button class="back" data-act="back" aria-label="뒤로">←</button><b>'+t+'</b>'+(step?'<span class="step">'+step+'</span>':'')+'</div>'; }
+function openSheet(h){ $('sheet').innerHTML=h; $('sheetBg').hidden=false; var i=$('sheet').querySelector('input'); if(i) i.focus(); }
+function closeSheet(){ $('sheetBg').hidden=true; }
+function toast(m){ var t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(function(){t.hidden=true},2200); }
+function dday(){ return S.stage==='dec'?'12월 31일까지 D-17':'12월 31일까지 D-52'; }
+function thr(){ return S.d.salary*0.25; }
+function counted(){ return S.d.credit+S.d.check; }
+
+/* ---------- 줄이는 방법 (핵심) ---------- */
+function actions(){
+  var L=[], rec=Object.assign({},S.plan,{checkPct:recPct(S.plan)});
+  L.push({id:'card',t:'남은 지출, 결제 수단 정하기',eff:cardSaving(rec),sure:true,dl:'12월 31일 전',cat:'now',
+    how:'카드 공제는 12월 31일까지 결제한 금액 기준이에요. 문턱(총급여의 25%)까지는 신용카드, 넘은 뒤부터는 체크카드·현금영수증으로 정하면 공제율이 2배예요. 원래 쓸 돈만 해당돼요.'});
+  if(S.ans.rent==='yes'){
+    var ok=S.ans.house==='yes';
+    L.push({id:'rent',t:'월세 세액공제 챙기기',eff:Math.min(S.d.rent*12,10000000)*(rentRate(S.d.salary)||0.17),sure:ok&&rentEligible(),dl:'12월 31일 기준 요건',cat:'now',
+      how:ok?'월세는 계좌이체로 계속 내세요. 전입신고·무주택 세대주 요건이 12월 31일 기준이에요. 임대차계약서 사본과 이체 내역은 1월에 필요해요.':'무주택 세대주·전입신고 요건을 지금 확인해 보세요. 해당되면 세금에서 바로 빠져요. 모르겠어요로 답해서 이번 예상에는 넣지 않았어요.'});
+  }
+  if(S.ans.dep==='yes'){
+    L.push({id:'dep',t:'부양가족 공제 대상 확인',eff:S.ans.depN*1500000*MARG,sure:true,dl:'12월 31일 기준',cat:'now',
+      how:'같이 사는 부모님·자녀의 나이·소득 요건을 확인하세요. 형제자매와 중복 공제는 안 돼요. 정확한 요건은 1월 도우미에서 한 번 더 확인해요.'});
+  }
+  var medOn=S.sens&&S.ans.med==='yes'&&BANDS[S.ans.medBand];
+  if(S.ans.med==='yes'||S.ans.med==='unknown'){
+    L.push({id:'med',t:'병원비 영수증 확인',eff:medOn?medCredit():null,sure:!!medOn&&medCredit()>0,dl:'1월 간소화 자료로 확인',cat:'jan',
+      how:'올해 낸 의료비는 1월 간소화 자료에서 확인돼요. 총급여의 3%를 넘는 금액부터 공제돼요. 공제를 받으려고 병원에 가라는 뜻은 아니에요.'+(S.sens?'':' (민감정보 미동의로 이번 계산에서는 뺐어요)')});
+  }
+  L.push({id:'pension',t:'연금저축·IRP, 이미 넣고 있다면',eff:null,sure:false,dl:'12월 31일까지 납입분',cat:'info',
+    how:'이미 납입 중인 금액이 세액공제 한도 안인지만 확인하세요. 추가 납입을 권하지 않고, 특정 상품은 추천하지 않아요.'});
+  L.sort(function(a,b){ return (b.eff||0)-(a.eff||0); });
+  return L;
+}
+function potential(){ return actions().reduce(function(s,a){ return s+((a.eff&&a.id!=='card')?a.eff:0); },0); }
+
+function actCard(a,opt){ opt=opt||{};
+  var on=S.picked[a.id], eff=a.eff?('약 '+kor(a.eff)+' <span class="fine" style="font-weight:400">줄어요</span>'):'<span class="eff na">금액 계산 없음</span>';
+  return '<div class="act '+(on?'on':'')+'"><div class="hd"><div><b style="font-size:15px">'+a.t+'</b><div style="margin-top:4px"><span class="tag '+(a.cat==='now'?'red':a.cat==='jan'?'gray':'gray')+'">'+(a.cat==='now'?'⏰ ':'')+a.dl+'</span> '+(a.eff&&!a.sure&&a.id!=='card'?'<span class="tag gray">확인 필요</span>':'')+'</div></div><div class="eff">'+eff+'</div></div>'+
+    (opt.compact?'':'<p>'+a.how+'</p>')+
+    (opt.compact?'':'<div style="display:flex;gap:8px">'+(a.id==='card'?'<button class="btn sm" data-act="to" data-v="s05" style="flex:1">슬라이더로 정하기</button>':'')+'<button class="btn sm sec" data-act="pick" data-v="'+a.id+'" style="flex:1">'+(on?'플랜에 담았어요 ✓':'내 플랜에 담기')+'</button></div>')+'</div>'; }
+
+/* ---------- 화면 ---------- */
+var V={};
+V.s00=function(){ return '<div style="min-height:100%;display:flex;flex-direction:column">'+
+  '<div style="flex:1;padding-top:30px"><div class="logo">덜</div><div class="appname">'+APP+' <span class="fine">가제</span></div>'+
+  '<span class="tag red">2026년 11월 · D-52</span>'+
+  '<h1>미리보기에서 또 토해낸대요?<br><em>12월 31일 전까지, 조금이라도 덜 뱉어요.</em></h1>'+
+  '<p class="sub">카드·월급·월세는 토스가 이미 알고 있어요.<br>남은 두 달, 어디로 결제할지만 정하세요.</p>'+
+  '<p class="fine">예상 결과 기준이며, 실제 결과는 달라질 수 있어요.</p>'+
+  '<div class="card blue"><b>11~12월은 무료로 써보고, 1월에 정하세요.</b><p class="fine" style="margin:4px 0 0">체험 중엔 결제 정보를 받지 않아요. 환급금에서 한 푼도 떼지 않아요.</p></div></div>'+
+  '<div><button class="btn" data-act="to" data-v="s01">내 연말정산 바로 보기</button>'+
+  '<p class="fine" style="margin-top:14px">토스 인앱 서비스를 가정한 시연용 프로토타입이에요. 입력한 값은 이 화면 안에서만 쓰이고 저장·전송되지 않아요. 모든 숫자는 예시예요. 세무 상담·신고 대행 서비스가 아니며 국세청·홈택스와 관련 없어요.</p></div></div>'; };
+
+V.s01=function(){ var all=S.terms&&S.privacy&&S.link&&S.sens&&S.mkt;
+  function c(k,t,req,d){ return '<label class="chk"><input type="checkbox" data-chk="'+k+'" '+(S[k]?'checked':'')+'><div><b>['+(req?'필수':'선택')+'] '+t+'</b><span>'+d+'</span></div></label>'; }
+  return top('이용 동의')+'<h2>시작 전에 동의가 필요해요</h2><p class="sub" style="font-size:14px">홈택스 등에 대신 로그인해서 정보를 가져오지 않아요. 동의한 토스 데이터만 쓰고, 나머지는 터치 한 번으로 확인해요.</p>'+
+  '<label class="chk" style="background:var(--g1);border-radius:14px;padding:14px;border:0;margin:8px 0"><input type="checkbox" data-chk="all" '+(all?'checked':'')+'><div><b>전체 동의</b><span>선택 항목 포함</span></div></label>'+
+  c('terms','서비스 이용약관',true,'예상 계산·정보 제공 도구 이용 조건이에요. 세무 상담·신고 대행이 아니에요.')+
+  c('privacy','개인정보 수집·이용',true,'토스에 이미 있는 정보 외에 따로 받는 개인정보는 없어요. 이용 목적과 보관 기간을 안내해요.')+
+  c('link','토스 데이터 이용 (카드 결제·급여 입금·정기 이체)',false,'올해 카드 사용액, 월급, 월세 후보를 자동으로 확인하는 데만 써요. 동의하지 않으면 3가지만 직접 입력하면 돼요.')+
+  c('sens','민감정보 처리 (병원비 등 건강 관련)',false,'별도 동의예요. 동의하지 않으면 해당 항목만 빼고 계산해요.')+
+  c('mkt','마케팅 알림 수신',false,'관리 알림과 별개예요. 동의하지 않아도 이용할 수 있어요.')+
+  '<button class="btn" data-act="consentOk" '+(S.terms&&S.privacy?'':'disabled')+'>동의하고 시작</button>'; };
+
+V.link=function(){ if(!S.link) return top('직접 입력')+'<h2>토스 연동 없이 3가지만 알려주세요</h2><p class="sub" style="font-size:14px">토스 데이터 이용에 동의하지 않아서 직접 입력으로 진행해요. 이후 흐름은 같아요.</p><button class="btn" data-act="to" data-v="manual">3가지 입력하기</button>';
+  return top('토스 데이터 연동')+'<h2>입력은 토스가 해요</h2><p class="sub" style="font-size:14px">동의한 범위 안에서 아래 데이터만 어제까지 기준으로 확인해요.</p>'+
+  '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">카드 결제 내역<span class="src">신용·체크 구분, 업종</span></span><span class="v">✓</span></div><div class="row"><span class="k">급여 입금<span class="src">실수령액으로 연봉 추정</span></span><span class="v">✓</span></div><div class="row"><span class="k">정기 이체<span class="src">월세로 보이는 이체 찾기</span></span><span class="v">✓</span></div></div>'+
+  '<p class="fine">보관 범위와 삭제 방법은 내 정보에서 볼 수 있어요. 카드 혜택(포인트·할인)은 쓰지 않아요.</p>'+
+  '<button class="btn" data-act="doLink">토스 데이터 확인하기</button>'; };
+
+V.manual=function(){ return top('직접 입력','3가지')+'<h2>이것만 알려주세요</h2>'+
+  '<label class="lbl">연봉(세전, 만원)<input class="inp" type="number" inputmode="numeric" data-d="salary" value="'+(S.d.salary/10000)+'"></label>'+
+  '<label class="lbl">올해 카드 사용액(대략, 만원)<input class="inp" type="number" inputmode="numeric" data-d="credit" value="'+(S.d.credit/10000)+'"></label>'+
+  '<label class="lbl">매달 내는 월세(만원, 없으면 0)<input class="inp" type="number" inputmode="numeric" data-d="rent" value="'+(S.d.rent/10000)+'"></label>'+
+  '<p class="fine">카드 사용액은 신용카드로 가정해요. 정확한 값은 1월 간소화 자료로 확인해요.</p>'+
+  '<button class="btn" data-act="doManual">다음</button>'; };
+
+V.s02=function(){ var d=S.d, th=thr();
+  function row(k,v,src,b){ return '<div class="row"><div class="k">'+k+(b?'<span class="badge b-est">추정</span>':'')+'<span class="src">'+src+'</span></div><div class="v">'+v+'</div></div>'; }
+  return top('자동으로 찾은 정보')+'<h2>이거 맞아요?</h2><p class="sub" style="font-size:14px">토스에서 어제(11월 8일)까지의 실제 사용액을 찾았어요.</p>'+
+  '<div class="card blue"><b>월 실수령액 약 320만 원 → 연봉 약 '+man(d.salary)+' 맞나요?</b><p class="fine" style="margin:4px 0 8px">추정이에요. 맞으면 아래 [맞아요]만 누르고, 틀리면 숫자만 바꾸세요.</p><button class="btn sm sec" style="margin:0" data-act="editSalary">고칠래요</button></div>'+
+  '<div class="card" style="padding:4px 16px">'+row('신용카드 (공제 대상)',man(d.credit),'올해 1월~11월 8일 · 업종으로 분류',1)+row('체크카드·현금영수증',man(d.check),'연결된 카드 기준',1)+row('공제 제외 (세금·공과금·통신비 등)',man(d.excl),'계산에서 뺐어요',1)+'</div>'+
+  '<p class="fine">전통시장·대중교통은 공제율이 더 높아서 1월에 정확히 확인해요. 연결 안 된 카드가 있나요? <button data-act="otherPay" style="border:0;background:none;color:var(--blue);font-weight:700;text-decoration:underline">다른 결제 수단도 있어요</button></p>'+
+  '<button class="btn" data-act="foundOk">맞아요</button>'; };
+
+function qlist(){ var q=[]; if(!S.manual) q.push('rent'); if(S.ans.rent==='yes'&&!S.manual) q.push('house'); if(S.manual&&S.ans.rent==='yes') q.push('house'); q.push('dep','life','med'); return q; }
+V.s03=function(){ var L=qlist(), k=L[S.qi], n=L.length, h=top('질문 카드',(S.qi+1)+'/'+n)+'<div class="bar"><i style="width:'+((S.qi)/n*100)+'%"></i></div>';
+  function opts(arr){ return arr.map(function(o){ return '<button class="opt" data-act="ans" data-v="'+k+':'+o[1]+'" aria-pressed="false">'+o[0]+(o[2]?'<small>'+o[2]+'</small>':'')+'</button>'; }).join(''); }
+  if(S.pend==='depN') return h+'<h2>몇 명인가요?</h2><div class="chips">'+[1,2,3].map(function(i){return '<button class="chip" data-act="depN" data-v="'+i+'">'+i+'명</button>';}).join('')+'</div><p class="fine">나이·소득 요건은 1월 도우미에서 한 번 더 확인해요.</p>';
+  if(S.pend==='medBand') return h+'<h2>올해 병원비는 대략 얼마인가요?</h2><div class="chips" style="flex-direction:column">'+Object.keys(BANDS).map(function(b){return '<button class="chip" data-act="medBand" data-v="'+b+'">'+BANDS[b][0]+'</button>';}).join('')+'</div><p class="fine">대략이면 돼요. 정확한 값은 1월 간소화 자료로 확인해요.</p>';
+  if(k==='rent') return h+'<h2>매달 집주인(김○○)님께 보내는 '+man(S.d.rent)+', 월세인가요?</h2>'+opts([['네',"yes"],['아니요',"no"]]);
+  if(k==='house') return h+'<h2>무주택 세대주이고 전입신고를 했나요?</h2><p class="fine">월세 세액공제 요건 중 일부예요.</p>'+opts([['네','yes'],['아니요','no'],['모르겠어요','unknown','이 항목은 빼고 계산하고, 1월에 다시 확인해요']]);
+  if(k==='dep') return h+'<h2>같이 사는 부모님·자녀가 있나요?</h2>'+opts([['있어요','yes'],['없어요','no']]);
+  if(k==='life') return h+'<h2>올해 결혼·출산 같은 변화가 있었나요?</h2>'+opts([['있어요','yes','해당 항목은 1월 도우미에서 확인해요'],['없어요','no']]);
+  return h+'<h2>병원비가 많이 나온 해인가요?</h2>'+(S.sens?'':'<p class="fine">민감정보에 동의하지 않아서, 네를 눌러도 이번 계산에는 넣지 않아요.</p>')+opts([['네','yes'],['아니요','no'],['모르겠어요','unknown','이 항목은 빼고 계산하고, 1월에 다시 확인해요']]); };
+
+V.s04=function(){ var e=S.nov, t=resultText(e.diff), L=actions(), pot=potential();
+  var h=top('올해 예상 결과')+'<span class="tag red">2026년 귀속 · 올해 예상</span><div class="big '+t[1]+'">'+t[0]+'</div><p class="fine">추정 포함 · 11월 8일 기준 · 지금처럼 신용카드를 계속 쓴다고 가정 · 첫 조회는 무료</p>'+
+  '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">예상 결정세액</span><span class="v">'+kor(e.tax)+'</span></div><div class="row"><span class="k">이미 낸 세금(추정)</span><span class="v">'+kor(S.paid)+'</span></div></div>'+
+  '<div class="card"><span class="tag gray">2025년 귀속 · 지난 결과</span><div class="row" style="border:0;padding-bottom:0"><span class="k">작년 추가 납부(확인된 결과)</span><span class="v">'+kor(420000)+'</span></div></div>'+
+  '<div class="card"><b>카드 공제 문턱 진행률</b><div class="bar"><i style="width:'+Math.min(100,counted()/thr()*100)+'%"></i></div><p class="fine" style="margin:0">'+man(counted())+' / '+man(thr())+' · 문턱까지 '+man(Math.max(0,thr()-counted()))+' 남았어요</p></div>';
+  if(e.diff>0) h+='<h2 style="margin-top:20px">지금 바꿀 수 있는 방법</h2><p class="fine">12월 31일 전에 할 수 있는 것을 효과 큰 순서로 보여줘요. 금액은 예상이고 보장이 아니에요.</p>';
+  else h+='<h2 style="margin-top:20px">더 받을 수 있는 방법</h2><p class="fine">환급이 예상돼도 놓친 공제가 없는지 확인해요.</p>';
+  L.slice(0,3).forEach(function(a){ h+=actCard(a,{compact:true}); });
+  if(pot>0) h+='<div class="card blue"><b>모두 해당되면 카드 전환 외에 최대 약 '+kor(pot)+'</b><p class="fine" style="margin:4px 0 0">확인이 필요한 항목 포함 · 추정</p></div>';
+  h+='<p class="fine">'+DISCL+'</p><button class="btn" data-act="to" data-v="s05">남은 두 달 계획하기</button><button class="btn sec" data-act="tabTo" data-v="ways">줄이는 방법 전체 보기</button>'; return h; };
+
+function cmpHtml(){ var p=S.plan, sav=cardSaving(p), d=diffOf(p);
+  return '<div class="card '+(sav>0?'blue':'')+'"><div class="ver"><div>지금처럼<b>'+resultText(taxOf({spend:p.spend,big:p.big,checkPct:0})-S.paid)[0].replace('예상 ','<br>')+'</b></div><span>→</span><div>이 계획<b>'+resultText(d)[0].replace('예상 ','<br>')+'</b></div></div>'+
+  '<b>'+(sav>0?'세금 약 '+kor(sav)+' 줄어요 (추정)':'지금은 신용카드만 써도 차이가 없어요')+'</b><p class="fine" style="margin:4px 0 0">공제 금액이 아니라 실제로 줄어드는 세금이에요. 카드 포인트·할인 같은 혜택은 계산에 넣지 않았어요(혜택이 더 클 수도 있어요).</p></div>'; }
+function tableHtml(){ var p=S.plan, tot=p.spend+p.big, rec=recPct(p);
+  var rows=[['신용카드로 결제',0],['체크카드·현금영수증으로 결제',100],['추천 (문턱까지 신용 → 이후 체크)',rec]];
+  var base=taxOf({spend:p.spend,big:p.big,checkPct:0});
+  var h='<div class="card" style="padding:4px 16px"><p class="fine" style="margin:12px 0 0">같은 '+man(tot)+'을 어디로 결제하느냐에 따른 예상 (올해 합산 기준)</p>';
+  rows.forEach(function(r,i){ var q={spend:p.spend,big:p.big,checkPct:r[1]}, d=diffOf(q), sv=base-taxOf(q), s=split(q);
+    h+='<div class="row"><span class="k">'+r[0]+'<span class="src">신용 '+man(s.cr)+' · 체크 '+man(s.chk)+'</span></span><span class="v" style="color:'+(sv>0?'var(--blue)':'var(--t1)')+'">'+resultText(d)[0].replace('예상 ','<br>')+'<span class="src" style="text-align:right">'+(sv>0?'신용카드보다 '+kor(sv)+' 줄어요':'기준')+'</span></span></div>'; });
+  return h+'</div>'; }
+V.s05=function(){ var p=S.plan, s=split(p), th=thr(), rem=Math.max(0,th-counted()), sav=cardSaving(p), d=diffOf(p), d0=S.nov.diff;
+  var tot=p.spend+p.big;
+  return top('카드 사용 슬라이더')+'<h2>남은 지출, 어디로 결제할지 움직여 보세요</h2>'+
+  '<div class="card"><b>올해 카드 사용</b><div class="bar '+(rem===0?'done':'')+'"><i style="width:'+Math.min(100,counted()/th*100)+'%"></i></div><p class="fine" style="margin:0">'+man(counted())+' / '+man(th)+' · '+(rem>0?'문턱까지 '+man(rem)+' 남았어요':'문턱을 넘었어요')+'</p></div>'+
+  '<div class="card"><b>12월 31일까지 쓸 예정 금액</b> <span class="fine">(최근 3개월 평균으로 시작)</span><div class="big" id="spVal" style="font-size:24px">'+man(p.spend)+'</div>'+
+  '<input type="range" min="0" max="5000000" step="100000" value="'+p.spend+'" data-sl="spend" aria-label="쓸 예정 금액">'+
+  '<p class="fine" style="margin:0">원래 쓸 돈만 넣으세요. 더 쓰면 쓴 돈보다 아끼는 세금이 훨씬 적어요.</p>'+
+  (p.big?'<div class="chips"><span class="tag">큰 지출 '+man(p.big)+' 포함</span><button class="chip" data-act="bigClear">빼기</button></div>':'<button class="btn sm sec" data-act="bigAsk">+ 큰 지출 추가 (예: 12월 노트북 150만 원)</button>')+'</div>'+
+  '<div class="card"><b>어디로 결제할까요?</b><input type="range" min="0" max="100" step="5" value="'+p.checkPct+'" data-sl="checkPct" aria-label="체크카드 비율">'+
+  '<div style="display:flex;justify-content:space-between;font-size:14px"><span>신용카드 <b id="crVal">'+man(s.cr)+'</b></span><span>체크카드·현금영수증 <b id="chkVal">'+man(s.chk)+'</b></span></div></div>'+
+  '<div id="cmp">'+cmpHtml()+'</div><h3 style="margin-top:16px">신용카드 vs 체크카드, 따로 비교</h3><div id="tbl">'+tableHtml()+'</div>'+
+  '<div class="card"><b>💡 추천</b><p style="margin:4px 0 8px;font-size:14px">'+(rem>0?man(Math.min(tot,rem))+'까지는 신용카드, 그 다음부터는 체크카드':'지금부터는 체크카드·현금영수증')+'</p><button class="btn sm sec" data-act="recommend">추천 비율로 맞추기</button></div>'+
+  '<p class="fine">특정 카드 상품은 추천하지 않고 결제 수단 종류만 비교해요. '+DISCL+'</p>'+
+  '<button class="btn" data-act="savePlan">이 계획으로 저장할게요</button>'; };
+
+V.s06=function(){ var p=S.plan, s=split(p), L=actions().filter(function(a){return S.picked[a.id];});
+  return top('결제 계획 저장')+'<h2>✅ 계획을 저장했어요</h2>'+
+  '<div class="card"><b>결제 계획</b><p style="margin:4px 0 0;font-size:14px">12월 31일까지 '+man(p.spend+p.big)+' · 신용카드 '+man(s.cr)+' / 체크카드 '+man(s.chk)+'</p><p class="fine" style="margin:4px 0 0">예상 '+resultText(diffOf(p))[0]+'</p></div>'+
+  (L.length?'<div class="card"><b>내 플랜에 담은 방법</b>'+L.map(function(a){return '<p style="margin:6px 0 0;font-size:14px">• '+a.t+' <span class="fine">('+a.dl+')</span></p>';}).join('')+'</div>':'')+
+  '<div class="toggle"><div><b>결제 수단 전환 알림</b><div class="fine">카드 공제 문턱·한도에 닿을 때만 알려드려요. 같은 알림은 한 번만, 마케팅 알림과 섞지 않아요.</div></div><input type="checkbox" role="switch" data-chk="noti" '+(S.noti?'checked':'')+'></div>'+
+  '<button class="btn" data-act="to" data-v="home">알림 받기</button>'; };
+
+V.home=function(){ var th=thr(), rem=Math.max(0,th-counted()), hit=rem===0, h='';
+  if(S.stage==='jan') return '<span class="tag ok">2027년 1월</span><h2>연말정산, 빠진 거 없는지 같이 챙겨요</h2>'+
+    '<div class="card blue"><b>연말정산 도우미</b><p class="fine" style="margin:4px 0 8px">간소화 자료 비교 · 누락 체크 · 제출 가이드</p><button class="btn sm" style="margin:0" data-act="to" data-v="'+(S.subOn?'s11':'s09')+'">'+(S.subOn?'도우미 이어서 하기':'구독 알아보기')+'</button></div><p class="fine">'+DISCL+'</p>';
+  var t=resultText(S.dec?S.dec.diff:diffOf(S.plan.saved?S.plan:baseline()));
+  h+='<span class="tag red">'+dday()+'</span><h2>'+(hit?'이제부터는 체크카드가 유리해요':'지금은 신용카드 써도 괜찮아요')+'</h2>'+
+  '<div class="card"><b>카드 공제 문턱</b><div class="bar '+(hit?'done':'')+'"><i style="width:'+Math.min(100,counted()/th*100)+'%"></i></div><p class="fine" style="margin:0">'+(hit?'문턱을 넘었어요 ✓ ('+man(counted())+' / '+man(th)+')':'문턱까지 '+man(rem)+' 남았어요. 넘으면 알려드릴게요.')+'</p></div>'+
+  '<div class="card"><span class="tag gray">2026년 귀속 · 올해 예상</span><div class="big '+t[1]+'" style="font-size:26px">'+t[0]+'</div><p class="fine" style="margin:0">추정 포함 · '+(S.stage==='dec'?'12월 14일':'11월 8일')+' 기준</p></div>';
+  var L=actions().filter(function(a){return a.id!=='pension';}).slice(0,3);
+  h+='<h3 style="margin-top:16px">이번 주 할 일</h3>'+L.map(function(a){return actCard(a,{compact:true});}).join('');
+  h+= S.stage==='nov'?'<button class="btn" data-act="toDec">📅 12월 14일로 이동 (시연: 문턱 도달 알림)</button>':'<button class="btn" data-act="toReport">📅 12월 31일 마무리 리포트 보기 (시연)</button>';
+  return h+'<p class="fine" style="margin-top:12px">'+DISCL+'</p>'; };
+
+V.ways=function(){ var e=S.nov, L=actions(), pot=potential(), owe=(S.dec?S.dec.diff:e.diff)>0;
+  var h='<h2>'+(owe?'덜 낼 수 있는 방법':'더 받을 수 있는 방법')+'</h2><p class="sub" style="font-size:14px">효과 큰 순서예요. ⏰는 12월 31일 전에 해야 하는 것, 나머지는 1월에 확인해도 돼요.</p>'+
+  '<div class="card blue"><b>카드 전환 외에 모두 해당되면 최대 약 '+kor(pot)+'</b><p class="fine" style="margin:4px 0 0">확인 필요 항목 포함 · 예상일 뿐 보장하지 않아요. 요건은 1월 간소화 자료로 확인해요.</p></div>';
+  L.forEach(function(a){ h+=actCard(a); });
+  return h+'<p class="fine">소비를 권하는 게 아니에요. 원래 쓸 돈과 이미 낸 비용 중에서 놓친 공제를 찾는 도구예요. '+DISCL+'</p>'; };
+
+V.me=function(){ return '<h2>내 정보</h2>'+
+  '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">관리 과세연도</span><span class="v">2026년 귀속</span></div><div class="row"><span class="k">토스 데이터 이용</span><span class="v">'+(S.link?'동의함':'직접 입력')+'</span></div></div>'+
+  '<div class="toggle"><div><b>결제 수단 전환 알림</b><div class="fine">관리 알림 (광고 아님)</div></div><input type="checkbox" role="switch" data-chk="noti" '+(S.noti?'checked':'')+'></div>'+
+  '<div class="card"><h3>구독</h3><p class="fine" style="margin:0">11~12월 무료 체험 중이에요. 결제 정보를 받지 않고 자동으로 유료 전환되지 않아요. 구독은 1월에 직접 고르고, 그때 유료 결제에 별도로 동의해요.</p></div>'+
+  '<button class="btn sec" data-act="delAsk">동의 철회 · 내 데이터 삭제</button>'; };
+
+V.s08=function(){ var r=S.report, t=resultText(r.diff), d=r.diff-S.nov.diff, L=actions().filter(function(a){return a.id!=='card'&&a.id!=='pension';});
+  return top('12월 마무리 리포트')+'<span class="tag ok">2026년 12월 31일</span><h2>올해 이만큼 챙겼어요</h2>'+
+  '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">11월 예상</span><span class="v">'+resultText(S.nov.diff)[0]+'</span></div><div class="row"><span class="k">12월 말 예상</span><span class="v">'+t[0]+'</span></div><div class="row"><span class="k">변화</span><span class="v">'+(d===0?'같음':(d<0?'−':'+')+kor(d))+'</span></div></div>'+
+  '<div class="card"><b>결제 계획 실천 (시연 가정)</b><p class="fine" style="margin:4px 0 0">남은 기간 결제 중 체크카드 '+r.chkPct+'% · 문턱 도달 후 체크카드로 바꿨어요. 카드 전환으로 세금 약 '+kor(r.saving)+' 줄어든 것으로 추정돼요.</p></div>'+
+  '<div class="card blue"><b>1월에 확인할 것</b>'+(L.length?L.map(function(a){return '<p style="margin:6px 0 0;font-size:14px">• '+a.t+'</p>';}).join(''):'<p class="fine" style="margin:4px 0 0">추가로 확인할 항목이 없어요.</p>')+'<p style="margin:6px 0 0;font-size:14px">• 간소화 자료로 월세·의료비 등 증빙 확인</p></div>'+
+  '<p class="fine">예상액 변화는 입력된 자료가 바뀐 결과예요. 앱 덕분에 절세했다는 뜻이 아니에요. '+DISCL+'</p>'+
+  '<button class="btn" data-act="toJan">1월 연말정산 같이 챙기기</button>'; };
+
+V.s09=function(){ return top('구독 안내')+'<span class="tag">2027년 1월</span><h2>1월 연말정산, 빠진 거 없는지 같이 챙겨요</h2>'+
+  '<div class="card"><h3>구독하면</h3><p style="margin:0;font-size:14px">• 1월 연말정산 도우미 (자료 비교·누락 체크·제출 가이드)<br>• 2~3월 결과 비교<br>• 2027년 연중 관리 (문턱 넘는 순간부터 알려드려요)</p></div>'+
+  '<div class="card blue"><b>1월 안에 시작하면 첫해 특별가</b><p style="margin:4px 0 0;font-size:14px">첫해 <b>14,900원</b> · 이후 갱신 시 <b>24,900원/년</b></p><p class="fine" style="margin:4px 0 0">시연용 예시 가격이에요(가격 검증 중). 첫해 한정 · 갱신 전에 미리 알리고 동의를 받아요. 환급금에서 한 푼도 떼지 않아요.</p></div>'+
+  '<p class="fine">무료로도 예상 결과 조회와 추가 납부 경보는 계속 쓸 수 있어요.</p>'+
+  '<button class="btn" data-act="to" data-v="s10">구독 알아보기</button><button class="btn sec" data-act="tabTo" data-v="home">나중에 할게요</button>'; };
+
+V.s10=function(){ return top('구독 선택')+'<h2>연 구독 시작</h2>'+
+  '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">첫해 특별가</span><span class="v">14,900원</span></div><div class="row"><span class="k">갱신일 · 갱신 가격</span><span class="v">2028년 1월 · 24,900원</span></div><div class="row"><span class="k">해지 방법</span><span class="v">내 정보 → 구독 해지 (한 번에)</span></div></div>'+
+  '<label class="chk"><input type="checkbox" data-chk="subPaidOk" '+(S.subPaidOk?'checked':'')+'><div><b>[필수] 유료 결제에 동의해요</b><span>위 금액·갱신일·해지 방법을 확인했어요. 갱신 전에 다시 알려드려요.</span></div></label>'+
+  '<p class="fine">시연이에요. 실제 결제 정보는 받지 않고, 결제도 일어나지 않아요.</p>'+
+  '<button class="btn" data-act="subStart" '+(S.subPaidOk?'':'disabled')+'>동의하고 구독 시작</button>'; };
+
+var HSTEPS=['준비','자료 비교','부양가족 점검','최종 예상','제출 가이드','추가 납부 대비'];
+V.s11=function(){ return top('연말정산 도우미')+'<span class="tag ok">구독 중 (시연)</span><h2>간소화 오픈 D-6 · 회사 마감 1월 24일</h2>'+
+  '<div class="card" style="padding:4px 16px">'+HSTEPS.map(function(s,i){ var done=i<=(S.helperStep||0)-1; return '<div class="row"><span class="k">'+(i+1)+'. '+s+'</span><span class="v">'+(done?'✓':'')+'</span></div>'; }).join('')+'</div>'+
+  '<p class="fine">정리·계산·체크리스트·안내만 해요. 신고서를 대신 쓰거나 제출하지 않아요.</p>'+
+  '<button class="btn" data-act="to" data-v="s12">시작하기</button>'; };
+
+function missing(){ var L=[];
+  if(S.ans.rent==='yes') L.push({id:'rent',t:'월세 세액공제 증빙',d:'임대차계약서 사본, 월세 이체 내역, 주민등록등본(전입신고)',eff:Math.min(S.d.rent*12,10000000)*(rentRate(S.d.salary)||0.17),pre:rentEligible()});
+  if(S.ans.dep==='yes') L.push({id:'dep',t:'부양가족 등록',d:'부양가족 나이·소득 요건 확인, 형제자매 중복 공제 여부',eff:S.ans.depN*1500000*MARG,pre:true});
+  if(S.ans.med==='yes'||S.ans.med==='unknown') L.push({id:'med',t:'의료비 영수증',d:'간소화 자료에 빠진 병원·약국 영수증',eff:null,pre:false});
+  L.push({id:'pen',t:'연금저축·IRP 납입 확인서',d:'이미 납입 중이라면 납입 확인서가 빠지지 않았는지',eff:null,pre:false});
+  return L; }
+V.s12=function(){ var h=top('간소화 자료 비교')+'<h2>빠졌을 수 있는 항목을 찾아요</h2>';
+  if(!S.helper.up) return h+'<p class="sub" style="font-size:14px">홈택스에서 내려받은 간소화 자료(PDF)를 올리면, 토스 데이터와 질문 답을 비교해서 빠졌을 수 있는 항목을 보여줘요. 홈택스에는 대신 로그인하지 않아요.</p><button class="btn" data-act="upload">📄 간소화 PDF 올리기 (시연)</button>';
+  return h+'<p class="fine">비교 결과예요. 빠졌다고 단정하지 않고, 증빙을 챙길 항목만 알려드려요.</p>'+missing().map(function(m){ var on=S.helper.ok[m.id]; return '<div class="act '+(on?'on':'')+'"><div class="hd"><b style="font-size:15px">'+m.t+'</b>'+(m.eff?'<span class="eff">약 '+kor(m.eff)+'</span>':'')+'</div><p>'+m.d+'</p><button class="btn sm sec" data-act="hok" data-v="'+m.id+'">'+(on?'챙길게요 ✓':'증빙 챙기기')+'</button></div>'; }).join('')+
+  '<button class="btn" data-act="to" data-v="s13">다음: 제출 가이드</button>'; };
+
+function finalDiff(){ var d=S.report?S.report.diff:S.nov.diff; missing().forEach(function(m){ if(S.helper.ok[m.id]&&m.eff&&!m.pre) d-=m.eff; }); return d; }
+V.s13=function(){ var fd=finalDiff(), t=resultText(fd), ck=S.checks, items=['간소화 자료와 증빙 서류를 모았어요','부양가족 동의 절차를 확인했어요','회사 연말정산 시스템에 직접 입력·제출했어요'];
+  return top('제출 가이드')+'<span class="tag ok">2025년 소득 · 2026 귀속 최종 예상</span><div class="big '+t[1]+'" style="font-size:28px">'+t[0]+'</div><p class="fine">11월 예상 '+resultText(S.nov.diff)[0]+' 대비 변화는 입력·확인한 자료가 달라진 결과예요.</p>'+
+  '<div class="card"><b>제출 순서</b><p style="margin:4px 0 0;font-size:14px">① 홈택스에서 간소화 자료 내려받기 → ② 회사 시스템에 자료 올리기 → ③ 회사 마감일(1월 24일) 전에 직접 제출</p></div>'+
+  '<div class="card"><b>마지막 체크리스트</b>'+items.map(function(t,i){ return '<label class="chk" style="padding:10px 0"><input type="checkbox" data-ck="'+i+'" '+(ck[i]?'checked':'')+'><div><b style="font-weight:600">'+t+'</b></div></label>'; }).join('')+'</div>'+
+  '<p class="fine">회사에 직접 제출해야 해요. 대신 제출하지 않고 개별 세무 판단도 하지 않아요. '+DISCL+'</p>'+
+  '<button class="btn" data-act="helperDone" '+(ck[0]&&ck[1]&&ck[2]?'':'disabled')+'>체크 완료</button>'; };
+
+V.done=function(){ var fd=finalDiff(), n=S.nov.diff;
+  return '<span class="tag ok">시연 마무리</span><h1>올해 연말정산,<br><em>빠짐없이 챙겼어요</em></h1>'+
+  '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">11월 예상</span><span class="v">'+resultText(n)[0]+'</span></div><div class="row"><span class="k">최종 예상</span><span class="v">'+resultText(fd)[0]+'</span></div><div class="row"><span class="k">변화</span><span class="v">'+(fd===n?'같음':(fd<n?'−':'+')+kor(fd-n))+'</span></div></div>'+
+  '<div class="card blue"><h3>내년엔 처음부터</h3><p class="fine" style="margin:0">1월부터 쓰면, 내년엔 문턱 넘는 순간부터 알려드려요. 2027년 연중 관리는 구독에 포함돼요.</p></div>'+
+  '<p class="fine">첫 결과까지 터치 '+(S.touchFinal==null?'-':S.touchFinal)+'번 (목표 5~7번) · 예상액 변화는 자료가 바뀐 결과이며 앱 덕분에 절세했다는 뜻이 아니에요. '+DISCL+'</p>'+
+  '<button class="btn" data-act="home2">홈으로 돌아가기</button><button class="btn sec" data-act="restart">처음부터 다시 시연</button>'; };
+
+/* ---------- 렌더 ---------- */
+var TABDEF=[['home','🏠','홈'],['ways','💡','줄이는 법'],['me','👤','내 정보']];
+function render(){
+  $('screen').innerHTML=V[S.screen]();
+  var showNav=['home','ways','me'].indexOf(S.screen)>-1;
+  $('nav').hidden=!showNav;
+  $('nav').innerHTML=TABDEF.map(function(t){ return '<button data-act="tab" data-v="'+t[0]+'" aria-current="'+(S.tab===t[0])+'"><span class="ic">'+t[1]+'</span>'+t[2]+'</button>'; }).join('');
+  renderSide();
+}
+function renderSide(){
+  var idx=phase(), v={touch:M.touch};
+  var h='<h4>시연 진행</h4><div class="phase">'+['시작','작동','마무리'].map(function(n,i){ return '<div class="'+(i===idx?'on':i<idx?'done':'')+'">'+n+'</div>'; }).join('')+'</div>'+
+    '<h4>핵심 이용 지표</h4><ul class="met">'+ML.map(function(m){ var hit=M[m[0]]!==undefined; return '<li class="'+(hit?'hit':'')+'"><span>'+m[1]+'</span><span>'+(hit?(m[0]==='touch'?M.touch+'번':'✓'):'—')+'</span></li>'; }).join('')+'</ul>'+
+    '<p class="fine">모든 숫자는 예시 데이터예요. 이 패널은 개발·시연용이에요.</p><button class="btn sec sm" data-act="restart">처음부터 다시</button>';
+  $('side').innerHTML=h; }
+
+/* ---------- 흐름 보조 ---------- */
+function nextQ(){ S.qi++; S.pend=null; if(S.qi>=qlist().length) finishQs(); else render(); }
+function finishQs(){
+  var p0=baseline(); S.paid=baseTax()-cardDed(S.d.salary,S.d.credit+p0.spend,S.d.check)*MARG-300000; S.paid=Math.round(S.paid/10)*10;
+  var base=Object.assign({},p0); S.nov={tax:taxOf(base),diff:diffOf(base)};
+  S.counting=false; S.touchFinal=S.touches; track('touch',S.touchFinal); go('s04',{noPush:true}); S.history=[]; }
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener('change',function(ev){ var t=ev.target, k=t.getAttribute&&t.getAttribute('data-chk');
+  if(t.getAttribute&&t.getAttribute('data-ck')!==null){ S.checks[t.getAttribute('data-ck')]=t.checked; render(); return; }
+  if(!k) return; var on=t.checked;
+  if(k==='all'){ ['terms','privacy','link','sens','mkt'].forEach(function(x){S[x]=on;}); } else S[k]=on;
+  if(['all','terms','privacy','link','sens','mkt','subPaidOk'].indexOf(k)>-1) render(); });
+document.addEventListener('input',function(ev){ var t=ev.target;
+  var d=t.getAttribute&&t.getAttribute('data-d'); if(d){ S.d[d]=Math.max(0,Number(t.value)||0)*10000; return; }
+  var sl=t.getAttribute&&t.getAttribute('data-sl'); if(sl){ S.plan[sl]=Number(t.value); S.plan.saved=false; var s=split(S.plan); $('spVal').textContent=man(S.plan.spend); $('crVal').textContent=man(s.cr); $('chkVal').textContent=man(s.chk); $('cmp').innerHTML=cmpHtml(); $('tbl').innerHTML=tableHtml(); } });
+document.addEventListener('click',function(ev){
+  var el=ev.target.closest('[data-act]'); if(!el) return; var a=el.getAttribute('data-act'), v=el.getAttribute('data-v');
+  if(S.counting && a!=='back') S.touches++;
+  switch(a){
+    case 'to': go(v); break;
+    case 'back': back(); break;
+    case 'tab': S.history=[]; go(v,{noPush:true}); break;
+    case 'tabTo': S.history=[]; go(v,{noPush:true}); break;
+    case 'consentOk': if(S.link) track('link'); S.history=[]; go('link',{noPush:true}); break;
+    case 'doLink': S.manual=false; go('s02'); break;
+    case 'doManual': S.manual=true; S.salaryOk=true; S.ans.rent=S.d.rent>0?'yes':'no'; S.d.check=0; S.d.excl=0; S.qi=0; go('s03'); break;
+    case 'salaryOk': S.salaryOk=true; track('salary'); render(); toast('연봉 추정을 확인했어요'); break;
+    case 'editSalary': openSheet('<h3>연봉(세전)</h3><p class="fine">단위: 만원</p><input class="inp" type="number" min="0" inputmode="numeric" id="inp" value="'+(S.d.salary/10000)+'"><button class="btn" data-act="saveSalary">저장</button><button class="btn sec" data-act="closeSheet">취소</button>'); break;
+    case 'saveSalary': var n=Number($('inp').value); if(!(n>0)){ toast('숫자를 입력해 주세요'); break; } S.d.salary=Math.round(n*10000); S.salaryOk=true; track('salary'); closeSheet(); render(); break;
+    case 'closeSheet': closeSheet(); break;
+    case 'otherPay': toast('시연에서는 카드를 더 연결하지 않아요'); break;
+    case 'foundOk': S.salaryOk=true; track('salary'); S.qi=0; S.ans={rent:null,house:null,dep:null,depN:0,life:null,med:null,medBand:null}; go('s03'); break;
+    case 'ans': var kv=v.split(':'), k=kv[0], val=kv[1];
+      if(k==='dep'&&val==='yes'){ S.ans.dep='yes'; S.pend='depN'; render(); break; }
+      if(k==='med'&&val==='yes'){ S.ans.med='yes'; if(S.sens){ S.pend='medBand'; render(); break; } S.ans.medBand=null; }
+      else S.ans[k]=val;
+      if(k==='life'&&val==='yes') toast('해당 항목은 1월 도우미에서 확인해요');
+      if(k==='rent'&&val==='no') S.ans.house=null;
+      nextQ(); break;
+    case 'depN': S.ans.depN=Number(v); nextQ(); break;
+    case 'medBand': S.ans.medBand=v; nextQ(); break;
+    case 'pick': S.picked[v]=!S.picked[v]; render(); break;
+    case 'bigAsk': openSheet('<h3>원래 예정된 큰 지출</h3><p class="fine">12월에 원래 쓸 계획이던 금액만 넣으세요.</p><div class="chips"><button class="chip" data-act="bigSet" data-v="1500000">노트북 150만원</button><button class="chip" data-act="bigSet" data-v="500000">50만원</button><button class="chip" data-act="bigSet" data-v="3000000">300만원</button></div><button class="btn sec" data-act="closeSheet">닫기</button>'); break;
+    case 'bigSet': S.plan.big=Number(v); S.plan.saved=false; closeSheet(); render(); break;
+    case 'bigClear': S.plan.big=0; S.plan.saved=false; render(); break;
+    case 'recommend': S.plan.checkPct=recPct(S.plan); S.plan.saved=false; render(); toast('추천 비율로 맞췄어요'); break;
+    case 'savePlan': S.plan.saved=true; S.picked.card=true; track('plan'); go('s06'); break;
+    case 'toDec': S.stage='dec'; var crPart=Math.max(0,thr()-counted())+50000; S.d.credit+=crPart; S.crPart=crPart; var tt=S.plan.spend+S.plan.big; S.dec={diff:taxOf({spend:Math.max(0,tt-crPart),big:0,checkPct:S.plan.saved?100:0})-S.paid}; S.history=[]; S.tab='home'; S.screen='home'; render();
+      var left=800000, gain=left*(0.30-0.15)*MARG;
+      openSheet('<span class="tag red">결제 수단 전환 알림</span><h2 style="margin-top:8px">카드 공제 문턱을 넘었어요!<br>이제부터는 체크카드로 결제하면 공제가 2배예요.</h2><p class="sub" style="font-size:14px">남은 17일 예상 지출 약 80만 원을 체크카드로 결제하면 세금이 약 <b>'+kor(gain)+'</b> 줄어들 것으로 추정돼요.</p><p class="fine">추정 연봉 기준이에요. <button data-act="editSalary" style="border:0;background:none;color:var(--blue);text-decoration:underline">연봉 다시 확인하기</button> · 원래 쓸 돈만 해당돼요. 카드 혜택은 계산에 넣지 않았어요.</p><button class="btn" data-act="sheetOk">알겠어요</button><button class="btn sec" data-act="sheetPlan">계획 다시 보기</button>'); break;
+    case 'sheetOk': track('sheet'); closeSheet(); toast('좋아요. 이제부터 체크카드를 써볼게요'); break;
+    case 'sheetPlan': track('sheet'); closeSheet(); go('s05'); break;
+    case 'toReport': var followed=S.plan.saved; var tot=S.plan.spend+S.plan.big, rest=Math.max(0,tot-S.crPart);
+      S.d.check+= followed?rest:0; S.d.credit+= followed?0:rest;
+      var pl={spend:0,big:0,checkPct:0}, dFin=taxOf(pl)-S.paid, restCr=followed?rest:0,
+        savedTax=(cardDed(S.d.salary,S.d.credit,S.d.check)-cardDed(S.d.salary,S.d.credit+restCr,S.d.check-restCr))*MARG;
+      S.report={diff:dFin, saving:Math.max(0,Math.round(savedTax/10)*10), chkPct:tot?Math.round(restCr/tot*100):0}; S.dec=null; S.stage='dec'; go('s08'); break;
+    case 'toJan': S.stage='jan'; S.history=[]; S.tab='home'; go('s09',{noPush:true}); break;
+    case 'subStart': S.subOn=true; S.helperStep=0; track('sub'); go('s11'); break;
+    case 'upload': S.helper.up=true; render(); toast('간소화 자료와 비교했어요'); break;
+    case 'hok': S.helper.ok[v]=!S.helper.ok[v]; render(); break;
+    case 'helperDone': track('helper'); S.helperStep=6; go('done'); break;
+    case 'amt': break;
+    case 'delAsk': openSheet('<h3>동의를 철회하고 데이터를 삭제할까요?</h3><p class="fine">입력한 정보와 저장한 계획이 모두 지워지고 되돌릴 수 없어요.</p><button class="btn danger" data-act="delDo">철회하고 삭제</button><button class="btn sec" data-act="closeSheet">취소</button>'); break;
+    case 'delDo': closeSheet(); M={}; S=fresh(); render(); toast('동의를 철회하고 데이터를 삭제했어요'); break;
+    case 'home2': S.history=[]; S.stage='jan'; go('home',{noPush:true}); break;
+    case 'restart': M={}; S=fresh(); closeSheet(); render(); break;
+  }
+});
+/* 가입 동의에서 토스 연동 동의를 선택 사항으로 두었으므로, 로그인 후 재진입 시에도 상태 유지 */
+render();
+})();
+</script>
+</body>
+</html>
