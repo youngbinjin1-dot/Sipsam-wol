@@ -116,7 +116,6 @@ input[type=range]{width:100%;accent-color:var(--blue);height:32px}
 (function(){
 'use strict';
 var $=function(id){return document.getElementById(id)};
-var APP='덜내요';
 
 /* ---------- 표기 ---------- */
 function kor(n){ n=Math.round(Math.abs(n)); var m=Math.floor(n/10000), r=n%10000;
@@ -136,14 +135,25 @@ function cardDed(sal,credit,check){
 var BANDS={b1:['100만원 이하',700000],b2:['100~300만원',2000000],b3:['300~500만원',4000000],b4:['500만원 이상',6000000]};
 function rentRate(sal){ return sal<=55000000?0.17:(sal<=80000000?0.15:0); }
 function rentEligible(){ return S.ans.rent==='yes' && S.ans.house==='yes' && rentRate(S.d.salary)>0; }
-function rentCredit(){ return rentEligible()? Math.min(S.d.rent*12,10000000)*rentRate(S.d.salary):0; }
+function rentM(){ return Math.min(12,S.rentMonths+(S.rentDec&&S.rentMonths<12?1:0)); }
+function rentCredit(){ return rentEligible()? Math.min(S.d.rent*rentM(),10000000)*rentRate(S.d.salary):0; }
 function depDed(){ return S.ans.dep==='yes'? S.ans.depN*1500000*MARG:0; }
-function medCredit(){ var b=BANDS[S.ans.medBand]; if(!(S.sens&&S.ans.med==='yes'&&b)) return 0; return Math.max(0,b[1]-S.d.salary*0.03)*0.15; }
+function medCredit(noGlass){ var b=BANDS[S.ans.medBand], m=(S.sens&&S.ans.med==='yes'&&b)?b[1]:0, g=noGlass?0:Math.min(S.inputs.glass||0,500000), tot=m+g; if(tot<=0) return 0; return Math.max(0,tot-S.d.salary*0.03)*0.15; }
+function inpCredit(id){ var a=S.inputs[id]||0, sal=S.d.salary;
+  if(id==='don') return Math.min(a,10000000)*0.15;
+  if(id==='ins') return Math.min(a,1000000)*0.12;
+  if(id==='edu') return Math.min(a,3000000)*0.15;
+  if(id==='pen') return Math.min(a,9000000)*(sal<=55000000?0.15:0.12);
+  if(id==='sav') return (S.ans.house==='yes'&&sal<=70000000)?Math.min(a,3000000)*0.4*MARG:0;
+  if(id==='glass') return medCredit()-medCredit(true);
+  return 0; }
+function extraCredit(){ return inpCredit('don')+inpCredit('ins')+inpCredit('edu')+inpCredit('pen')+inpCredit('sav'); }
 function baseTax(){ return 2365625*(S.d.salary/50000000); }
+function syncBig(){ S.plan.big=S.bigList.reduce(function(s,b){return s+b.amt;},0); S.plan.saved=false; }
 function split(p){ var rem=p.spend+p.big, chk=Math.round(rem*p.checkPct/100/10000)*10000; return {rem:rem,chk:chk,cr:rem-chk}; }
 function taxOf(p,noExtra){
   var s=split(p), ded=cardDed(S.d.salary,S.d.credit+s.cr,S.d.check+s.chk)*MARG;
-  var t=baseTax()-ded-(noExtra?0:depDed()+rentCredit()+medCredit());
+  var t=baseTax()-ded-(noExtra?0:depDed()+rentCredit()+medCredit()+extraCredit());
   return Math.max(0,Math.round(t/10)*10);
 }
 function recPct(p){ var s=p.spend+p.big; if(!s) return 0; var crPart=Math.max(0,Math.min(s,S.d.salary*0.25-S.d.credit-S.d.check)); return Math.round((s-crPart)/s*20)*5; }
@@ -158,10 +168,10 @@ function fresh(){ return {
   terms:false, privacy:false, link:false, sens:false, mkt:false,
   
   manual:false, d:{salary:42000000,credit:9000000,check:0,excl:1300000,rent:350000}, salaryOk:false,
-  ans:{rent:null,house:null,dep:null,depN:0,life:null,med:null,medBand:null}, qi:0, pend:null,
+  ans:{rent:null,house:null,dep:null,depN:0,life:null,med:null,medBand:null,ins:null,pen:null}, qi:0, pend:null,
   paid:0, nov:null, plan:{spend:2000000,big:0,checkPct:0,saved:false}, picked:{}, noti:true,
   seenSheet:false, report:null, dec:null, final:null, helper:{up:false,ok:{}}, subOk:false, subOn:false, subPaidOk:false,
-  touches:0, counting:false, touchFinal:null, trial:true, checks:{}
+  inputs:{}, rentMonths:11, rentDec:false, bigList:[], subRemind:false, touches:0, counting:false, touchFinal:null, trial:true, checks:{}
 };}
 var S=fresh(), M={};
 var ML=[['link','토스 연동 동의'],['touch','첫 결과까지 터치'],['salary','연봉 추정 [맞아요]'],['plan','슬라이더 계획 저장'],['sheet','전환 알림 확인'],['sub','1월 구독 시작(시연)'],['helper','도우미 제출 가이드 완료']];
@@ -187,46 +197,91 @@ function thr(){ return S.d.salary*0.25; }
 function counted(){ return S.d.credit+S.d.check; }
 
 /* ---------- 줄이는 방법 (핵심) ---------- */
+var INP={
+  don:{label:'올해 이미 한 기부 금액(만원)',note:'종류별로 공제율이 달라 15%로 단순 계산한 추정이에요.'},
+  glass:{label:'올해 산 안경·렌즈 금액(만원)',note:'연 50만 원까지만 의료비에 합산돼요. 의료비 합계가 총급여의 3%를 넘어야 효과가 있어요.'},
+  ins:{label:'올해 낸 보장성 보험료(만원)',note:'연 100만 원 한도, 12% 세액공제로 계산한 추정이에요.'},
+  edu:{label:'올해 낸 교육비(만원)',note:'대상·한도가 종류별로 달라 연 300만 원까지 15%로 단순 계산한 추정이에요.'},
+  pen:{label:'올해 납입한 연금저축·IRP(만원)',note:'연 900만 원 한도, 총급여 5,500만 원 이하 15%로 계산한 추정이에요.'},
+  sav:{label:'올해 납입한 청약저축(만원)',note:'무주택 세대주·총급여 7천만 원 이하일 때 연 300만 원 한도 40% 소득공제로 계산한 추정이에요.'}
+};
 function actions(){
-  var L=[], rec=Object.assign({},S.plan,{checkPct:recPct(S.plan)});
-  L.push({id:'card',t:'남은 지출, 결제 수단 정하기',eff:cardSaving(rec),sure:true,dl:'12월 31일 전',cat:'now',
+  var L=[], rec=Object.assign({},S.plan,{checkPct:recPct(S.plan)}), rr=rentRate(S.d.salary)||0.17;
+  function add(o){ if((o.id==='ins'||o.id==='pen')&&(S.ans[o.id]==='yes'||S.ans[o.id]==='no')) return; if(INP[o.id]){ o.input=INP[o.id]; o.applied=(S.inputs[o.id]||0)>0; o.eff=o.applied?inpCredit(o.id):null; o.sure=o.applied; } L.push(o); }
+  add({id:'card',t:'남은 지출, 결제 수단 정하기',eff:cardSaving(rec),sure:true,dl:'12월 31일 전',cat:'now',
     how:'카드 공제는 12월 31일까지 결제한 금액 기준이에요. 문턱(총급여의 25%)까지는 신용카드, 넘은 뒤부터는 체크카드·현금영수증으로 정하면 공제율이 2배예요. 원래 쓸 돈만 해당돼요.'});
   if(S.ans.rent==='yes'){
     var ok=S.ans.house==='yes';
-    L.push({id:'rent',t:'월세 세액공제 챙기기',eff:Math.min(S.d.rent*12,10000000)*(rentRate(S.d.salary)||0.17),sure:ok&&rentEligible(),dl:'12월 31일 기준 요건',cat:'now',
+    add({id:'rent',t:'월세 세액공제 챙기기 ('+rentM()+'개월)',eff:Math.min(S.d.rent*rentM(),10000000)*rr,sure:ok&&rentEligible(),dl:'12월 31일 기준 요건',cat:'now',
       how:ok?'월세는 계좌이체로 계속 내세요. 전입신고·무주택 세대주 요건이 12월 31일 기준이에요. 임대차계약서 사본과 이체 내역은 1월에 필요해요.':'무주택 세대주·전입신고 요건을 지금 확인해 보세요. 해당되면 세금에서 바로 빠져요. 모르겠어요로 답해서 이번 예상에는 넣지 않았어요.'});
+    if(S.rentMonths<12&&S.ans.house!=='no') add({id:'rent12',t:'월세 12월분도 이체하기',eff:S.d.rent*rr,sure:S.rentDec,dl:'12월 31일 전',cat:'now',toggle:'rentDec',
+      how:'월세 공제는 낸 개월 수만큼 계산돼요. 12월분을 계좌이체로 내면 한 달치가 더 포함돼요. 원래 내는 월세만 해당돼요.'});
   }
-  if(S.ans.dep==='yes'){
-    L.push({id:'dep',t:'부양가족 공제 대상 확인',eff:S.ans.depN*1500000*MARG,sure:true,dl:'12월 31일 기준',cat:'now',
-      how:'같이 사는 부모님·자녀의 나이·소득 요건을 확인하세요. 형제자매와 중복 공제는 안 돼요. 정확한 요건은 1월 도우미에서 한 번 더 확인해요.'});
-  }
+  if(S.ans.dep==='yes') add({id:'dep',t:'부양가족 공제 대상 확인',eff:S.ans.depN*1500000*MARG,sure:true,dl:'12월 31일 기준',cat:'now',
+    how:'같이 사는 부모님·자녀의 나이·소득 요건을 확인하세요. 형제자매와 중복 공제는 안 돼요. 정확한 요건은 1월 도우미에서 한 번 더 확인해요.'});
+  add({id:'cash',t:'현금영수증 등록 확인',eff:null,sure:false,dl:'12월 31일 전',cat:'now',
+    how:'체크카드·현금으로 결제한 금액은 현금영수증으로 잡혀야 공제돼요. 휴대폰 번호가 등록돼 있는지, 현금으로 낸 곳에서 발급받았는지 확인하세요. 원래 쓸 돈만 해당돼요.'});
+  add({id:'cult',t:'전통시장·대중교통은 체크카드로',eff:null,sure:false,dl:'12월 31일 전',cat:'now',
+    how:'원래 이용하던 전통시장·대중교통 지출은 문턱을 넘은 뒤 체크카드·현금영수증으로 결제하면 공제율이 40%예요. 새로 쓰라는 뜻이 아니고, 도서·공연 등 문화 지출은 공제율이 달라요. 정확한 분류는 1월 간소화 자료로 확인해요.'});
   var medOn=S.sens&&S.ans.med==='yes'&&BANDS[S.ans.medBand];
-  if(S.ans.med==='yes'||S.ans.med==='unknown'){
-    L.push({id:'med',t:'병원비 영수증 확인',eff:medOn?medCredit():null,sure:!!medOn&&medCredit()>0,dl:'1월 간소화 자료로 확인',cat:'jan',
-      how:'올해 낸 의료비는 1월 간소화 자료에서 확인돼요. 총급여의 3%를 넘는 금액부터 공제돼요. 공제를 받으려고 병원에 가라는 뜻은 아니에요.'+(S.sens?'':' (민감정보 미동의로 이번 계산에서는 뺐어요)')});
-  }
-  L.push({id:'pension',t:'연금저축·IRP, 이미 넣고 있다면',eff:null,sure:false,dl:'12월 31일까지 납입분',cat:'info',
-    how:'이미 납입 중인 금액이 세액공제 한도 안인지만 확인하세요. 추가 납입을 권하지 않고, 특정 상품은 추천하지 않아요.'});
-  L.sort(function(a,b){ return (b.eff||0)-(a.eff||0); });
+  if(S.ans.med==='unknown'||(S.ans.med==='yes'&&!medOn)) add({id:'med',t:'병원비 영수증 확인',eff:medOn?medCredit(true):null,sure:!!medOn&&medCredit(true)>0,dl:'1월 간소화 자료로 확인',cat:'check',
+    how:'올해 낸 의료비는 1월 간소화 자료에서 확인돼요. 총급여의 3%를 넘는 금액부터 공제돼요. 공제를 받으려고 병원에 가라는 뜻은 아니에요.'+(S.sens?'':' (민감정보 미동의로 이번 계산에서는 뺐어요)')});
+  add({id:'glass',t:'안경·콘택트렌즈, 이미 샀다면',eff:null,sure:false,dl:'1월 간소화 자료로 확인',cat:'check',
+    how:'올해 이미 산 안경·렌즈는 의료비로 합산돼요(1인 연 50만 원까지). 새로 사라는 뜻이 아니에요.'});
+  add({id:'don',t:'올해 이미 한 기부',eff:null,sure:false,dl:'1월 간소화 자료로 확인',cat:'check',
+    how:'이미 한 기부 금액을 넣으면 예상에 반영해요. 기부처 영수증이 간소화 자료에 올라오는지는 1월에 확인하세요.'});
+  add({id:'pen',t:'연금저축·IRP, 이미 넣고 있다면',eff:null,sure:false,dl:'12월 31일까지 납입분',cat:'check',
+    how:'이미 납입한 금액을 넣으면 한도(연 900만 원) 안인지 보여줘요. 추가 납입을 권하지 않고, 특정 상품은 추천하지 않아요.'});
+  add({id:'ins',t:'보험료, 이미 내고 있다면',eff:null,sure:false,dl:'1월 간소화 자료로 확인',cat:'check',
+    how:'이미 내고 있는 보장성 보험료를 넣으면 예상에 반영해요. 추가 가입을 권하지 않고, 특정 상품은 추천하지 않아요.'});
+  add({id:'edu',t:'올해 낸 교육비',eff:null,sure:false,dl:'1월 간소화 자료로 확인',cat:'check',
+    how:'본인 교육비나 자녀 교육비로 이미 낸 비용을 넣으면 예상에 반영해요. 대상과 한도는 종류별로 달라요.'});
+  if(S.ans.house==='yes') add({id:'sav',t:'청약저축, 이미 넣고 있다면',eff:null,sure:false,dl:'12월 31일까지 납입분',cat:'check',
+    how:'무주택 세대주이고 이미 청약저축을 넣고 있다면 소득공제 대상일 수 있어요. 추가 납입을 권하지 않아요.'});
+  add({id:'donInfo',t:'기부금 제도 안내 (권유 아님)',eff:null,sure:false,dl:'알아두기',cat:'know',
+    how:'기부금은 종류에 따라 세액공제율이 달라요(15% 안팎, 일부는 소액까지 전액). 기부는 새로 쓰는 돈이라 세금 때문에 권하지 않아요. 이미 한 기부는 위 "올해 이미 한 기부"에 넣어 주세요.'});
+  add({id:'life',t:'올해 결혼·출산 같은 변화가 있었다면',eff:null,sure:false,dl:'알아두기',cat:'know',
+    how:'결혼·출산·입양 등이 있으면 받을 수 있는 공제 항목이 달라질 수 있어요. 해당 항목은 1월 도우미에서 확인해요.'});
+  add({id:'dual',t:'맞벌이 부부라면',eff:null,sure:false,dl:'알아두기',cat:'know',
+    how:'카드 사용액과 의료비는 소득이 낮은 쪽이 공제 문턱을 먼저 넘는 경우가 많아요. 부양가족은 한 사람에게만 등록돼요. 정확한 판단은 1월 도우미와 세무사 확인이 필요해요.'});
+  add({id:'job',t:'올해 이직했다면',eff:null,sure:false,dl:'알아두기',cat:'know',
+    how:'이전 직장의 근로소득도 합산해서 정산해야 해요. 이전 직장의 원천징수영수증을 받아 새 회사에 내는 걸 잊지 마세요.'});
+  add({id:'sme',t:'중소기업 취업 청년이라면',eff:null,sure:false,dl:'알아두기',cat:'know',
+    how:'일정 요건의 청년이 중소기업에 다닌다면 소득세 감면이 있어요. 회사에 신청해야 적용돼요. 해당 여부는 회사 담당자나 세무사에게 확인하세요.'});
+  var ORD={now:0,check:1,know:2};
+  L.sort(function(a,b){ return (ORD[a.cat]-ORD[b.cat])||((S.picked[a.id]?1:0)-(S.picked[b.id]?1:0))||((b.eff||0)-(a.eff||0)); });
   return L;
 }
-function potential(){ return actions().reduce(function(s,a){ return s+((a.eff&&a.id!=='card')?a.eff:0); },0); }
+function potential(){ return actions().reduce(function(s,a){ return s+((a.eff&&a.id!=='card'&&!a.applied)?a.eff:0); },0); }
+function isDone(a){ return !!S.picked[a.id]||!!a.applied||(a.toggle&&S[a.toggle]); }
 
 function actCard(a,opt){ opt=opt||{};
-  var on=S.picked[a.id], eff=a.eff?('약 '+kor(a.eff)+' <span class="fine" style="font-weight:400">줄어요</span>'):'<span class="eff na">금액 계산 없음</span>';
-  return '<div class="act '+(on?'on':'')+'"><div class="hd"><div><b style="font-size:15px">'+a.t+'</b><div style="margin-top:4px"><span class="tag '+(a.cat==='now'?'red':a.cat==='jan'?'gray':'gray')+'">'+(a.cat==='now'?'⏰ ':'')+a.dl+'</span> '+(a.eff&&!a.sure&&a.id!=='card'?'<span class="tag gray">확인 필요</span>':'')+'</div></div><div class="eff">'+eff+'</div></div>'+
-    (opt.compact?'':'<p>'+a.how+'</p>')+
-    (opt.compact?'':'<div style="display:flex;gap:8px">'+(a.id==='card'?'<button class="btn sm" data-act="to" data-v="s05" style="flex:1">슬라이더로 정하기</button>':'')+'<button class="btn sm sec" data-act="pick" data-v="'+a.id+'" style="flex:1">'+(on?'플랜에 담았어요 ✓':'내 플랜에 담기')+'</button></div>')+'</div>'; }
+  var done=isDone(a), eff;
+  if(a.applied) eff=a.eff>0?('반영됨 약 '+kor(a.eff)+' <span class="fine" style="font-weight:400">줄어요</span>'):'<span class="eff na">반영됨 · 아직 효과 없음</span>';
+  else eff=a.eff?('약 '+kor(a.eff)+' <span class="fine" style="font-weight:400">줄어요</span>'):'<span class="eff na">'+(a.input?'금액을 넣으면 계산해요':'금액 계산 없음')+'</span>';
+  var inp='';
+  if(a.input&&!opt.compact){ var cur=S.inputs[a.id]||0, extra='';
+    if(a.id==='pen'&&cur) extra=' · 남은 한도 '+man(Math.max(0,9000000-cur));
+    inp='<div style="margin-top:8px"><label class="lbl" style="margin:0">'+a.input.label+'<div style="display:flex;gap:8px"><input class="inp" style="margin-top:6px" type="number" min="0" inputmode="numeric" data-iv="'+a.id+'" value="'+(cur?cur/10000:'')+'" placeholder="0"><button class="btn sm" style="margin-top:6px;width:auto;padding:0 16px" data-act="inpSave" data-v="'+a.id+'">반영</button></div></label>'+
+      '<p class="fine" style="margin:6px 0 0">'+(cur?'반영됨: '+man(cur)+extra+' · <button data-act="inpClear" data-v="'+a.id+'" style="border:0;background:none;color:var(--blue);text-decoration:underline;padding:0">지우기</button><br>':'')+a.input.note+' 1월 간소화 자료로 확정해요.</p></div>'; }
+  var btns='';
+  if(!opt.compact){
+    if(a.id==='card') btns+='<button class="btn sm" data-act="to" data-v="s05" style="flex:1">결제 수단 정하기</button>';
+    if(a.toggle) btns+='<button class="btn sm '+(S[a.toggle]?'sec':'')+'" data-act="tog" data-v="'+a.toggle+'" style="flex:1">'+(S[a.toggle]?'12월분 낼 예정 ✓ 반영됨':'12월분 낼게요')+'</button>';
+    else if(a.id!=='card') btns+='<button class="btn sm sec" data-act="pick" data-v="'+a.id+'" style="flex:1">'+(S.picked[a.id]?(a.input?'해당 없어요 ✓ (되돌리기)':'확인했어요 ✓ (되돌리기)'):(a.input?'해당 없어요':'확인했어요'))+'</button>';
+  }
+  return '<div class="act '+(done?'on':'')+'" style="'+(S.picked[a.id]&&!a.applied?'opacity:.6':'')+'"><div class="hd"><div><b style="font-size:15px">'+a.t+'</b><div style="margin-top:4px"><span class="tag '+(a.cat==='now'?'red':'gray')+'">'+(a.cat==='now'?'⏰ ':'')+a.dl+'</span> '+(a.eff&&!a.sure&&a.id!=='card'&&!a.applied?'<span class="tag gray">확인 필요</span>':'')+'</div></div><div class="eff">'+eff+'</div></div>'+
+    (opt.compact?'':'<p>'+a.how+'</p>')+inp+
+    (btns?'<div style="display:flex;gap:8px">'+btns+'</div>':'')+'</div>'; }
 
 /* ---------- 화면 ---------- */
 var V={};
 V.s00=function(){ return '<div style="min-height:100%;display:flex;flex-direction:column">'+
-  '<div style="flex:1;padding-top:30px"><div class="logo">덜</div><div class="appname">'+APP+' <span class="fine">가제</span></div>'+
-  '<span class="tag red">2026년 11월 · D-52</span>'+
-  '<h1>미리보기에서 또 토해낸대요?<br><em>12월 31일 전까지, 조금이라도 덜 뱉어요.</em></h1>'+
-  '<p class="sub">카드·월급·월세는 토스가 이미 알고 있어요.<br>남은 두 달, 어디로 결제할지만 정하세요.</p>'+
+  '<div style="flex:1;padding-top:48px"><span class="tag red">연말정산 마감 D-52 · 12월 31일까지</span>'+
+  '<h1>올해 연말정산,<br><em>12월 31일 전에 덜 내는 법</em></h1>'+
+  '<p class="sub">카드·월급·월세는 토스가 이미 알고 있어요.<br>내 상황에 맞게, 지금 바꿀 수 있는 것만 알려드려요.</p>'+
   '<p class="fine">예상 결과 기준이며, 실제 결과는 달라질 수 있어요.</p>'+
-  '<div class="card blue"><b>11~12월은 무료로 써보고, 1월에 정하세요.</b><p class="fine" style="margin:4px 0 0">체험 중엔 결제 정보를 받지 않아요. 환급금에서 한 푼도 떼지 않아요.</p></div></div>'+
+  '<div class="card blue"><b>한 달 무료 체험, 끝나고 정하세요.</b><p class="fine" style="margin:4px 0 0">체험 중엔 결제 정보를 받지 않아요. 환급금에서 한 푼도 떼지 않아요.</p></div></div>'+
   '<div><button class="btn" data-act="to" data-v="s01">내 연말정산 바로 보기</button>'+
   '<p class="fine" style="margin-top:14px">토스 인앱 서비스를 가정한 시연용 프로토타입이에요. 입력한 값은 이 화면 안에서만 쓰이고 저장·전송되지 않아요. 모든 숫자는 예시예요. 세무 상담·신고 대행 서비스가 아니며 국세청·홈택스와 관련 없어요.</p></div></div>'; };
 
@@ -251,6 +306,7 @@ V.manual=function(){ return top('직접 입력','3가지')+'<h2>이것만 알려
   '<label class="lbl">연봉(세전, 만원)<input class="inp" type="number" inputmode="numeric" data-d="salary" value="'+(S.d.salary/10000)+'"></label>'+
   '<label class="lbl">올해 카드 사용액(대략, 만원)<input class="inp" type="number" inputmode="numeric" data-d="credit" value="'+(S.d.credit/10000)+'"></label>'+
   '<label class="lbl">매달 내는 월세(만원, 없으면 0)<input class="inp" type="number" inputmode="numeric" data-d="rent" value="'+(S.d.rent/10000)+'"></label>'+
+  '<label class="lbl">올해 월세를 낸 개월 수(1~12)<input class="inp" type="number" min="1" max="12" inputmode="numeric" data-rmi="1" value="'+S.rentMonths+'"></label>'+
   '<p class="fine">카드 사용액은 신용카드로 가정해요. 정확한 값은 1월 간소화 자료로 확인해요.</p>'+
   '<button class="btn" data-act="doManual">다음</button>'; };
 
@@ -262,15 +318,24 @@ V.s02=function(){ var d=S.d, th=thr();
   '<p class="fine">전통시장·대중교통은 공제율이 더 높아서 1월에 정확히 확인해요. 연결 안 된 카드가 있나요? <button data-act="otherPay" style="border:0;background:none;color:var(--blue);font-weight:700;text-decoration:underline">다른 결제 수단도 있어요</button></p>'+
   '<button class="btn" data-act="foundOk">맞아요</button>'; };
 
-function qlist(){ var q=[]; if(!S.manual) q.push('rent'); if(S.ans.rent==='yes'&&!S.manual) q.push('house'); if(S.manual&&S.ans.rent==='yes') q.push('house'); q.push('dep','life','med'); return q; }
+function qlist(){ var q=[]; if(!S.manual) q.push('rent'); if(S.ans.rent==='yes'&&!S.manual) q.push('house'); if(S.manual&&S.ans.rent==='yes') q.push('house'); q.push('dep','med','ins','pen'); return q; }
 V.s03=function(){ var L=qlist(), k=L[S.qi], n=L.length, h=top('질문 카드',(S.qi+1)+'/'+n)+'<div class="bar"><i style="width:'+((S.qi)/n*100)+'%"></i></div>';
   function opts(arr){ return arr.map(function(o){ return '<button class="opt" data-act="ans" data-v="'+k+':'+o[1]+'" aria-pressed="false">'+o[0]+(o[2]?'<small>'+o[2]+'</small>':'')+'</button>'; }).join(''); }
   if(S.pend==='depN') return h+'<h2>몇 명인가요?</h2><div class="chips">'+[1,2,3].map(function(i){return '<button class="chip" data-act="depN" data-v="'+i+'">'+i+'명</button>';}).join('')+'</div><p class="fine">나이·소득 요건은 1월 도우미에서 한 번 더 확인해요.</p>';
+  var AM={insAmt:['ins','1년에 보험료를 대략 얼마나 내나요?',[['50만원 이하',400000],['50~100만원',750000],['100만원 이상',1000000]],'공제는 연 100만 원까지만 계산해요.'],
+    penAmt:[ 'pen','올해 연금저축·IRP에 대략 얼마를 넣었나요?',[['100만원 이하',700000],['100~300만원',2000000],['300~600만원',4500000],['600만원 이상',9000000]],'공제는 연 900만 원까지만 계산해요.']};
+  if(AM[S.pend]){ var m=AM[S.pend]; return h+'<h2>'+m[1]+'</h2><div class="chips" style="flex-direction:column">'+m[2].map(function(c){return '<button class="chip" data-act="amt" data-v="'+m[0]+':'+c[1]+'">'+c[0]+'</button>';}).join('')+'</div>'+
+    '<label class="lbl">직접 입력(만원)<div style="display:flex;gap:8px"><input class="inp" style="margin-top:6px" type="number" min="1" inputmode="numeric" id="qa" placeholder="예: 80"><button class="btn sm" style="margin-top:6px;width:auto;padding:0 16px" data-act="amtCustom" data-v="'+m[0]+'">다음</button></div></label><p class="fine">대략이면 돼요. '+m[3]+' 정확한 값은 1월 간소화 자료로 확인해요.</p>'; }
   if(S.pend==='medBand') return h+'<h2>올해 병원비는 대략 얼마인가요?</h2><div class="chips" style="flex-direction:column">'+Object.keys(BANDS).map(function(b){return '<button class="chip" data-act="medBand" data-v="'+b+'">'+BANDS[b][0]+'</button>';}).join('')+'</div><p class="fine">대략이면 돼요. 정확한 값은 1월 간소화 자료로 확인해요.</p>';
-  if(k==='rent') return h+'<h2>매달 집주인(김○○)님께 보내는 '+man(S.d.rent)+', 월세인가요?</h2>'+opts([['네',"yes"],['아니요',"no"]]);
+  if(k==='rent') return h+'<h2>매달 집주인(김○○)님께 보내는 '+man(S.d.rent)+', 월세인가요?</h2>'+
+    '<div class="card"><b>올해 월세를 낸 개월 수</b><div class="chips" style="align-items:center"><button class="chip" data-act="rm" data-v="-1" aria-label="한 달 줄이기">−</button><b style="font-size:18px;min-width:64px;text-align:center">'+S.rentMonths+'개월</b><button class="chip" data-act="rm" data-v="1" aria-label="한 달 늘리기">＋</button></div>'+
+    '<label class="chk" style="border:0;padding:6px 0"><input type="checkbox" data-chk="rentDec" '+(S.rentDec?'checked':'')+'><div><b>12월분도 낼 예정이에요</b><span>공제는 낸 개월 수만큼 계산돼요 · 총 '+rentM()+'개월</span></div></label>'+
+    '<p class="fine" style="margin:0">기본값은 11월까지 낸 11개월이에요. 중간에 이사했거나 시작했다면 낸 개월만 맞춰 주세요.</p></div>'+opts([['네',"yes"],['아니요',"no"]]);
   if(k==='house') return h+'<h2>무주택 세대주이고 전입신고를 했나요?</h2><p class="fine">월세 세액공제 요건 중 일부예요.</p>'+opts([['네','yes'],['아니요','no'],['모르겠어요','unknown','이 항목은 빼고 계산하고, 1월에 다시 확인해요']]);
   if(k==='dep') return h+'<h2>같이 사는 부모님·자녀가 있나요?</h2>'+opts([['있어요','yes'],['없어요','no']]);
   if(k==='life') return h+'<h2>올해 결혼·출산 같은 변화가 있었나요?</h2>'+opts([['있어요','yes','해당 항목은 1월 도우미에서 확인해요'],['없어요','no']]);
+  if(k==='ins') return h+'<h2>보장성 보험료를 내고 있나요?</h2><p class="fine">실손·생명·자동차보험 등이에요. 저축성 보험은 제외돼요. 연 100만 원까지 공제돼요.</p>'+opts([['네','yes'],['아니요','no'],['모르겠어요','unknown','이 항목은 빼고 계산하고, 1월에 다시 확인해요']]);
+  if(k==='pen') return h+'<h2>연금저축이나 IRP를 이미 넣고 있나요?</h2><p class="fine">추가로 넣으라는 게 아니라 이미 낸 금액을 반영하려는 거예요. 특정 상품은 추천하지 않아요.</p>'+opts([['네','yes'],['아니요','no'],['모르겠어요','unknown','이 항목은 빼고 계산하고, 1월에 다시 확인해요']]);
   return h+'<h2>병원비가 많이 나온 해인가요?</h2>'+(S.sens?'':'<p class="fine">민감정보에 동의하지 않아서, 네를 눌러도 이번 계산에는 넣지 않아요.</p>')+opts([['네','yes'],['아니요','no'],['모르겠어요','unknown','이 항목은 빼고 계산하고, 1월에 다시 확인해요']]); };
 
 V.s04=function(){ var e=S.nov, t=resultText(e.diff), L=actions(), pot=potential();
@@ -282,7 +347,8 @@ V.s04=function(){ var e=S.nov, t=resultText(e.diff), L=actions(), pot=potential(
   else h+='<h2 style="margin-top:20px">더 받을 수 있는 방법</h2><p class="fine">환급이 예상돼도 놓친 공제가 없는지 확인해요.</p>';
   L.slice(0,3).forEach(function(a){ h+=actCard(a,{compact:true}); });
   if(pot>0) h+='<div class="card blue"><b>모두 해당되면 카드 전환 외에 최대 약 '+kor(pot)+'</b><p class="fine" style="margin:4px 0 0">확인이 필요한 항목 포함 · 추정</p></div>';
-  h+='<p class="fine">'+DISCL+'</p><button class="btn" data-act="to" data-v="s05">남은 두 달 계획하기</button><button class="btn sec" data-act="tabTo" data-v="ways">줄이는 방법 전체 보기</button>'; return h; };
+  h+='<div class="card blue"><b>다음: 남은 지출, 결제 수단 정하기</b><p class="fine" style="margin:4px 0 0">12월 31일까지 원래 쓸 돈을 신용카드·체크카드 중 어디로 결제하면 세금이 얼마나 줄어드는지 슬라이더로 비교해요. 더 쓰라는 게 아니에요.</p></div>'+
+  '<p class="fine">'+DISCL+'</p><button class="btn" data-act="to" data-v="s05">카드 결제 수단 정해보기</button><button class="btn sec" data-act="tabTo" data-v="ways">줄이는 방법 전체 보기</button>'; return h; };
 
 function cmpHtml(){ var p=S.plan, sav=cardSaving(p), d=diffOf(p);
   return '<div class="card '+(sav>0?'blue':'')+'"><div class="ver"><div>지금처럼<b>'+resultText(taxOf({spend:p.spend,big:p.big,checkPct:0})-S.paid)[0].replace('예상 ','<br>')+'</b></div><span>→</span><div>이 계획<b>'+resultText(d)[0].replace('예상 ','<br>')+'</b></div></div>'+
@@ -296,12 +362,13 @@ function tableHtml(){ var p=S.plan, tot=p.spend+p.big, rec=recPct(p);
   return h+'</div>'; }
 V.s05=function(){ var p=S.plan, s=split(p), th=thr(), rem=Math.max(0,th-counted()), sav=cardSaving(p), d=diffOf(p), d0=S.nov.diff;
   var tot=p.spend+p.big;
-  return top('카드 사용 슬라이더')+'<h2>남은 지출, 어디로 결제할지 움직여 보세요</h2>'+
+  return top('결제 수단 정하기')+'<h2>남은 지출, 어디로 결제할지 움직여 보세요</h2><p class="sub" style="font-size:14px">12월 31일까지 원래 쓸 돈을 신용카드·체크카드 중 어디로 결제하면 세금이 얼마나 줄어드는지 비교해요. 더 쓰라는 게 아니에요.</p>'+
   '<div class="card"><b>올해 카드 사용</b><div class="bar '+(rem===0?'done':'')+'"><i style="width:'+Math.min(100,counted()/th*100)+'%"></i></div><p class="fine" style="margin:0">'+man(counted())+' / '+man(th)+' · '+(rem>0?'문턱까지 '+man(rem)+' 남았어요':'문턱을 넘었어요')+'</p></div>'+
   '<div class="card"><b>12월 31일까지 쓸 예정 금액</b> <span class="fine">(최근 3개월 평균으로 시작)</span><div class="big" id="spVal" style="font-size:24px">'+man(p.spend)+'</div>'+
   '<input type="range" min="0" max="5000000" step="100000" value="'+p.spend+'" data-sl="spend" aria-label="쓸 예정 금액">'+
   '<p class="fine" style="margin:0">원래 쓸 돈만 넣으세요. 더 쓰면 쓴 돈보다 아끼는 세금이 훨씬 적어요.</p>'+
-  (p.big?'<div class="chips"><span class="tag">큰 지출 '+man(p.big)+' 포함</span><button class="chip" data-act="bigClear">빼기</button></div>':'<button class="btn sm sec" data-act="bigAsk">+ 큰 지출 추가 (예: 12월 노트북 150만 원)</button>')+'</div>'+
+  (S.bigList.length?'<div style="margin-top:8px"><span class="fine">원래 예정된 큰 지출 (합계 '+man(p.big)+')</span>'+S.bigList.map(function(b,i){ return '<div class="row" style="padding:8px 0"><span class="k">'+b.n+'</span><span class="v">'+man(b.amt)+' <button class="chip" style="min-height:32px;padding:0 10px" data-act="bigDel" data-v="'+i+'" aria-label="'+b.n+' 빼기">×</button></span></div>'; }).join('')+'</div>':'')+
+  '<button class="btn sm sec" data-act="bigAsk">+ 큰 지출 추가 (직접 입력도 돼요)</button></div>'+
   '<div class="card"><b>어디로 결제할까요?</b><input type="range" min="0" max="100" step="5" value="'+p.checkPct+'" data-sl="checkPct" aria-label="체크카드 비율">'+
   '<div style="display:flex;justify-content:space-between;font-size:14px"><span>신용카드 <b id="crVal">'+man(s.cr)+'</b></span><span>체크카드·현금영수증 <b id="chkVal">'+man(s.chk)+'</b></span></div></div>'+
   '<div id="cmp">'+cmpHtml()+'</div><h3 style="margin-top:16px">신용카드 vs 체크카드, 따로 비교</h3><div id="tbl">'+tableHtml()+'</div>'+
@@ -309,11 +376,12 @@ V.s05=function(){ var p=S.plan, s=split(p), th=thr(), rem=Math.max(0,th-counted(
   '<p class="fine">특정 카드 상품은 추천하지 않고 결제 수단 종류만 비교해요. '+DISCL+'</p>'+
   '<button class="btn" data-act="savePlan">이 계획으로 저장할게요</button>'; };
 
-V.s06=function(){ var p=S.plan, s=split(p), L=actions().filter(function(a){return S.picked[a.id];});
+V.s06=function(){ var p=S.plan, s=split(p), L=actions().filter(function(a){return isDone(a)&&a.id!=='card';});
   return top('결제 계획 저장')+'<h2>✅ 계획을 저장했어요</h2>'+
   '<div class="card"><b>결제 계획</b><p style="margin:4px 0 0;font-size:14px">12월 31일까지 '+man(p.spend+p.big)+' · 신용카드 '+man(s.cr)+' / 체크카드 '+man(s.chk)+'</p><p class="fine" style="margin:4px 0 0">예상 '+resultText(diffOf(p))[0]+'</p></div>'+
-  (L.length?'<div class="card"><b>내 플랜에 담은 방법</b>'+L.map(function(a){return '<p style="margin:6px 0 0;font-size:14px">• '+a.t+' <span class="fine">('+a.dl+')</span></p>';}).join('')+'</div>':'')+
+  (L.length?'<div class="card"><b>플랜에 반영한 것</b>'+L.map(function(a){return '<p style="margin:6px 0 0;font-size:14px">• '+a.t+' <span class="fine">('+a.dl+')</span></p>';}).join('')+'</div>':'')+
   '<div class="toggle"><div><b>결제 수단 전환 알림</b><div class="fine">카드 공제 문턱·한도에 닿을 때만 알려드려요. 같은 알림은 한 번만, 마케팅 알림과 섞지 않아요.</div></div><input type="checkbox" role="switch" data-chk="noti" '+(S.noti?'checked':'')+'></div>'+
+  '<p class="fine">한 달 무료 체험 중에도 알림은 계속 와요. 1월 구독은 <button data-act="to" data-v="s09" style="border:0;background:none;color:var(--blue);font-weight:700;text-decoration:underline;padding:0">구독 안내</button>에서 미리 볼 수 있어요.</p>'+
   '<button class="btn" data-act="to" data-v="home">알림 받기</button>'; };
 
 V.home=function(){ var th=thr(), rem=Math.max(0,th-counted()), hit=rem===0, h='';
@@ -322,37 +390,47 @@ V.home=function(){ var th=thr(), rem=Math.max(0,th-counted()), hit=rem===0, h=''
   var t=resultText(S.dec?S.dec.diff:diffOf(S.plan.saved?S.plan:baseline()));
   h+='<span class="tag red">'+dday()+'</span><h2>'+(hit?'이제부터는 체크카드가 유리해요':'지금은 신용카드 써도 괜찮아요')+'</h2>'+
   '<div class="card"><b>카드 공제 문턱</b><div class="bar '+(hit?'done':'')+'"><i style="width:'+Math.min(100,counted()/th*100)+'%"></i></div><p class="fine" style="margin:0">'+(hit?'문턱을 넘었어요 ✓ ('+man(counted())+' / '+man(th)+')':'문턱까지 '+man(rem)+' 남았어요. 넘으면 알려드릴게요.')+'</p></div>'+
-  '<div class="card"><span class="tag gray">2026년 귀속 · 올해 예상</span><div class="big '+t[1]+'" style="font-size:26px">'+t[0]+'</div><p class="fine" style="margin:0">추정 포함 · '+(S.stage==='dec'?'12월 14일':'11월 8일')+' 기준</p></div>';
-  var L=actions().filter(function(a){return a.id!=='pension';}).slice(0,3);
+  '<div class="card"><span class="tag gray">2026년 귀속 · 올해 예상</span><div class="big '+t[1]+'" style="font-size:26px">'+t[0]+'</div><p class="fine" style="margin:0">추정 포함 · '+(S.stage==='dec'?'12월 14일':'11월 8일')+' 기준</p></div>'+
+  '<div class="card blue"><b>🎁 한 달 무료 체험 중</b><p class="fine" style="margin:4px 0 8px">체험이 끝나면 구독을 직접 정해요. 결제 정보는 받지 않고, 자동으로 유료 전환되지 않아요.</p><button class="btn sm" style="margin:0" data-act="to" data-v="s09">구독 안내 보기</button></div>';
+  var L=actions().filter(function(a){return a.cat==='now'&&!isDone(a);}).slice(0,3);
   h+='<h3 style="margin-top:16px">이번 주 할 일</h3>'+L.map(function(a){return actCard(a,{compact:true});}).join('');
   h+= S.stage==='nov'?'<button class="btn" data-act="toDec">📅 12월 14일로 이동 (시연: 문턱 도달 알림)</button>':'<button class="btn" data-act="toReport">📅 12월 31일 마무리 리포트 보기 (시연)</button>';
   return h+'<p class="fine" style="margin-top:12px">'+DISCL+'</p>'; };
 
 V.ways=function(){ var e=S.nov, L=actions(), pot=potential(), owe=(S.dec?S.dec.diff:e.diff)>0;
-  var h='<h2>'+(owe?'덜 낼 수 있는 방법':'더 받을 수 있는 방법')+'</h2><p class="sub" style="font-size:14px">효과 큰 순서예요. ⏰는 12월 31일 전에 해야 하는 것, 나머지는 1월에 확인해도 돼요.</p>'+
+  var G=[['now','⏰ 12월 31일 전에 할 일','지금 바꾸거나 확인해야 하는 것'],['check','✅ 이미 한 것, 놓치지 않기','새로 쓰지 않고 영수증·한도만 확인'],['know','📌 알아두기','해당되는 분만 읽어보세요']];
+  var h='<h2>'+(owe?'덜 낼 수 있는 방법':'더 받을 수 있는 방법')+'</h2><p class="sub" style="font-size:14px">추가로 돈을 쓰게 하는 방법은 넣지 않았어요. 원래 쓸 돈과 이미 낸 비용에서 놓친 공제를 찾아요.</p>'+
   '<div class="card blue"><b>카드 전환 외에 모두 해당되면 최대 약 '+kor(pot)+'</b><p class="fine" style="margin:4px 0 0">확인 필요 항목 포함 · 예상일 뿐 보장하지 않아요. 요건은 1월 간소화 자료로 확인해요.</p></div>';
-  L.forEach(function(a){ h+=actCard(a); });
-  return h+'<p class="fine">소비를 권하는 게 아니에요. 원래 쓸 돈과 이미 낸 비용 중에서 놓친 공제를 찾는 도구예요. '+DISCL+'</p>'; };
+  var rows=[];
+  if(S.ans.med==='yes'&&S.sens&&BANDS[S.ans.medBand]){ var mc=medCredit(true); rows.push('<div class="row"><span class="k">병원비<span class="src">'+(mc>0?'약 '+kor(mc)+' 줄어요':'총급여의 3%를 넘기 전이라 아직 효과 없어요')+' · 대략 구간</span></span><span class="v">'+BANDS[S.ans.medBand][0]+' <button class="chip" style="min-height:32px;padding:0 10px" data-act="medEdit">수정</button></span></div>'); }
+  ['ins','pen'].forEach(function(i){ if(S.ans[i]==='yes'&&S.inputs[i]>0) rows.push('<div class="row"><span class="k">'+(i==='ins'?'보험료':'연금저축·IRP')+'<span class="src">약 '+kor(inpCredit(i))+' 줄어요'+(i==='pen'?' · 남은 한도 '+man(Math.max(0,9000000-S.inputs[i])):'')+'</span></span><span class="v">'+man(S.inputs[i])+' <button class="chip" style="min-height:32px;padding:0 10px" data-act="qEdit" data-v="'+i+'">수정</button></span></div>'); });
+  if(rows.length) h+='<div class="card" style="padding:4px 16px"><p class="fine" style="margin:12px 0 0">앞에서 입력한 것 (예상에 반영됨)</p>'+rows.join('')+'</div>';
+  G.forEach(function(g){ var items=L.filter(function(a){return a.cat===g[0];}); if(!items.length) return;
+    h+='<h3 style="margin-top:20px">'+g[1]+'</h3><p class="fine" style="margin:0 0 4px">'+g[2]+'</p>'; items.forEach(function(a){ h+=actCard(a); }); });
+  h+='<div class="card"><b>🎁 한 달 무료 체험 중</b><p class="fine" style="margin:4px 0 8px">체험이 끝나면 구독을 직접 정해요. 결제 정보는 받지 않아요.</p><button class="btn sm sec" style="margin:0" data-act="to" data-v="s09">구독 안내 보기</button></div>';
+  return h+'<p class="fine">'+DISCL+'</p>'; };
 
 V.me=function(){ return '<h2>내 정보</h2>'+
+  '<div class="card blue"><h3>🎁 구독 · 무료 체험 중</h3><p class="fine" style="margin:0 0 8px">한 달 무료 체험 중이에요. 결제 정보를 받지 않고 자동으로 유료 전환되지 않아요. 체험이 끝나면 직접 고르고, 그때 유료 결제에 별도로 동의해요.</p><button class="btn sm" style="margin:0" data-act="to" data-v="s09">구독 안내 보기</button></div>'+
   '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">관리 과세연도</span><span class="v">2026년 귀속</span></div><div class="row"><span class="k">토스 데이터 이용</span><span class="v">'+(S.link?'동의함':'직접 입력')+'</span></div></div>'+
   '<div class="toggle"><div><b>결제 수단 전환 알림</b><div class="fine">관리 알림 (광고 아님)</div></div><input type="checkbox" role="switch" data-chk="noti" '+(S.noti?'checked':'')+'></div>'+
-  '<div class="card"><h3>구독</h3><p class="fine" style="margin:0">11~12월 무료 체험 중이에요. 결제 정보를 받지 않고 자동으로 유료 전환되지 않아요. 구독은 1월에 직접 고르고, 그때 유료 결제에 별도로 동의해요.</p></div>'+
   '<button class="btn sec" data-act="delAsk">동의 철회 · 내 데이터 삭제</button>'; };
 
-V.s08=function(){ var r=S.report, t=resultText(r.diff), d=r.diff-S.nov.diff, L=actions().filter(function(a){return a.id!=='card'&&a.id!=='pension';});
+V.s08=function(){ var r=S.report, t=resultText(r.diff), d=r.diff-S.nov.diff, L=actions().filter(function(a){return a.id!=='card'&&a.cat!=='know'&&!isDone(a);}).slice(0,5);
   return top('12월 마무리 리포트')+'<span class="tag ok">2026년 12월 31일</span><h2>올해 이만큼 챙겼어요</h2>'+
   '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">11월 예상</span><span class="v">'+resultText(S.nov.diff)[0]+'</span></div><div class="row"><span class="k">12월 말 예상</span><span class="v">'+t[0]+'</span></div><div class="row"><span class="k">변화</span><span class="v">'+(d===0?'같음':(d<0?'−':'+')+kor(d))+'</span></div></div>'+
   '<div class="card"><b>결제 계획 실천 (시연 가정)</b><p class="fine" style="margin:4px 0 0">남은 기간 결제 중 체크카드 '+r.chkPct+'% · 문턱 도달 후 체크카드로 바꿨어요. 카드 전환으로 세금 약 '+kor(r.saving)+' 줄어든 것으로 추정돼요.</p></div>'+
   '<div class="card blue"><b>1월에 확인할 것</b>'+(L.length?L.map(function(a){return '<p style="margin:6px 0 0;font-size:14px">• '+a.t+'</p>';}).join(''):'<p class="fine" style="margin:4px 0 0">추가로 확인할 항목이 없어요.</p>')+'<p style="margin:6px 0 0;font-size:14px">• 간소화 자료로 월세·의료비 등 증빙 확인</p></div>'+
   '<p class="fine">예상액 변화는 입력된 자료가 바뀐 결과예요. 앱 덕분에 절세했다는 뜻이 아니에요. '+DISCL+'</p>'+
-  '<button class="btn" data-act="toJan">1월 연말정산 같이 챙기기</button>'; };
+  '<button class="btn" data-act="toJan">1월 연말정산 같이 챙기기</button><button class="btn sec" data-act="to" data-v="s09">1월 구독 미리 보기</button>'; };
 
-V.s09=function(){ return top('구독 안내')+'<span class="tag">2027년 1월</span><h2>1월 연말정산, 빠진 거 없는지 같이 챙겨요</h2>'+
+V.s09=function(){ var jan=S.stage==='jan';
+  return top('구독 안내')+'<span class="tag '+(jan?'':'gray')+'">'+(jan?'2027년 1월':'미리 보기 · 1월에 시작해요')+'</span><h2>1월 연말정산, 빠진 거 없는지 같이 챙겨요</h2>'+
   '<div class="card"><h3>구독하면</h3><p style="margin:0;font-size:14px">• 1월 연말정산 도우미 (자료 비교·누락 체크·제출 가이드)<br>• 2~3월 결과 비교<br>• 2027년 연중 관리 (문턱 넘는 순간부터 알려드려요)</p></div>'+
   '<div class="card blue"><b>1월 안에 시작하면 첫해 특별가</b><p style="margin:4px 0 0;font-size:14px">첫해 <b>14,900원</b> · 이후 갱신 시 <b>24,900원/년</b></p><p class="fine" style="margin:4px 0 0">시연용 예시 가격이에요(가격 검증 중). 첫해 한정 · 갱신 전에 미리 알리고 동의를 받아요. 환급금에서 한 푼도 떼지 않아요.</p></div>'+
-  '<p class="fine">무료로도 예상 결과 조회와 추가 납부 경보는 계속 쓸 수 있어요.</p>'+
-  '<button class="btn" data-act="to" data-v="s10">구독 알아보기</button><button class="btn sec" data-act="tabTo" data-v="home">나중에 할게요</button>'; };
+  '<div class="card"><b>지금은 무료예요</b><p class="fine" style="margin:4px 0 0">무료 체험 중에는 결제 정보를 받지 않고, 자동으로 유료 전환되지 않아요. 무료로도 예상 결과 조회와 추가 납부 경보는 계속 쓸 수 있어요.</p></div>'+
+  (jan?'<button class="btn" data-act="to" data-v="s10">구독 알아보기</button><button class="btn sec" data-act="tabTo" data-v="home">나중에 할게요</button>'
+      :'<button class="btn" data-act="subRemind">'+(S.subRemind?'1월 시작 알림 받는 중 ✓':'1월에 알려주세요')+'</button><button class="btn sec" data-act="back">닫기</button>'); };
 
 V.s10=function(){ return top('구독 선택')+'<h2>연 구독 시작</h2>'+
   '<div class="card" style="padding:4px 16px"><div class="row"><span class="k">첫해 특별가</span><span class="v">14,900원</span></div><div class="row"><span class="k">갱신일 · 갱신 가격</span><span class="v">2028년 1월 · 24,900원</span></div><div class="row"><span class="k">해지 방법</span><span class="v">내 정보 → 구독 해지 (한 번에)</span></div></div>'+
@@ -367,9 +445,10 @@ V.s11=function(){ return top('연말정산 도우미')+'<span class="tag ok">구
   '<button class="btn" data-act="to" data-v="s12">시작하기</button>'; };
 
 function missing(){ var L=[];
-  if(S.ans.rent==='yes') L.push({id:'rent',t:'월세 세액공제 증빙',d:'임대차계약서 사본, 월세 이체 내역, 주민등록등본(전입신고)',eff:Math.min(S.d.rent*12,10000000)*(rentRate(S.d.salary)||0.17),pre:rentEligible()});
+  if(S.ans.rent==='yes') L.push({id:'rent',t:'월세 세액공제 증빙',d:'임대차계약서 사본, 월세 이체 내역, 주민등록등본(전입신고)',eff:Math.min(S.d.rent*rentM(),10000000)*(rentRate(S.d.salary)||0.17),pre:rentEligible()});
   if(S.ans.dep==='yes') L.push({id:'dep',t:'부양가족 등록',d:'부양가족 나이·소득 요건 확인, 형제자매 중복 공제 여부',eff:S.ans.depN*1500000*MARG,pre:true});
   if(S.ans.med==='yes'||S.ans.med==='unknown') L.push({id:'med',t:'의료비 영수증',d:'간소화 자료에 빠진 병원·약국 영수증',eff:null,pre:false});
+  L.push({id:'don',t:'기부금 영수증',d:'이미 한 기부의 영수증이 간소화 자료에 빠지지 않았는지',eff:null,pre:false});
   L.push({id:'pen',t:'연금저축·IRP 납입 확인서',d:'이미 납입 중이라면 납입 확인서가 빠지지 않았는지',eff:null,pre:false});
   return L; }
 V.s12=function(){ var h=top('간소화 자료 비교')+'<h2>빠졌을 수 있는 항목을 찾아요</h2>';
@@ -420,8 +499,9 @@ document.addEventListener('change',function(ev){ var t=ev.target, k=t.getAttribu
   if(t.getAttribute&&t.getAttribute('data-ck')!==null){ S.checks[t.getAttribute('data-ck')]=t.checked; render(); return; }
   if(!k) return; var on=t.checked;
   if(k==='all'){ ['terms','privacy','link','sens','mkt'].forEach(function(x){S[x]=on;}); } else S[k]=on;
-  if(['all','terms','privacy','link','sens','mkt','subPaidOk'].indexOf(k)>-1) render(); });
+  if(['all','terms','privacy','link','sens','mkt','subPaidOk','rentDec'].indexOf(k)>-1) render(); });
 document.addEventListener('input',function(ev){ var t=ev.target;
+  if(t.getAttribute&&t.getAttribute('data-rmi')){ S.rentMonths=Math.max(1,Math.min(12,Number(t.value)||1)); return; }
   var d=t.getAttribute&&t.getAttribute('data-d'); if(d){ S.d[d]=Math.max(0,Number(t.value)||0)*10000; return; }
   var sl=t.getAttribute&&t.getAttribute('data-sl'); if(sl){ S.plan[sl]=Number(t.value); S.plan.saved=false; var s=split(S.plan); $('spVal').textContent=man(S.plan.spend); $('crVal').textContent=man(s.cr); $('chkVal').textContent=man(s.chk); $('cmp').innerHTML=cmpHtml(); $('tbl').innerHTML=tableHtml(); } });
 document.addEventListener('click',function(ev){
@@ -440,8 +520,10 @@ document.addEventListener('click',function(ev){
     case 'saveSalary': var n=Number($('inp').value); if(!(n>0)){ toast('숫자를 입력해 주세요'); break; } S.d.salary=Math.round(n*10000); S.salaryOk=true; track('salary'); closeSheet(); render(); break;
     case 'closeSheet': closeSheet(); break;
     case 'otherPay': toast('시연에서는 카드를 더 연결하지 않아요'); break;
-    case 'foundOk': S.salaryOk=true; track('salary'); S.qi=0; S.ans={rent:null,house:null,dep:null,depN:0,life:null,med:null,medBand:null}; go('s03'); break;
+    case 'foundOk': S.salaryOk=true; track('salary'); S.qi=0; S.inputs={}; S.ans={rent:null,house:null,dep:null,depN:0,life:null,med:null,medBand:null,ins:null,pen:null}; go('s03'); break;
     case 'ans': var kv=v.split(':'), k=kv[0], val=kv[1];
+      if((k==='ins'||k==='pen')&&val==='yes'){ S.ans[k]='yes'; S.pend=k+'Amt'; render(); break; }
+      if((k==='ins'||k==='pen')&&val!=='yes'){ S.ans[k]=val; delete S.inputs[k]; nextQ(); break; }
       if(k==='dep'&&val==='yes'){ S.ans.dep='yes'; S.pend='depN'; render(); break; }
       if(k==='med'&&val==='yes'){ S.ans.med='yes'; if(S.sens){ S.pend='medBand'; render(); break; } S.ans.medBand=null; }
       else S.ans[k]=val;
@@ -450,10 +532,20 @@ document.addEventListener('click',function(ev){
       nextQ(); break;
     case 'depN': S.ans.depN=Number(v); nextQ(); break;
     case 'medBand': S.ans.medBand=v; nextQ(); break;
+    case 'subRemind': S.subRemind=!S.subRemind; render(); toast(S.subRemind?'1월에 구독 안내를 알려드릴게요':'알림을 껐어요'); break;
+    case 'rm': S.rentMonths=Math.max(1,Math.min(12,S.rentMonths+Number(v))); render(); break;
     case 'pick': S.picked[v]=!S.picked[v]; render(); break;
-    case 'bigAsk': openSheet('<h3>원래 예정된 큰 지출</h3><p class="fine">12월에 원래 쓸 계획이던 금액만 넣으세요.</p><div class="chips"><button class="chip" data-act="bigSet" data-v="1500000">노트북 150만원</button><button class="chip" data-act="bigSet" data-v="500000">50만원</button><button class="chip" data-act="bigSet" data-v="3000000">300만원</button></div><button class="btn sec" data-act="closeSheet">닫기</button>'); break;
-    case 'bigSet': S.plan.big=Number(v); S.plan.saved=false; closeSheet(); render(); break;
-    case 'bigClear': S.plan.big=0; S.plan.saved=false; render(); break;
+    case 'tog': S[v]=!S[v]; S.plan.saved=false; render(); toast(S[v]?'12월분을 반영했어요':'12월분 반영을 뺐어요'); break;
+    case 'medEdit': openSheet('<h3>올해 병원비는 대략 얼마인가요?</h3><div class="chips" style="flex-direction:column">'+Object.keys(BANDS).map(function(b){return '<button class="chip" data-act="medPick" data-v="'+b+'" aria-pressed="'+(S.ans.medBand===b)+'">'+BANDS[b][0]+'</button>';}).join('')+'</div><p class="fine">대략이면 돼요. 정확한 값은 1월 간소화 자료로 확인해요.</p><button class="btn sec" data-act="closeSheet">취소</button>'); break;
+    case 'medPick': S.ans.medBand=v; S.plan.saved=false; closeSheet(); render(); toast('예상에 반영했어요'); break;
+    case 'qEdit': openSheet('<h3>'+(v==='ins'?'올해 낸 보험료':'올해 납입한 연금저축·IRP')+'</h3><p class="fine">단위: 만원</p><input class="inp" type="number" min="0" inputmode="numeric" id="inp" value="'+(S.inputs[v]/10000)+'"><button class="btn" data-act="qEditSave" data-v="'+v+'">저장</button><button class="btn sec" data-act="closeSheet">취소</button>'); break;
+    case 'qEditSave': var qn=Number($('inp').value); if(!(qn>0)){ toast('금액(만원)을 입력해 주세요'); break; } S.inputs[v]=Math.round(qn*10000); S.plan.saved=false; closeSheet(); render(); toast('예상에 반영했어요'); break;
+    case 'inpSave': var iv=document.querySelector('[data-iv="'+v+'"]'), ia=Number(iv&&iv.value); if(!(ia>0)){ toast('금액(만원)을 입력해 주세요'); break; } S.inputs[v]=Math.round(ia*10000); S.plan.saved=false; var y=$('screen').scrollTop; render(); $('screen').scrollTop=y; toast('예상에 반영했어요'); break;
+    case 'inpClear': delete S.inputs[v]; S.plan.saved=false; var y2=$('screen').scrollTop; render(); $('screen').scrollTop=y2; break;
+    case 'bigAsk': openSheet('<h3>원래 예정된 큰 지출</h3><p class="fine">12월 31일까지 원래 쓸 계획이던 금액만 넣으세요. 더 쓰라는 뜻이 아니에요.</p><div class="chips"><button class="chip" data-act="bigAdd" data-v="노트북|1500000">노트북 150만원</button><button class="chip" data-act="bigAdd" data-v="가전|800000">가전 80만원</button><button class="chip" data-act="bigAdd" data-v="여행·기타|500000">50만원</button></div><label class="lbl">직접 입력 — 항목 이름(선택)<input class="inp" type="text" id="bn" maxlength="12" placeholder="예: 이사 비용"></label><label class="lbl">금액(만원)<input class="inp" type="number" min="1" inputmode="numeric" id="ba" placeholder="예: 120"></label><button class="btn" data-act="bigAddCustom">추가</button><button class="btn sec" data-act="closeSheet">닫기</button>'); break;
+    case 'bigAdd': var bp=v.split('|'); S.bigList.push({n:bp[0],amt:Number(bp[1])}); syncBig(); closeSheet(); render(); break;
+    case 'bigAddCustom': var am=Number($('ba').value); if(!(am>0)){ toast('금액을 입력해 주세요'); break; } S.bigList.push({n:($('bn').value.trim()||'큰 지출'),amt:Math.round(am*10000)}); syncBig(); closeSheet(); render(); break;
+    case 'bigDel': S.bigList.splice(Number(v),1); syncBig(); render(); break;
     case 'recommend': S.plan.checkPct=recPct(S.plan); S.plan.saved=false; render(); toast('추천 비율로 맞췄어요'); break;
     case 'savePlan': S.plan.saved=true; S.picked.card=true; track('plan'); go('s06'); break;
     case 'toDec': S.stage='dec'; var crPart=Math.max(0,thr()-counted())+50000; S.d.credit+=crPart; S.crPart=crPart; var tt=S.plan.spend+S.plan.big; S.dec={diff:taxOf({spend:Math.max(0,tt-crPart),big:0,checkPct:S.plan.saved?100:0})-S.paid}; S.history=[]; S.tab='home'; S.screen='home'; render();
@@ -471,7 +563,8 @@ document.addEventListener('click',function(ev){
     case 'upload': S.helper.up=true; render(); toast('간소화 자료와 비교했어요'); break;
     case 'hok': S.helper.ok[v]=!S.helper.ok[v]; render(); break;
     case 'helperDone': track('helper'); S.helperStep=6; go('done'); break;
-    case 'amt': break;
+    case 'amt': var ap=v.split(':'); S.inputs[ap[0]]=Number(ap[1]); nextQ(); break;
+    case 'amtCustom': var ca=Number($('qa').value); if(!(ca>0)){ toast('금액(만원)을 입력해 주세요'); break; } S.inputs[v]=Math.round(ca*10000); nextQ(); break;
     case 'delAsk': openSheet('<h3>동의를 철회하고 데이터를 삭제할까요?</h3><p class="fine">입력한 정보와 저장한 계획이 모두 지워지고 되돌릴 수 없어요.</p><button class="btn danger" data-act="delDo">철회하고 삭제</button><button class="btn sec" data-act="closeSheet">취소</button>'); break;
     case 'delDo': closeSheet(); M={}; S=fresh(); render(); toast('동의를 철회하고 데이터를 삭제했어요'); break;
     case 'home2': S.history=[]; S.stage='jan'; go('home',{noPush:true}); break;
