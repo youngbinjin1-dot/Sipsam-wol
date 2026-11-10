@@ -122,6 +122,9 @@ details.more p{font-size:13px;color:var(--t2);margin:6px 0 0}
   .stage{display:block;padding:0}.phone{width:100%;height:100vh;max-height:none;border-radius:0;box-shadow:none}.side{display:none}
 }
 </style>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0JRX0EMYMS"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0JRX0EMYMS',{send_page_view:false});</script>
 </head>
 <body>
 <div class="stage">
@@ -199,13 +202,14 @@ function fresh(){ return {
 };}
 var S=fresh(), M={};
 var ML=[['link','토스 연동 동의'],['touch','첫 결과까지 터치'],['salary','연봉 추정 [맞아요]'],['plan','슬라이더 계획 저장'],['sheet','전환 알림 확인'],['sub','1월 구독 시작(시연)'],['helper','도우미 제출 가이드 완료']];
-function track(k,v){ M[k]=v===undefined?1:v; }
+function ga(n,p){ try{ if(window.gtag) gtag('event',n,p||{}); }catch(e){} }
+function track(k,v){ M[k]=v===undefined?1:v; ga('mvp_'+k, v===undefined?{}:{value:v}); }
 
 /* ---------- 이동 ---------- */
 var TABS={home:1,ways:1,me:1}, STARTS=['s00','s01','link','manual','s02','s03'], ENDS=['s09','s10','s11','s12','s13','done'];
 function go(sc,o){ o=o||{};
   if(!o.noPush && S.screen!==sc) S.history.push(S.screen);
-  S.screen=sc; if(TABS[sc]) S.tab=sc; if(sc==='s05') S.tab='ways';
+  S.screen=sc; if(TABS[sc]) S.tab=sc; if(sc==='s05') S.tab='ways'; ga('screen_view',{screen_name:sc});
   if(sc==='link'&&!S.est0&&!S.counting&&S.touchFinal==null) S.counting=true;
   render(); $('screen').scrollTop=0; }
 function back(){ var p=S.history.pop(); if(p) go(p,{noPush:true}); }
@@ -610,6 +614,7 @@ document.addEventListener('click',function(ev){
   }
 });
 render();
+ga('screen_view',{screen_name:'s00'});
 })();
 </script>
 </body>
