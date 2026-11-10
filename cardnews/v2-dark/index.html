@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>덜내요 카드뉴스 v2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 덜내요 카드뉴스 v2 — 다크 · 그라데이션 · 입체감. 카드는 1080×1350 원본 좌표로 그리고 화면 폭에 맞춰 축소한다. */
+:root{
+  --bg:#0A0A0D; --page-fg:#EEF1F6; --page-muted:#9EA4A9;
+  --t1:#FFFFFF; --t2:#C3C3C6; --t3:#9E9EA4; --blue:#3485FA; --blue-l:#8CC4FF;
+  --font:'Pretendard Variable','Pretendard','Noto Sans KR','Noto Sans CJK KR','Apple SD Gothic Neo',system-ui,sans-serif;
+  --grad-blue:linear-gradient(135deg,#6FB6FF 0%,#3485FA 55%,#1B4FD8 100%);
+  --grad-title:linear-gradient(180deg,#FFFFFF 0%,#CFE4FF 100%);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--page-fg);font-family:var(--font);padding:32px max(16px,env(safe-area-inset-left,0px)) 56px}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:clamp(22px,3.4vw,30px);margin:0 0 8px;letter-spacing:-.02em}
+.lede{margin:0 0 28px;color:var(--page-muted);font-size:15px;line-height:1.6;max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:28px 22px}
+figure{margin:0;min-width:0}
+.stage{width:100%;aspect-ratio:1080/1350;position:relative;overflow:hidden;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+figcaption{margin-top:10px;font-size:13px;color:var(--page-muted)}
+figcaption b{color:var(--page-fg)}
+
+/* ---------- 카드 공통 ---------- */
+.card{width:1080px;height:1350px;position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;font-family:var(--font);color:var(--t1);word-break:keep-all;letter-spacing:-.02em;background:linear-gradient(180deg,#10162A 0%,#17171C 50%,#0B0C12 100%)}
+.card .abs{position:absolute}
+.rot{transform-origin:0 0}
+.glow{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+.hd{position:absolute;left:88px;top:88px;width:904px;display:flex;justify-content:space-between;align-items:center;font-size:24px;line-height:1.3}
+.hd b{font-weight:700;letter-spacing:.04em}
+.hd span{font-weight:500;color:var(--t3)}
+.ft{position:absolute;left:88px;top:1262px;font-size:22px;line-height:1.4;color:var(--t3)}
+.gt{background:var(--grad-title);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gb{background:linear-gradient(180deg,#6FB6FF,#3485FA 55%,#1B4FD8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pre{white-space:pre-line}
+
+/* 기능 카드 상단 텍스트 */
+.ftext{position:absolute;left:88px;top:118px;width:904px}
+.tag{display:inline-block;margin-top:72px;padding:12px 24px;border-radius:999px;background:rgba(52,133,250,.16);border:1px solid rgba(52,133,250,.6);color:var(--blue-l);font-size:26px;font-weight:700;line-height:1.2}
+.ttl{margin:32px 0 0;font-size:72px;font-weight:900;line-height:1.28;letter-spacing:-.03em}
+.dsc{margin:24px 0 0;font-size:32px;line-height:1.5;color:var(--t2)}
+
+/* 유리 카드 · 알약 · 구 */
+.glass{border-radius:36px;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1.5px solid rgba(255,255,255,.2);box-shadow:0 40px 80px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.18);-webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px);display:flex;flex-direction:column}
+.pill{display:inline-flex;align-items:center;padding:16px 28px;border-radius:999px;font-weight:700;line-height:1.2;white-space:nowrap;background:var(--grad-blue);border:1px solid rgba(255,255,255,.3);box-shadow:0 16px 40px rgba(27,79,216,.55),inset 0 2px 0 rgba(255,255,255,.18)}
+.pill.ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--t2);box-shadow:inset 0 2px 0 rgba(255,255,255,.18)}
+.sphere{position:absolute;border-radius:50%;background:linear-gradient(135deg,#A9D4FF 0%,#3485FA 45%,#0A2A7A 100%);box-shadow:0 45px 90px rgba(0,0,0,.6),inset -18px -24px 45px rgba(0,0,26,.45)}
+.sphere::after{content:"";position:absolute;left:20%;top:12%;width:32%;height:20%;border-radius:50%;transform:rotate(-20deg);background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(255,255,255,0))}
+.row{display:flex;align-items:center}
+.between{justify-content:space-between}
+.icon{width:64px;height:64px;border-radius:20px;background:var(--grad-blue);box-shadow:inset 0 2px 0 rgba(255,255,255,.18),0 10px 24px rgba(0,0,0,.4);flex:none}
+.chk{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06)}
+.chk.on{background:var(--grad-blue);border-color:rgba(255,255,255,.3)}
+.tile{flex:1;border-radius:24px;padding:26px 28px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12)}
+.tile.on{background:linear-gradient(135deg,rgba(52,133,250,.35),rgba(27,79,216,.15));border-color:rgba(111,182,255,.6)}
+.step{width:285px;padding:32px;gap:12px;border-radius:32px}
+.step.on{background:linear-gradient(135deg,rgba(52,133,250,.35),rgba(27,79,216,.12));border:2px solid rgba(111,182,255,.8);box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 60px rgba(52,133,250,.6),inset 0 2px 0 rgba(255,255,255,.18)}
+
+/* 내보내기 모드(?raw): 카드를 원본 크기로 나열 */
+body.raw{padding:0;background:#000}
+body.raw .wrap{max-width:none}
+body.raw h1,body.raw .lede,body.raw figcaption{display:none}
+body.raw .grid{display:block}
+body.raw .stage{width:1080px;height:1350px;border-radius:0;box-shadow:none;margin:0 0 20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>덜내요 카드뉴스 v2 · 다크</h1>
+<p class="lede">토스 인앱 연말정산 MVP의 주요 기능을 6장으로 정리한 인스타그램 캐러셀(1080×1350)이에요. 원본 디자인은 Figma에 있고, 이 페이지는 같은 디자인을 웹으로 옮긴 버전이에요. 숫자는 모두 예시예요.</p>
+<div class="grid">
+
+<!-- 01 표지 -->
+<figure><div class="stage"><div class="card" style="background:linear-gradient(180deg,#0D1B3D 0%,#121527 45%,#0A0B10 100%)">
+  <div class="glow" style="left:280px;top:560px;width:1000px;height:1000px;background:radial-gradient(closest-side,rgba(52,133,250,.55),rgba(52,133,250,0))"></div>
+  <div class="glow" style="left:-300px;top:-200px;width:700px;height:700px;background:radial-gradient(closest-side,rgba(91,200,255,.25),rgba(91,200,255,0))"></div>
+  <div class="hd"><b>덜내요 (가제)</b><span>01 / 06</span></div>
+  <div class="abs" style="left:88px;top:210px;font-size:30px;font-weight:700;color:var(--blue-l);line-height:1.2">토스 인앱 연말정산 MVP</div>
+  <div class="abs gt pre" style="left:88px;top:266px;width:904px;font-size:104px;font-weight:900;line-height:1.18;letter-spacing:-.04em">12월 31일 전까지,
+조금이라도
+덜 내요</div>
+  <div class="sphere" style="left:700px;top:580px;width:300px;height:300px"></div>
+  <div class="glass abs rot" style="left:320px;top:680px;width:560px;height:300px;transform:rotate(8deg);opacity:.7"></div>
+  <div class="glass abs rot" style="left:110px;top:790px;width:660px;padding:48px;gap:18px;transform:rotate(-5deg)">
+    <div class="row between"><span style="font-size:30px;font-weight:700;color:var(--t2)">올해 연말정산 예상</span><span class="pill ghost" style="font-size:22px">예시</span></div>
+    <div style="font-size:60px;font-weight:900;line-height:1.2;letter-spacing:-.03em">추가 납부 128,000원</div>
+    <div style="padding-top:6px"><span class="pill" style="font-size:26px">12월 31일까지 바꿀 수 있는 것 3개 →</span></div>
+  </div>
+  <div class="ft">참고용 예상치예요 · 세무 상담이 아니에요 · 숫자는 예시예요</div>
+</div></div><figcaption><b>01 표지</b> · 12월 31일 전까지, 조금이라도 덜 내요</figcaption></figure>
+
+<!-- 02 자동 예상 -->
+<figure><div class="stage"><div class="card">
+  <div class="glow" style="left:400px;top:600px;width:900px;height:900px;background:radial-gradient(closest-side,rgba(52,133,250,.4),rgba(52,133,250,0))"></div>
+  <div class="glow" style="left:-250px;top:900px;width:600px;height:600px;background:radial-gradient(closest-side,rgba(91,200,255,.18),rgba(91,200,255,0))"></div>
+  <div class="hd"><b>덜내요 (가제)</b><span>02 / 06</span></div>
+  <div class="ftext"><span class="tag">주요 기능 1 · 자동 예상</span>
+    <div class="ttl gt pre">따로 입력하지 않아도
+올해 결과가 나와요</div>
+    <div class="dsc pre">자료를 모아 하나씩 입력하는 대신,
+토스에 있는 카드·월급·월세로 시작해요</div></div>
+  <div class="glass abs rot" style="left:96px;top:660px;width:640px;padding:40px;gap:26px;transform:rotate(-4deg)">
+    <div style="font-size:26px;font-weight:700;color:var(--t3)">토스에서 찾은 정보</div>
+    <div class="row" style="gap:20px"><div class="icon"></div><div style="flex:1"><div style="font-size:32px;font-weight:700;line-height:1.25">카드 사용액</div><div style="font-size:24px;color:var(--t3);line-height:1.3">1~10월 결제 내역</div></div><div class="chk on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+    <div class="row" style="gap:20px"><div class="icon"></div><div style="flex:1"><div style="font-size:32px;font-weight:700;line-height:1.25">월급 입금</div><div style="font-size:24px;color:var(--t3);line-height:1.3">총급여 추정</div></div><div class="chk on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+    <div class="row" style="gap:20px"><div class="icon"></div><div style="flex:1"><div style="font-size:32px;font-weight:700;line-height:1.25">월세 이체</div><div style="font-size:24px;color:var(--t3);line-height:1.3">정기 이체 확인</div></div><div class="chk on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  </div>
+  <div class="glass abs rot" style="left:440px;top:1010px;width:560px;padding:36px;gap:24px;transform:rotate(3deg)">
+    <div style="font-size:32px;font-weight:700">올해 월세를 내고 있나요?</div>
+    <div class="row" style="gap:12px"><span class="pill" style="font-size:26px">네</span><span class="pill ghost" style="font-size:26px">아니요</span><span class="pill ghost" style="font-size:26px">모르겠어요</span></div>
+  </div>
+  <span class="pill abs rot" style="left:650px;top:600px;font-size:28px;transform:rotate(6deg)">터치 7번이면 첫 결과</span>
+  <div class="ft">모르는 항목은 계산에서 빼고 "확인 필요"로 표시해요 · 참고용 예상치예요</div>
+</div></div><figcaption><b>02 자동 예상</b> · 따로 입력하지 않아도 올해 결과가 나와요</figcaption></figure>
+
+<!-- 03 카드 슬라이더 -->
+<figure><div class="stage"><div class="card">
+  <div class="glow" style="left:300px;top:650px;width:900px;height:900px;background:radial-gradient(closest-side,rgba(52,133,250,.42),rgba(52,133,250,0))"></div>
+  <div class="glow" style="left:700px;top:1000px;width:500px;height:500px;background:radial-gradient(closest-side,rgba(91,200,255,.2),rgba(91,200,255,0))"></div>
+  <div class="hd"><b>덜내요 (가제)</b><span>03 / 06</span></div>
+  <div class="ftext"><span class="tag">주요 기능 2 · 카드 슬라이더</span>
+    <div class="ttl gt pre">남은 지출,
+어디로 결제할지 정해요</div>
+    <div class="dsc pre">숫자 하나 보여주고 끝나지 않아요.
+직접 움직여 보면서 비교해요</div></div>
+  <div class="glass abs rot" style="left:100px;top:650px;width:880px;padding:44px;gap:26px;transform:rotate(-3deg)">
+    <div class="row between"><span style="font-size:30px;font-weight:700;color:var(--t2)">남은 지출 200만 원</span><span class="pill ghost" style="font-size:22px">예시</span></div>
+    <div class="row between" style="font-size:34px;font-weight:700"><span style="color:var(--t3)">신용카드 40%</span><span style="color:var(--blue-l)">체크카드 60%</span></div>
+    <div style="position:relative;height:64px">
+      <div class="abs" style="left:0;top:22px;width:100%;height:20px;border-radius:10px;background:rgba(255,255,255,.1);box-shadow:inset 0 3px 6px rgba(0,0,0,.5)"></div>
+      <div class="abs" style="left:40%;top:22px;width:60%;height:20px;border-radius:10px;background:linear-gradient(90deg,#1B4FD8,#6FB6FF);box-shadow:0 0 20px rgba(52,133,250,.7)"></div>
+      <div class="sphere" style="left:calc(40% - 32px);top:0;width:64px;height:64px"></div>
+    </div>
+    <div class="row" style="gap:20px;align-items:stretch">
+      <div class="tile"><div style="font-size:24px;font-weight:500;color:var(--t2)">지금처럼 신용카드만</div><div style="font-size:34px;font-weight:900;color:var(--t3);margin-top:8px">추가 납부 128,000원</div></div>
+      <div class="tile on"><div style="font-size:24px;font-weight:500;color:var(--t2)">체크카드 60%로</div><div class="gt" style="font-size:34px;font-weight:900;margin-top:8px">추가 납부 96,000원</div></div>
+    </div>
+  </div>
+  <span class="pill abs rot" style="left:560px;top:1130px;font-size:30px;transform:rotate(4deg)">약 32,000원 덜 내요</span>
+  <div class="ft">원래 쓸 돈만 해당돼요 · 공제율·한도는 시연용 근사 모델이에요</div>
+</div></div><figcaption><b>03 카드 슬라이더</b> · 남은 지출, 어디로 결제할지 정해요</figcaption></figure>
+
+<!-- 04 알림과 할 일 -->
+<figure><div class="stage"><div class="card">
+  <div class="glow" style="left:350px;top:560px;width:900px;height:900px;background:radial-gradient(closest-side,rgba(52,133,250,.4),rgba(52,133,250,0))"></div>
+  <div class="glow" style="left:-200px;top:1000px;width:600px;height:600px;background:radial-gradient(closest-side,rgba(91,200,255,.18),rgba(91,200,255,0))"></div>
+  <div class="hd"><b>덜내요 (가제)</b><span>04 / 06</span></div>
+  <div class="ftext"><span class="tag">주요 기능 3 · 알림과 할 일</span>
+    <div class="ttl gt pre">바꿀 때가 되면
+딱 한 번 알려줘요</div>
+    <div class="dsc pre">한 번 계산하고 끝나는 게 아니라,
+12월 31일까지 할 일을 옆에서 챙겨요</div></div>
+  <div class="glass abs rot" style="left:100px;top:640px;width:880px;padding:32px;gap:24px;flex-direction:row;align-items:center;border-radius:32px;transform:rotate(-3deg)">
+    <div style="width:96px;height:96px;border-radius:26px;background:var(--grad-blue);display:grid;place-items:center;font-size:44px;font-weight:900;flex:none;box-shadow:inset 0 2px 0 rgba(255,255,255,.18),0 12px 30px rgba(0,0,0,.5)">덜</div>
+    <div style="flex:1"><div style="font-size:22px;font-weight:500;color:var(--t3)">덜내요 · 지금</div><div style="font-size:32px;font-weight:700;line-height:1.25;margin:6px 0">이제 체크카드로 결제할 때예요</div><div style="font-size:24px;color:var(--t2)">신용카드로 공제 문턱을 넘었어요</div></div>
+  </div>
+  <div class="glass abs rot" style="left:190px;top:900px;width:780px;padding:40px;gap:24px;transform:rotate(2deg)">
+    <div class="row between"><span style="font-size:30px;font-weight:700">12월 31일 전에 할 일</span><span class="pill ghost" style="font-size:22px">효과 큰 순</span></div>
+    <div class="row" style="gap:18px"><div class="chk on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:30px;font-weight:700">남은 지출 결제 수단 정하기</span></div>
+    <div class="row" style="gap:18px"><div class="chk"></div><span style="font-size:30px;font-weight:500;color:var(--t2)">월세 12월분 확인하기</span></div>
+    <div class="row" style="gap:18px"><div class="chk"></div><span style="font-size:30px;font-weight:500;color:var(--t2)">현금영수증 챙기기</span></div>
+  </div>
+  <div class="ft">문턱이나 한도에 닿을 때만 알려요 · 금융상품은 추천하지 않아요</div>
+</div></div><figcaption><b>04 알림과 할 일</b> · 바꿀 때가 되면 딱 한 번 알려줘요</figcaption></figure>
+
+<!-- 05 1월부터 -->
+<figure><div class="stage"><div class="card" style="background:linear-gradient(180deg,#0A0B10 0%,#121527 50%,#0D1B3D 100%)">
+  <div class="glow" style="left:100px;top:700px;width:1000px;height:1000px;background:radial-gradient(closest-side,rgba(52,133,250,.45),rgba(52,133,250,0))"></div>
+  <div class="glow" style="left:600px;top:-200px;width:600px;height:600px;background:radial-gradient(closest-side,rgba(91,200,255,.18),rgba(91,200,255,0))"></div>
+  <div class="hd"><b>덜내요 (가제)</b><span>05 / 06</span></div>
+  <div class="abs" style="left:88px;top:230px;font-size:30px;font-weight:700;color:var(--blue-l);line-height:1.2">1월에 끝나지 않아요</div>
+  <div class="abs gt pre" style="left:88px;top:286px;width:904px;font-size:96px;font-weight:900;line-height:1.2;letter-spacing:-.04em">내년부터는
+1월부터 챙겨요</div>
+  <div class="abs pre" style="left:88px;top:548px;width:904px;font-size:34px;line-height:1.5;color:var(--t2)">올해는 남은 두 달 동안 덜 내고,
+내년엔 1월부터 1년 내내 미리 관리해요</div>
+  <div class="abs" style="left:190px;top:830px;width:700px;height:4px;border-radius:2px;background:linear-gradient(90deg,rgba(52,133,250,.2),#6FB6FF,rgba(52,133,250,.2))"></div>
+  <div class="abs row" style="left:88px;top:740px;gap:24px;align-items:stretch">
+    <div class="glass step"><div class="gt" style="font-size:44px;font-weight:900;line-height:1.15">11~12월</div><div class="pre" style="font-size:26px;font-weight:500;color:var(--t2);line-height:1.4">올해 남은 지출
+덜 내게 바꾸기</div></div>
+    <div class="glass step"><div class="gt" style="font-size:44px;font-weight:900;line-height:1.15">1월</div><div class="pre" style="font-size:26px;font-weight:500;color:var(--t2);line-height:1.4">올해 연말정산
+빠짐없이 챙기기</div></div>
+    <div class="glass step on"><div style="font-size:44px;font-weight:900;line-height:1.15">내년 1월~</div><div class="pre" style="font-size:26px;font-weight:500;color:#D9EBFF;line-height:1.4">1월부터 12월까지
+미리 관리하기</div></div>
+  </div>
+  <span class="pill abs" style="left:88px;top:1023px;font-size:32px;padding:18px 32px">연말정산을 1년짜리 관리로</span>
+  <div class="ft">참고용 예상치예요 · 세무 상담이 아니에요</div>
+</div></div><figcaption><b>05 메인 메시지</b> · 내년부터는 1월부터 챙겨요</figcaption></figure>
+
+<!-- 06 캡션 안내 -->
+<figure><div class="stage"><div class="card" style="background:linear-gradient(180deg,#0A0B10 0%,#121527 50%,#0D1B3D 100%)">
+  <div class="glow" style="left:100px;top:700px;width:1000px;height:1000px;background:radial-gradient(closest-side,rgba(52,133,250,.45),rgba(52,133,250,0))"></div>
+  <div class="glow" style="left:600px;top:-200px;width:600px;height:600px;background:radial-gradient(closest-side,rgba(91,200,255,.18),rgba(91,200,255,0))"></div>
+  <div class="hd"><b>덜내요 (가제)</b><span>06 / 06</span></div>
+  <div class="abs" style="left:88px;top:230px;font-size:30px;font-weight:700;color:var(--blue-l);line-height:1.2">더 알아보기</div>
+  <div class="abs gt pre" style="left:88px;top:286px;width:904px;font-size:92px;font-weight:900;line-height:1.2;letter-spacing:-.04em">자세한 내용은
+아래 캡션을
+확인해 주세요</div>
+  <div class="sphere" style="left:420px;top:820px;width:240px;height:240px;display:grid;place-items:center;box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 90px rgba(52,133,250,.6),inset 6px 8px 16px rgba(255,255,255,.35)">
+    <svg width="104" height="104" viewBox="0 0 24 24" fill="none" style="position:relative;z-index:1"><path d="M12 4v15M5.5 12.5L12 19l6.5-6.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="ft">후드파티즈 · 참고용 예상치예요 · 세무 상담이 아니에요</div>
+</div></div><figcaption><b>06 마무리</b> · 자세한 내용은 아래 캡션을 확인해 주세요</figcaption></figure>
+
+</div>
+</div>
+<script>
+// 화면 폭에 맞춰 1080×1350 카드를 축소하고, ?raw 이면 원본 크기로 보여준다.
+(function(){
+  var raw = /[?&]raw\b/.test(location.search);
+  if (raw) { document.body.classList.add('raw'); return; }
+  function fit(){ document.querySelectorAll('.stage').forEach(function(s){ var c=s.querySelector('.card'); c.style.transform='scale('+(s.clientWidth/1080)+')'; }); }
+  window.addEventListener('resize', fit); fit();
+})();
+</script>
+</body>
+</html>
