@@ -163,6 +163,9 @@ input{font:inherit}
 .trial b{font-size:16px;line-height:24px;display:block}
 .hero-img{width:300px;height:300px;margin:0 auto;display:block}
 </style>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0JRX0EMYMS"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0JRX0EMYMS',{send_page_view:false});</script>
 </head>
 <body>
 <div class="phone" id="phone">
@@ -660,9 +663,14 @@ function tipsBody(){
 
 /* ---------- 렌더 ---------- */
 const $ = id => document.getElementById(id);
+/* GA4 이벤트 (개인정보·입력값은 보내지 않고 화면 이름과 클릭 여부만 보냄) */
+function ga(n,p){ try{ if(window.gtag) gtag('event',n,p||{}); }catch(e){} }
+const GA_EVENTS = { consentAll:'mvp_link', savePlan:'mvp_plan', goDec:'mvp_sheet', goReport:'report_view', recommend:'recommend_ratio', addItem:'big_spend_add', addCustom:'big_spend_add', notifyMe:'mvp_sub_remind', finish:'mvp_helper' };
+let gaLastScreen=null, gaSlider=false;
 function cur(){ return S.stack[S.stack.length-1]; }
 function render(keepScroll){
   const key = cur(), sc = SCREENS[key];
+  if(key!==gaLastScreen){ gaLastScreen=key; ga('screen_view',{screen_name:key}); }
   const st = $('scroll').scrollTop;
   $('view').innerHTML = sc.body();
   if(!keepScroll) $('scroll').scrollTop = 0; else $('scroll').scrollTop = st;
@@ -689,8 +697,8 @@ function setPath(obj, path, fn){ const ks=path.split('.'); let o=obj; for(let i=
 
 function bindRanges(){
   const r1=$('r1'), r2=$('r2');
-  if(r1) r1.oninput = e => { S.plan.total = +e.target.value; updatePlan(); };
-  if(r2) r2.oninput = e => { S.plan.debitRatio = +e.target.value; updatePlan(); };
+  if(r1) r1.oninput = e => { if(!gaSlider){ gaSlider=true; ga('slider_touch'); } S.plan.total = +e.target.value; updatePlan(); };
+  if(r2) r2.oninput = e => { if(!gaSlider){ gaSlider=true; ga('slider_touch'); } S.plan.debitRatio = +e.target.value; updatePlan(); };
 }
 
 /* 시트 */
@@ -729,6 +737,8 @@ document.addEventListener('click', e => {
     go(k); return;
   }
   const a = t.dataset.act;
+  if(GA_EVENTS[a]) ga(GA_EVENTS[a]);
+  if(a==='consentGo' && S.consent.toss) ga('mvp_link');
   switch(a){
     case 'back': back(); break;
     case 'consentAll': Object.keys(S.consent).forEach(k=>S.consent[k]=true); go('toss'); break;
