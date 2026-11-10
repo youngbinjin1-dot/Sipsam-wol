@@ -1,0 +1,313 @@
+<title>연말정산 카드뉴스</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<style>
+/* Layout: 카드뉴스 7장을 반응형 그리드로 나열. 각 카드는 1080×1350 원본을 비율 축소 */
+:root{
+  --bg:#EEF1F5; --fg:#191f28; --muted:#5B6270; --panel:#FFFFFF; --line:#D9DEE6;
+  --blue:#3182F6; --blue-soft:#e8f3ff; --blue-mute:#B9D3F8; --paper:#ffffff; --dark:#191f28; --dark-mute:#b0b8c1; --gray:#F2F4F6; --red:#e42939; --red-soft:#ffeeee; --yellow:#FFD84D; --amber:#fe9800; --green:#03b26c;
+  --font:'Toss Product Sans','Pretendard Variable','Noto Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101319;--fg:#EEF1F6;--muted:#9AA3B2;--panel:#181C24;--line:#2A303B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101319;--fg:#EEF1F6;--muted:#9AA3B2;--panel:#181C24;--line:#2A303B;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:clamp(22px,3.4vw,32px);margin:0 0 8px;letter-spacing:-.02em;text-wrap:balance}
+.lede{margin:0 0 28px;color:var(--muted);font-size:15px;line-height:1.6;max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:28px 22px}
+figure{margin:0;min-width:0}
+.stage{width:100%;position:relative;overflow:hidden;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.08),0 8px 28px rgba(0,0,0,.10);background:var(--paper)}
+figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
+figcaption b{color:var(--fg);font-weight:700}
+
+/* ---------- 카드 (1080×1350 기준 px) ---------- */
+.card{width:1080px;height:1350px;position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;display:flex;flex-direction:column;font-family:var(--font);letter-spacing:-.01em;word-break:keep-all}
+.card.light{background:var(--paper);color:#191f28;padding:96px 96px 0}
+.hd{display:flex;justify-content:space-between;align-items:center}
+.num{font-size:30px;font-weight:700;color:var(--blue);letter-spacing:.16em}
+.tag{background:var(--blue-soft);color:#1b64da;font-size:28px;font-weight:700;padding:12px 26px;border-radius:100px}
+.ttl{font-size:68px;font-weight:900;line-height:1.25;letter-spacing:-.03em;margin:52px 0 0;white-space:pre-line}
+.cap{font-size:36px;line-height:1.45;color:#4e5968;margin:28px 0 0;white-space:pre-line}
+.note{font-size:24px;color:#8b95a1;margin:12px 0 0}
+.grow{flex:1}
+.ins{background:var(--blue-soft);border-radius:28px;padding:40px 44px;margin-bottom:56px}
+.ins small{display:block;font-size:24px;font-weight:700;color:#1b64da;letter-spacing:.3em;margin-bottom:12px}
+.ins p{margin:0;font-size:38px;font-weight:700;line-height:1.35;white-space:pre-line}
+
+/* 표지: 멈춰 세우는 큰 타이포 + 스티커 + 테이프 */
+.cover{background:#ffffff;color:#191f28;padding:96px 96px 250px;position:relative}
+.cover .giant{position:absolute;right:-30px;top:110px;font-size:430px;font-weight:900;line-height:1;letter-spacing:-.06em;color:#3182f6;transform:rotate(-6deg);white-space:nowrap}
+.kick{font-size:34px;font-weight:700;color:#fff;position:relative;display:inline-block;align-self:flex-start;background:#3182f6;padding:12px 26px;border-radius:100px}
+.sticker{position:absolute;right:56px;top:500px;z-index:2;background:#e42939;color:#fff;font-size:40px;font-weight:700;padding:26px 40px 30px;border-radius:30px;transform:rotate(8deg);line-height:1.15;text-align:center}
+.sticker b{display:block;font-size:84px;font-weight:900;letter-spacing:-.04em}
+.cover h2{font-size:108px;font-weight:900;line-height:1.2;letter-spacing:-.05em;margin:0;white-space:pre-line;position:relative}
+.hero3d{flex:1;display:flex;align-items:center;justify-content:center;perspective:1600px;margin-top:10px;position:relative}
+.hero3d svg{transform:rotateY(-16deg) rotateX(7deg);transform-origin:center;max-width:100%;height:auto;filter:drop-shadow(0 30px 30px rgba(25,31,40,.16))}
+.cover mark{background:#ffd158;color:#191f28;padding:0 16px;border-radius:14px;margin-left:-6px}
+.cover p{font-size:38px;line-height:1.5;color:#4e5968;margin:0;white-space:pre-line;position:relative}
+.tape{position:absolute;left:-60px;width:1200px;bottom:78px;transform:rotate(-3deg);background:#3182f6;color:#fff;font-size:40px;font-weight:900;padding:24px 0;white-space:nowrap;overflow:hidden;letter-spacing:-.01em}
+.close{background:var(--dark);color:#fff;padding:96px 96px 80px}
+.close h2{font-size:100px;font-weight:900;line-height:1.25;letter-spacing:-.04em;margin:0 0 44px;white-space:pre-line}
+.close p{font-size:38px;line-height:1.5;color:var(--dark-mute);margin:0 0 56px;white-space:pre-line}
+.cta{align-self:flex-start;background:#ffd158;color:#191f28;font-size:38px;font-weight:700;padding:30px 48px;border-radius:100px}
+.disc{font-size:24px;color:var(--dark-mute);margin-top:56px}
+
+.close2 h2{font-size:120px;line-height:1.2;margin:0 0 36px}
+.close2 p{margin:0 0 34px}
+.close2 .cta{background:#3182f6;color:#fff;margin:0;align-self:flex-start}
+.close2 .disc{color:#8b95a1;margin:26px 0 0;font-size:24px}
+.close2{padding:210px 96px 96px}
+.close2 .tape{top:110px;bottom:auto;background:#e42939;color:#fff}
+/* 여정: 달마다 색이 다른 타임라인 */
+.tl{margin-top:48px;display:flex;flex-direction:column}
+.mo{display:flex;gap:36px}
+.mo .c{width:130px;flex:none;display:flex;flex-direction:column;align-items:center}
+.mo .dot{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;font-size:46px;font-weight:900;color:#fff;letter-spacing:-.04em}
+.mo .line{width:8px;flex:1;min-height:20px;background:#d1d6db;border-radius:4px;margin:8px 0}
+.mo .b{flex:1;padding:8px 0 40px}
+.mo h3{font-size:46px;font-weight:900;margin:0 0 12px;letter-spacing:-.03em}
+.mo p{font-size:32px;line-height:1.45;color:#4e5968;margin:0;white-space:pre-line}
+.mo.last .b{padding-bottom:0}
+
+/* ---------- 폰 목업 ---------- */
+.holder{flex:1;display:flex;justify-content:center;margin-top:48px;overflow:hidden}
+.phone{width:540px;height:1100px;flex:none;background:#191f28;border-radius:68px;padding:12px;}
+.scr{background:#fff;border-radius:56px;height:100%;padding:40px 28px 28px;display:flex;flex-direction:column;gap:18px;overflow:hidden;color:#191f28}
+.tb{display:flex;align-items:center;gap:16px;font-size:26px;font-weight:700}
+.tb i{font-style:normal;font-size:30px;font-weight:400}
+.redc{background:var(--red);color:#fff;border-radius:28px;padding:30px 28px}
+.redc small{display:block;font-size:17px;opacity:.85;margin-bottom:10px}
+.redc b{font-size:50px;letter-spacing:-.03em;line-height:1.15}
+.two{display:flex;gap:14px}
+.tile{flex:1;background:var(--gray);border-radius:24px;padding:20px;text-align:center}
+.tile small{display:block;font-size:16px;color:#6b7684;margin-bottom:8px}
+.tile b{font-size:23px}
+.box{background:var(--gray);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;justify-content:space-between;align-items:center}
+.row span{font-size:17px;color:#6b7684}.row b{font-size:21px}
+.bar{height:14px;border-radius:7px;background:#e5e8eb;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
+.mini{font-size:16px;color:#6b7684}
+.pillw{display:flex;justify-content:center}
+.pill{background:var(--gray);color:#6b7684;font-size:17px;font-weight:700;padding:12px 24px;border-radius:100px}
+.h3{font-size:32px;font-weight:900;margin:2px 0 0;letter-spacing:-.02em}
+.way{display:flex;align-items:center;gap:18px;border:2px solid #e5e8eb;border-radius:26px;padding:22px}
+.way .ic{width:64px;height:64px;border-radius:18px;background:var(--blue-soft);display:grid;place-items:center;font-size:30px;flex:none}
+.way .t{flex:1;font-size:21px;font-weight:700;line-height:1.25;white-space:pre-line}
+.way .t em{display:block;font-style:normal;margin-top:8px;width:max-content;background:var(--red-soft);color:var(--red);font-size:15px;padding:6px 14px;border-radius:100px}
+.way .r{color:var(--blue);font-weight:700;font-size:19px}
+.sl{position:relative;height:30px}
+.sl .ln{position:absolute;left:0;right:0;top:11px;height:8px;border-radius:4px;background:#e5e8eb}
+.sl .on{position:absolute;left:0;top:11px;height:8px;border-radius:4px;background:var(--blue)}
+.sl .kn{position:absolute;top:0;width:30px;height:30px;border-radius:50%;background:var(--blue);margin-left:-15px}
+.big{font-size:42px;font-weight:900;letter-spacing:-.03em}
+.ttl2{font-size:22px;font-weight:700}
+.tile.w{background:#fff;padding:20px 14px}.tile.w b{font-size:26px}
+.btn{background:var(--blue);color:#fff;text-align:center;font-size:22px;font-weight:600;padding:20px;border-radius:16px;margin-top:4px}
+.btn.ghost{background:#fff;color:#191f28;border:2px solid #e5e8eb;padding:14px;font-size:19px;margin-top:0}
+.btn.hero{font-size:26px;padding:26px;border-radius:16px;box-shadow:0 0 0 8px #c9e2ff;margin:6px 8px 10px}
+.chip{align-self:flex-start;background:var(--blue-soft);color:#1b64da;font-size:18px;font-weight:700;padding:10px 18px;border-radius:100px}
+.cmp{display:flex;align-items:center;gap:16px;background:var(--gray);border-radius:24px;padding:24px;text-align:center}
+.cmp>div{flex:1}.cmp small{display:block;font-size:16px;color:#6b7684;margin-bottom:6px}.cmp b{font-size:28px}.cmp>span{font-size:26px;color:#6b7684}
+.cmp .new b{color:var(--blue)}
+.tbl{border:2px solid #e5e8eb;border-radius:24px;overflow:hidden}
+.tr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px}
+.tr+.tr{border-top:2px solid #e5e8eb}
+.tr.rec{background:var(--blue-soft)}
+.tr .k b{display:block;font-size:21px}.tr .k small{display:block;font-size:15px;color:#6b7684;margin-top:4px}
+.tr .v{text-align:right;font-size:20px;font-weight:700}.tr .v small{display:block;font-size:16px;color:var(--blue);margin-top:4px}
+.fine{font-size:15px;color:#8b95a1;text-align:center}
+</style>
+
+<div class="wrap">
+  <h1>연말정산 카드뉴스 7장</h1>
+  <p class="lede">추가 납부가 나온 직장인이 12월 31일 전에 할 수 있는 절세 방법만 알려주는 앱을 소개하는 인스타 캐러셀(1080×1350)입니다. 앱 화면은 예시 값이에요.</p>
+  <div class="grid" id="grid"></div>
+</div>
+
+<template id="t-cards">
+<figure><div class="stage"><section class="card cover">
+  <div class="kick">올해 소비는 12월 31일까지 인정</div>
+  <div class="sticker">추가 납부<b>30만원?!</b></div>
+  <div class="hero3d"><svg viewBox="0 0 700 520" width="760" height="565" role="img" aria-label="돈주머니, 계산기, 동전">
+<defs>
+<radialGradient id="bagG" cx=".32" cy=".28" r=".95"><stop offset="0" stop-color="#b8d6ff"/><stop offset=".45" stop-color="#3182f6"/><stop offset="1" stop-color="#1957c2"/></radialGradient>
+<linearGradient id="bagSh" x1="0" y1="0" x2="1" y2="0"><stop offset=".5" stop-color="#0a2a73" stop-opacity="0"/><stop offset="1" stop-color="#0a2a73" stop-opacity=".38"/></linearGradient>
+<linearGradient id="calcF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe3ff"/></linearGradient>
+<linearGradient id="calcS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6f9fe6"/><stop offset="1" stop-color="#3f73cc"/></linearGradient>
+<linearGradient id="scrG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f4382"/><stop offset="1" stop-color="#0e2347"/></linearGradient>
+<linearGradient id="coinF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".5" stop-color="#ffd158"/><stop offset="1" stop-color="#f0a800"/></linearGradient>
+<filter id="blur8" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+</defs>
+<ellipse cx="350" cy="486" rx="300" ry="30" fill="#191f28" opacity=".22" filter="url(#blur8)"/>
+<g transform="rotate(10 495 250)">
+<rect x="398" y="96" width="250" height="360" rx="34" fill="url(#calcS)"/>
+<rect x="378" y="70" width="250" height="360" rx="34" fill="url(#calcF)" stroke="#8fbaf7" stroke-width="3"/>
+<rect x="402" y="96" width="202" height="98" rx="18" fill="url(#scrG)"/>
+<text x="424" y="166" font-size="58" font-weight="900" fill="#4ee0ff" font-family="Noto Sans KR,sans-serif">TAX</text>
+<rect x="408" y="104" width="190" height="14" rx="7" fill="#fff" opacity=".12"/>
+<g>
+<circle cx="428" cy="248" r="25" fill="#8fb4ef"/><circle cx="428" cy="242" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="503" cy="248" r="25" fill="#8fb4ef"/><circle cx="503" cy="242" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="578" cy="248" r="25" fill="#8fb4ef"/><circle cx="578" cy="242" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="428" cy="314" r="25" fill="#8fb4ef"/><circle cx="428" cy="308" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="503" cy="314" r="25" fill="#8fb4ef"/><circle cx="503" cy="308" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="578" cy="314" r="25" fill="#8fb4ef"/><circle cx="578" cy="308" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="428" cy="380" r="25" fill="#8fb4ef"/><circle cx="428" cy="374" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="503" cy="380" r="25" fill="#8fb4ef"/><circle cx="503" cy="374" r="25" fill="#e8f3ff" stroke="#b7d4ff" stroke-width="2"/>
+<circle cx="578" cy="380" r="25" fill="#b32431"/><circle cx="578" cy="374" r="25" fill="#f04452" stroke="#ff8a93" stroke-width="2"/>
+</g>
+</g>
+<g transform="translate(40 70) scale(3.35)">
+<path d="M40 52c4-12 14-20 26-22l-4-12 14 6 14-6-4 12c12 3 22 12 24 24 6 26-6 62-34 62S34 80 40 52z" fill="url(#bagG)"/>
+<path d="M40 52c4-12 14-20 26-22l-4-12 14 6 14-6-4 12c12 3 22 12 24 24 6 26-6 62-34 62S34 80 40 52z" fill="url(#bagSh)"/>
+<ellipse cx="72" cy="52" rx="20" ry="6.5" fill="#fff" opacity=".5"/>
+<path d="M58 22l4-4 14 6 14-6 4 4-5 8c-8-3-24-3-31 0z" fill="#1b64da" opacity=".55"/>
+<text x="76" y="100" text-anchor="middle" font-size="36" font-weight="900" fill="#fff" font-family="Noto Sans KR,sans-serif">₩</text>
+</g>
+<g>
+<ellipse cx="350" cy="466" rx="78" ry="26" fill="#d99100"/><rect x="272" y="440" width="156" height="26" fill="#d99100"/>
+<ellipse cx="350" cy="440" rx="78" ry="26" fill="#f2b300"/>
+<ellipse cx="350" cy="438" rx="78" ry="26" fill="#d99100"/><rect x="272" y="412" width="156" height="26" fill="#d99100"/>
+<ellipse cx="350" cy="412" rx="78" ry="26" fill="#f2b300"/>
+<ellipse cx="350" cy="410" rx="78" ry="26" fill="#d99100"/><rect x="272" y="384" width="156" height="26" fill="#d99100"/>
+<ellipse cx="350" cy="384" rx="78" ry="26" fill="url(#coinF)"/>
+<ellipse cx="350" cy="384" rx="58" ry="18" fill="none" stroke="#e8a000" stroke-width="3"/>
+<text x="350" y="395" text-anchor="middle" font-size="34" font-weight="900" fill="#d98a00" font-family="Noto Sans KR,sans-serif">₩</text>
+</g>
+<g transform="rotate(-16 120 130)">
+<circle cx="132" cy="144" r="62" fill="#d99100"/>
+<circle cx="120" cy="130" r="62" fill="url(#coinF)"/>
+<circle cx="120" cy="130" r="48" fill="none" stroke="#e8a000" stroke-width="4"/>
+<text x="120" y="147" text-anchor="middle" font-size="52" font-weight="900" fill="#d98a00" font-family="Noto Sans KR,sans-serif">₩</text>
+</g>
+<g fill="#ffd158"><path d="M640 60l9 22 22 9-22 9-9 22-9-22-22-9 22-9z"/><path d="M60 330l6 15 15 6-15 6-6 15-6-15-15-6 15-6z"/></g>
+<g fill="#3182f6" opacity=".9"><path d="M600 470l5 12 12 5-12 5-5 12-5-12-12-5 12-5z"/></g>
+</svg></div>
+  <h2>추가 납부 막는
+<mark>절세</mark> 타이밍,
+지금이에요</h2>
+  <div class="tape">12월 31일까지 ✦ 연말정산 절세 ✦ 지금 확인 ✦ 12월 31일까지 ✦ 연말정산 절세 ✦ 지금 확인 ✦</div>
+</section></div><figcaption><b>표지</b> · 후킹</figcaption></figure>
+
+<figure><div class="stage"><section class="card light">
+  <div class="hd"><span class="num">02</span><span class="tag">문제</span></div>
+  <h2 class="ttl">추가 납부 30만 원,
+절세로 줄여볼 수 있어요</h2>
+  <p class="cap">‘내 연말정산 보기’를 누르면 카드·월급·
+월세로 올해 결과를 바로 계산해요</p>
+  <p class="note">예시 화면이에요. 모든 금액은 예시입니다.</p>
+  <div class="holder"><div class="phone"><div class="scr">
+    <div class="tb"><i>←</i>올해 예상 결과</div>
+    <div class="redc"><small>2026년 귀속 · 지금처럼 신용카드만 쓸 때</small><b>추가 납부 30만원</b></div>
+    <div class="two"><div class="tile"><small>예상 결정세액</small><b>197만 5,880원</b></div><div class="tile"><small>이미 낸 세금</small><b>167만 5,880원</b></div></div>
+    <div class="box"><div class="row"><span>카드 공제 문턱</span><b>900만원 / 1,050만원</b></div><div class="bar"><i style="width:86%"></i></div><div class="mini">문턱까지 150만원</div></div>
+    <div class="pillw"><span class="pill">작년(2025 귀속) 추가 납부 42만원</span></div>
+    <div class="btn">지출 계획하기</div>
+  </div></div></div>
+</section></div><figcaption><b>02</b> · 앱 결과 화면</figcaption></figure>
+
+<figure><div class="stage"><section class="card light">
+  <div class="hd"><span class="num">03</span><span class="tag">해결</span></div>
+  <h2 class="ttl">연말까지 두 달,
+절세가 되는 할 일만</h2>
+  <p class="cap">‘줄이는 방법’ 탭에 12월 31일 전에
+할 일만 모아 놓았어요</p>
+  <p class="note">예시 화면이에요. 모든 금액은 예시입니다.</p>
+  <div class="holder"><div class="phone"><div class="scr">
+    <div class="tb"><i>←</i>올해 예상 결과</div>
+    <div class="h3">지금 바꿀 수 있는 방법</div>
+    <div class="way"><div class="t">결제 수단 정하기<em>12/31 전</em></div><div class="r">세금 -1만 1,250원</div></div>
+    <div class="way"><div class="t">현금영수증 등록 확인<em>12/31 전</em></div></div>
+    <div class="way"><div class="t">전통시장·대중교통은
+체크카드로<em>12/31 전</em></div></div>
+    <div class="way"><div class="t">월세 12월분 챙기기<em>12/31 전</em></div></div>
+    <div class="way"><div class="t">병원비 영수증 확인<em>12/31 전</em></div></div>
+  </div></div></div>
+</section></div><figcaption><b>03</b> · 앱 방법 목록 화면</figcaption></figure>
+
+<figure><div class="stage"><section class="card light">
+  <div class="hd"><span class="num">04</span><span class="tag">체험</span></div>
+  <h2 class="ttl">어디로 결제할지만 정해도
+절세가 될 수 있어요</h2>
+  <p class="cap">‘지출 계획하기’에서 신용·체크를
+나란히 비교하고 ‘이 계획으로 저장’</p>
+  <p class="note">예시 화면이에요. 모든 금액은 예시입니다.</p>
+  <div class="holder"><div class="phone"><div class="scr">
+    <div class="tb"><i>←</i>지출 계획하기</div>
+    <div class="box"><div class="row"><span>올해 카드 사용</span><b>900만원 / 1,050만원</b></div><div class="bar"><i style="width:86%"></i></div><div class="mini">문턱까지 150만원</div></div>
+    <div class="box"><div class="ttl2">12월 31일까지 쓸 예정 금액</div><div class="big">200만원</div><div class="sl"><div class="ln"></div><div class="on" style="width:40%"></div><div class="kn" style="left:40%"></div></div><div class="btn ghost">+ 큰 지출 추가</div></div>
+    <div class="box"><div class="ttl2">어디로 결제할까요?</div><div class="chip">추천 비율로 맞추기</div><div class="sl"><div class="ln"></div><div class="kn" style="left:0;margin-left:0"></div></div>
+      <div class="two"><div class="tile w"><small>신용카드</small><b>200만원</b></div><div class="tile w"><small>체크·현금영수증</small><b>0원</b></div></div></div>
+    <div class="cmp"><div><small>지금처럼</small><b>30만원</b></div><span>→</span><div><small>이 계획</small><b>30만원</b></div></div>
+  </div></div></div>
+</section></div><figcaption><b>04</b> · 앱 지출 계획 화면</figcaption></figure>
+
+<figure><div class="stage"><section class="card light">
+  <div class="hd"><span class="num">05</span><span class="tag">핵심 기능</span></div>
+  <h2 class="ttl">고민 말고
+‘추천 비율로 맞추기’</h2>
+  <p class="cap">문턱까지는 신용카드, 넘으면 체크·현금영수증.
+남은 지출을 알아서 나눠드려요</p>
+  <p class="note">예시 화면이에요. 모든 금액은 예시입니다.</p>
+  <div class="holder"><div class="phone"><div class="scr">
+    <div class="tb"><i>←</i>지출 계획하기</div>
+    <div class="btn hero">추천 비율로 맞추기</div>
+    <div class="cmp"><div><small>지금처럼</small><b>30만원</b></div><span>→</span><div class="new"><small>이 계획</small><b>28만 8,750원</b></div></div>
+    <div class="tbl">
+      <div class="tr"><div class="k"><b>신용카드</b><small>신용 200만원 · 체크 0만원</small></div><div class="v">납부 30만원</div></div>
+      <div class="tr"><div class="k"><b>체크·현금영수증</b><small>신용 0만원 · 체크 200만원</small></div><div class="v">납부 28만 8,750원<small>1만 1,250원 줄어요</small></div></div>
+      <div class="tr rec"><div class="k"><b>추천</b><small>신용 150만원 · 체크 50만원</small></div><div class="v">납부 28만 8,750원<small>1만 1,250원 줄어요</small></div></div>
+    </div>
+    <div class="fine">카드에 따라 적용 혜택이 다를 수 있어요</div>
+  </div></div></div>
+</section></div><figcaption><b>05</b> · 앱 추천 비율 화면</figcaption></figure>
+
+<figure><div class="stage"><section class="card light">
+  <div class="hd"><span class="num">06</span><span class="tag">여정</span></div>
+  <h2 class="ttl">내년부터는
+똑똑하게 관리해요</h2>
+  <div class="tl">
+    <div class="mo"><div class="c"><div class="dot" style="background:var(--blue)">11월</div><div class="line"></div></div>
+      <div class="b"><h3 style="color:var(--blue)">지출 계획 세우기</h3><p>‘동의하고 시작’ → ‘확인하기’ →
+‘지출 계획하기’</p></div></div>
+    <div class="mo"><div class="c"><div class="dot" style="background:var(--amber)">12월</div><div class="line"></div></div>
+      <div class="b"><h3 style="color:#f57800">마무리 점검</h3><p>‘12월 마무리 리포트’로
+1월에 확인할 것을 정리해요</p></div></div>
+    <div class="mo last"><div class="c"><div class="dot" style="background:var(--green)">1월</div></div>
+      <div class="b"><h3 style="color:#029359">연말정산 끝내기</h3><p>‘연말정산 도우미’로 자료 비교,
+제출 가이드까지</p></div></div>
+  </div>
+  <div class="grow"></div>
+  <div class="ins"><small>핵심</small><p>올해 한 번 해보면 내년엔
+처음부터 미리 관리할 수 있어요</p></div>
+</section></div><figcaption><b>06</b> · 사용자 여정</figcaption></figure>
+
+<figure><div class="stage"><section class="card cover close2">
+  <div class="grow"></div>
+  <h2>두 달 뒤
+낼 세금,
+<mark>지금</mark> 줄여봐요</h2>
+  <p>지금 확인하면 12월 31일 전에
+바꿀 수 있어요. 가입은 필요 없어요.</p>
+  <div class="cta">자세한 내용은 캡션을 참고해주세요 ↓</div>
+  <div class="disc">시연용 MVP예요. 국세청·홈택스와 무관하며 모든 금액은 예시입니다.</div>
+  <div class="tape">12월 31일까지 ✦ 연말정산 절세 ✦ 지금 확인 ✦ 12월 31일까지 ✦ 연말정산 절세 ✦ 지금 확인 ✦</div>
+</section></div><figcaption><b>마무리</b> · 캡션으로 유도</figcaption></figure>
+</template>
+
+<script>
+(function(){
+  var grid=document.getElementById('grid');
+  grid.appendChild(document.getElementById('t-cards').content.cloneNode(true));
+  var stages=[].slice.call(grid.querySelectorAll('.stage'));
+  function fit(){
+    stages.forEach(function(s){
+      var k=s.clientWidth/1080, c=s.firstElementChild;
+      c.style.transform='scale('+k+')'; s.style.height=(1350*k)+'px';
+    });
+  }
+  fit();
+  if(window.ResizeObserver){ new ResizeObserver(fit).observe(grid); } else { window.addEventListener('resize',fit); }
+})();
+</script>
