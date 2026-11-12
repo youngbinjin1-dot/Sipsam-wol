@@ -3,16 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>덜내요 | 연말정산 미리 예상하고 12월 31일 전에 챙기기</title>
+<title>십삼월 | 연말정산 미리 예상하고 12월 31일 전에 챙기기</title>
 <meta name="description" content="내 카드·월급·월세로 올해 연말정산 결과를 미리 예상하고, 12월 31일까지 남은 지출을 신용카드와 체크카드 중 어디로 결제할지 비교해 보세요. 모든 금액은 참고용 예상치예요.">
 <link rel="canonical" href="https://youngbinjin1-dot.github.io/Sipsam-wol/src/prototype/index.html">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
-<meta property="og:site_name" content="덜내요">
-<meta property="og:title" content="덜내요 | 연말정산 미리 예상하고 12월 31일 전에 챙기기">
+<meta property="og:site_name" content="십삼월">
+<meta property="og:title" content="십삼월 | 연말정산 미리 예상하고 12월 31일 전에 챙기기">
 <meta property="og:description" content="남은 지출, 신용카드와 체크카드 중 어디로 결제할지 직접 비교해 보세요. 모든 금액은 참고용 예상치예요.">
 <meta property="og:url" content="https://youngbinjin1-dot.github.io/Sipsam-wol/src/prototype/index.html">
-<meta property="og:image" content="https://youngbinjin1-dot.github.io/Sipsam-wol/cardnews/v2-dark/images/01-cover.png">
+<meta property="og:image" content="https://youngbinjin1-dot.github.io/Sipsam-wol/src/prototype/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="십삼월: 12월 31일 전까지 연말정산 예상과 절세 계획">
+<meta name="twitter:image" content="https://youngbinjin1-dot.github.io/Sipsam-wol/src/prototype/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -172,12 +176,15 @@ input{font:inherit}
 .trial{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .trial b{font-size:16px;line-height:24px;display:block}
 .hero-img{width:300px;height:300px;margin:0 auto;display:block}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 <!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0JRX0EMYMS"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0JRX0EMYMS',{send_page_view:false});</script>
 </head>
 <body>
+<h1 class="sr-only">십삼월: 12월 31일 전까지 연말정산 예상과 절세 계획</h1>
+<noscript><p style="padding:24px;font-family:sans-serif">십삼월은 카드·월급·월세 정보로 올해 연말정산 예상 결과를 보여주고, 12월 31일 전까지 신용카드·체크카드 결제 계획을 돕는 서비스 프로토타입이에요. 이 화면은 자바스크립트가 켜져 있어야 보여요. 모든 금액은 예시이며 세무 상담이 아니에요.</p></noscript>
 <div class="phone" id="phone">
   <div class="scroll" id="scroll"><div id="view"></div></div>
   <div class="cta" id="cta" hidden></div>
@@ -334,7 +341,7 @@ function rangeEl(id, val, max, step){
 const SCREENS = {
   start: {
     body: () => `<div class="screen" style="padding-top:100px">
-      <img class="hero-img" alt="" src="data:image/svg+xml;utf8,${encodeURIComponent(HERO_SVG)}">
+      <img class="hero-img" alt="서류와 체크 표시 일러스트" src="data:image/svg+xml;utf8,${encodeURIComponent(HERO_SVG)}">
       <div class="center" style="padding-top:12px"><span class="tag red">연말정산 마감 D-52</span></div>
       <div class="h1" style="padding-top:10px">올해 연말정산,<br><span style="color:var(--primary)">12월 31일 전에 덜 내는 법</span></div>
       <p class="center" style="padding-top:10px;font-size:15px;color:var(--grey-700)">내 카드·월급·월세로 바로 계산해요</p>
