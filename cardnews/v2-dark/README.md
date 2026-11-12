@@ -3,7 +3,7 @@
 - **작성일:** 2026-11-10
 - **규격:** 1080×1350 (인스타그램 피드 4:5), 6장
 - **원본 디자인 (Figma):** [카드뉴스 · 덜내요 연말정산 MVP](https://www.figma.com/design/gkXInHEchBYZsA8S1uhR9J) — `카드뉴스 v2 · 다크` 프레임
-- **웹 버전:** [`index.html`](index.html) — 브라우저로 열면 6장을 한 번에 볼 수 있어요. `?raw`를 붙이면 원본 크기로 보여요.
+- **웹 버전:** [`cardnews-v2-dark.html`](cardnews-v2-dark.html) — 브라우저로 열면 6장을 한 번에 볼 수 있어요. `?raw`를 붙이면 원본 크기로 보여요.
 - **이미지:** [`images/`](images/) — 업로드용 PNG 6장
 
 ## 미리보기
