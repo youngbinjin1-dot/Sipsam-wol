@@ -1,2 +1,7 @@
 User-agent: Yeti
-Allow:/
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://splendorous-chaja-083ad5.netlify.app/sitemap.xml
