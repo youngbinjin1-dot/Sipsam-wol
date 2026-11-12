@@ -1,0 +1,10 @@
+# 덜내요(가제) — https://dunnaeyo-app-prototype.netlify.app/
+# 모든 검색엔진이 앱 첫 화면을 수집할 수 있어요.
+
+User-agent: *
+Allow: /
+
+# 내부용 페이지는 수집하지 않아요 (팀 지표 시트 등)
+Disallow: /fakedoor-metrics/
+
+Sitemap: https://dunnaeyo-app-prototype.netlify.app/sitemap.xml
