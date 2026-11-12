@@ -180,6 +180,18 @@ input{font:inherit}
 .trial{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .trial b{font-size:16px;line-height:24px;display:block}
 .hero-img{width:300px;height:300px;margin:0 auto;display:block}
+/* 자주 묻는 질문 */
+.faq{border-bottom:1px solid var(--grey-200)}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;gap:10px;padding:16px 0;font-size:16px;line-height:24px;font-weight:700}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .q{color:var(--primary);flex:none}
+.faq summary .tx{flex:1}
+.faq summary .arw{flex:none;color:var(--grey-500);transition:transform .2s}
+.faq[open] summary .arw{transform:rotate(180deg)}
+.faq .a{padding:0 0 16px 22px;font-size:15px;line-height:24px;color:var(--grey-700)}
+.faq .a p+p{margin-top:8px}
+.linkrow{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 0;font-size:15px;font-weight:600;text-align:left}
+.linkrow .chev{color:var(--grey-500)}
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 <!-- Google Analytics 4 -->
@@ -520,8 +532,18 @@ const SCREENS = {
       <div class="mt12">${trialCard()}</div>
       <div class="card list mt12"><div class="row"><span class="k">관리 과세연도</span><span class="v15">2026년 귀속</span></div><div class="row"><span class="k">토스 데이터 이용</span><span class="v15">${S.consent.toss?'동의함':'동의 안 함'}</span></div></div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 0 12px"><b style="font-size:16px">🔔 결제 수단 전환 알림</b><button data-toggle="alarm" aria-label="알림">${box(S.alarm)}</button></div>
+      <div class="card list mt12"><button class="linkrow" data-go="faq">❓ 자주 묻는 질문<span class="chev" aria-hidden="true">›</span></button></div>
       <button class="btn grey mt12" data-toast="시연에서는 데이터를 저장하지 않아요">동의 철회 · 내 데이터 삭제</button>
     </div>`
+  },
+
+  faq: {
+    body: () => `<div class="screen">${topBar('자주 묻는 질문')}
+      <div class="h2" style="padding-top:12px">궁금한 점을 모았어요</div>
+      <div class="mt8">${FAQ.map(([q,a],i)=>`<details class="faq"${i===0?' open':''}><summary><span class="q">Q</span><span class="tx">${q}</span><span class="arw" aria-hidden="true">▾</span></summary><div class="a">${a.map(p=>`<p>${p}</p>`).join('')}</div></details>`).join('')}</div>
+      <div class="card blue mt20 center"><div class="cap12">남은 지출, 어디로 결제할지 직접 비교해 보세요</div><button class="btn-s mt8" data-go="plan">지출 계획하기</button></div>
+    </div>`,
+    cta: [{label:'닫기', act:'back', style:'grey'}], cap:'참고용 예상치 · 세무 상담 아님'
   },
 
   report: {
@@ -589,6 +611,25 @@ const SCREENS = {
   },
 };
 
+/* 자주 묻는 질문 (원문: docs/faq.md) */
+const FAQ = [
+  ['십삼월은 어떤 앱인가요?', [
+    '카드·월급·월세 정보로 올해 연말정산 결과를 미리 예상하고, 12월 31일까지 남은 지출을 신용카드와 체크카드 중 어디로 결제할지 비교해 주는 서비스예요. 1월이 아니라 그 전에 미리 챙기도록 돕는 목적이에요.',
+    '이 서비스는 토스와 제휴나 협의가 확정되지 않은, 토스 앱 안에서 쓰는 서비스를 구상한 가상 프로젝트예요.']],
+  ['알려주는 금액이 정확한가요? 정말 세금이 줄어드나요?', [
+    '화면의 금액은 모두 예상치예요. 실제 연말정산 결과는 달라질 수 있고, 절세 결과를 약속하지는 않아요.',
+    '십삼월은 "원래 쓰려던 돈을 신용카드와 체크카드 중 어디로 결제할지"를 정하는 걸 돕는 서비스이고, 세금을 더 줄이려고 지출을 늘리라고 권하지 않아요.']],
+  ['무료인가요? 언제부터 돈을 내나요?', [
+    '11~12월은 무료로 써볼 수 있고, 이 기간에는 결제 정보를 받지 않아요. 1월에 연말정산 도우미(자료 비교, 제출 가이드 등)를 계속 쓸지는 직접 정해요.',
+    '계속 쓰기로 하면 1년 단위로 결제하는 연 구독이에요. 연 24,900원이고, 첫 해만 14,900원이에요. 매달 결제하는 월 구독이 아니에요. 자동 결제는 없고, 환급금에서 수수료를 떼지도 않아요.']],
+  ['신용카드와 체크카드, 결국 어느 쪽으로 써야 이득인가요?', [
+    '카드 공제는 총급여의 25%(문턱)를 넘게 쓴 금액부터 적용돼요. 문턱까지는 신용카드를 써도 괜찮고, 넘은 뒤부터는 체크카드·현금영수증의 공제율(30%)이 신용카드(15%)의 2배예요.',
+    '"지출 계획하기"에서 남은 지출의 결제 비율을 바꿔 가며 예상 세금을 비교할 수 있어요.']],
+  ['벌써 11월인데 지금 시작해도 늦지 않았나요? 추가 납부가 나오면 어떡해요?', [
+    '늦지 않았어요. 카드 공제는 12월 31일까지 결제한 금액으로 계산돼서, 남은 1~2개월의 결제 수단만 바꿔도 예상 결과가 달라질 수 있어요. 남은 기간에 달라질 수 있는 금액을 숫자로 보여드려요.',
+    '추가 납부가 예상되면 미리 알려드리고, 1월 연말정산 도우미의 "추가 납부 대비" 단계에서 준비할 방법을 안내해요. 모든 금액은 예상치예요.']],
+];
+
 /* 질문 카드 공통 */
 function qOpts(step, n, e, q, opts, next, yesNext, key){
   const vals = ['yes','no','unknown'];
@@ -634,6 +675,7 @@ function subBody(tagTxt){
     <div class="card blue mt12 center"><div class="cap12">첫해 특별가</div><div style="font-size:34px;line-height:51px;font-weight:800;letter-spacing:-.68px">14,900원</div><div class="cap12">이후 갱신 24,900원/년 (예시)</div></div>
     <div class="card mt12">${[['📋','1월 연말정산 도우미'],['📊','2~3월 결과 비교'],['🔔','내년 연중 관리']].map(([e,t])=>`<div style="display:flex;align-items:center;gap:12px;padding:6px 0 0"><div class="tile-s">${e}</div><span style="font-size:16px">${t}</span></div>`).join('')}</div>
     <div class="chips mt12"><span class="chip">🎁 지금은 무료</span><span class="chip">🔒 자동 결제 없음</span></div>
+    <div class="center mt8"><button class="ul" data-go="faq">자주 묻는 질문 보기</button></div>
     <div class="mt8">${det('시연용 예시 가격이에요(가격 검증 중). 첫해 한정이며 갱신 전에 미리 알리고 동의를 받아요. 환급금에서 한 푼도 떼지 않아요. 무료 체험 중에는 결제 정보를 받지 않고, 무료로도 예상 결과 조회와 추가 납부 경보는 계속 쓸 수 있어요.')}</div>
   </div>`;
 }
